@@ -1,0 +1,45 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <div class="row">
+            {% if context.apikeypairs %}
+            {% else %}
+                <div class="alert alert-danger" role="alert">No api keys found</div>
+            {% endif %}
+            <h1 class="page-header text-center">API Key Management
+                <div class="text-right">
+                    <a href="{{ url_for('user.api_add') }}">
+                        <button type="button" class="btn btn-success">Add Key</button>
+                    </a>
+                </div>
+            </h1>
+            <div class="table-responsive">
+	            <table class="table table-bordered">
+	                <tr>
+	                    <th class="text-center">API ID</th>
+	                    <th class="text-center">API Key</th>
+	                    <th class="text-center">Action</th>
+	                </tr>
+	                {% if context.apikeypairs %}
+	                  {% for pair in context.apikeypairs %}
+	                      <tr>
+	                          <td class="text-center">{{ pair.api_id }}</td>
+	                          <td class="text-center">{{ pair.api_key }}</td>
+	                          <td class="text-center">
+	                              <a href="{{ url_for('user.api_delete', api_id=pair.api_id) }}">
+	                                  <button type="button" class="btn btn-danger"><span
+	                                          class="glyphicon glyphicon-remove"></span></button>
+	                              </a>
+	                          </td>
+	                      </tr>
+	                  {% endfor %}
+	                {% endif %}
+	            </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

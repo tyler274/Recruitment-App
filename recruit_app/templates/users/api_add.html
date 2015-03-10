@@ -1,0 +1,12 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+    <h1>Welcome {{ current_user.username }}</h1>
+    <h3>This is where you will add eve api stuff</h3>
+    <form action="{{ url_for('user.api_add') }}" class="form-signin" role="form" action="" method="POST">
+                        {{ form.hidden_tag() }}
+                        {{ wtf.quick_form(form) }}
+                    </form>
+{% endblock %}
