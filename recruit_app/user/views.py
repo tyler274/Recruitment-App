@@ -65,12 +65,14 @@ def eve_characters():
     characters = []
     authinfo = []
     if EveManager.get_characters_by_owner_id(current_user.get_id()):
-        characters = EveCharacter.query.filter_by(user_id=current_user.get_id()).all()
+        # characters = EveManager.get_characters_by_owner_id(current_user.get_id())
+        characters = EveCharacter.query.all()
 
         for character in characters:
             if character.character_name == u'tyler274':
+                print character.alliance
                 pass
-                #print EveAllianceInfo.query.order_by(EveCharacter.character_name).all()
+
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())

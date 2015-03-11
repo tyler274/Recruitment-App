@@ -16,7 +16,7 @@ def run_alliance_corp_update():
                 if corpinfo:
                     print corpinfo
                     EveManager.create_corporation_info(corp_id=corpinfo['id'], corp_name=corpinfo['name'], corp_ticker=corpinfo['ticker'], corp_member_count=corpinfo['members']['current'], alliance_id=corpinfo['alliance']['id'])
-            if character.alliance_id:
+            if character.alliance_id != 0:
                 if not EveAllianceInfo.query.filter_by(alliance_id=character.alliance_id).first():
                     allianceinfo = EveApiManager.get_alliance_information(character.alliance_id)
                     if allianceinfo:
@@ -24,8 +24,5 @@ def run_alliance_corp_update():
                         EveManager.create_alliance_info(alliance_id=allianceinfo['id'], alliance_name=allianceinfo['name'], alliance_ticker=allianceinfo['ticker'], alliance_executor_corp_id=allianceinfo['executor_id'], alliance_member_count=allianceinfo['member_count'])
         corporations = EveCorporationInfo.query.order_by(EveCorporationInfo.corporation_id).all()
         alliances = EveAllianceInfo.query.order_by(EveAllianceInfo.alliance_id).all()
-
-        print characters
-        print "whatttt"
 
 

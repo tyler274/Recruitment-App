@@ -65,22 +65,22 @@ class AuthInfo(SurrogatePK, Model):
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='auth_info')
 
-    main_character_id = ReferenceCol('characters', nullable=True)
+    main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
     main_character = relationship('EveCharacter', backref='auth_info')
 
 
-class EveCharacter(SurrogatePK, Model):
+class EveCharacter(Model):
     __tablename__ = 'characters'
 
-    character_id = Column(db.String(254))
+    character_id = Column(db.String(254), unique=True, primary_key=True)
     character_name = Column(db.String(254))
-    corporation_id = ReferenceCol('corporations', nullable=True)
+    corporation_id = ReferenceCol('corporations', pk_name='corporation_id', nullable=True)
     corporation = relationship('EveCorporationInfo', backref='characters')
 
-    alliance_id = ReferenceCol('alliances', nullable=True)
+    alliance_id = ReferenceCol('alliances', pk_name='alliance_id', nullable=True)
     alliance = relationship('EveAllianceInfo', backref='characters')
 
-    api_id = ReferenceCol('api_key_pairs', nullable=True)
+    api_id = ReferenceCol('api_key_pairs', pk_name='api_id', nullable=True)
     api = relationship('EveApiKeyPair', backref='characters')
 
     user_id = ReferenceCol('users', nullable=True)
@@ -96,10 +96,10 @@ class EveCharacter(SurrogatePK, Model):
         return self.character_name
 
 
-class EveApiKeyPair(SurrogatePK, Model):
+class EveApiKeyPair(Model):
     __tablename__ = 'api_key_pairs'
 
-    api_id = Column(db.String(254))
+    api_id = Column(db.String(254), unique=True, primary_key=True)
     api_key = Column(db.String(254))
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='api_keys')
@@ -111,10 +111,10 @@ class EveApiKeyPair(SurrogatePK, Model):
         return self.user.username + " - ApiKeyPair"
 
 
-class EveAllianceInfo(SurrogatePK, Model):
+class EveAllianceInfo(Model):
     __tablename__ = 'alliances'
 
-    alliance_id = Column(db.String(254), unique=True)
+    alliance_id = Column(db.String(254), unique=True, primary_key=True)
     alliance_name = Column(db.String(254))
     alliance_ticker = Column(db.String(254))
     executor_corp_id = Column(db.String(254))
@@ -128,15 +128,15 @@ class EveAllianceInfo(SurrogatePK, Model):
         return self.alliance_name
 
 
-class EveCorporationInfo(SurrogatePK, Model):
+class EveCorporationInfo(Model):
     __tablename__ = 'corporations'
 
-    corporation_id = Column(db.String(254), unique=True)
+    corporation_id = Column(db.String(254), unique=True, primary_key=True)
     corporation_name = Column(db.String(254))
     corporation_ticker = Column(db.String(254))
     member_count = Column(db.Integer)
     is_blue = Column(db.Boolean, default=False)
-    alliance_id = ReferenceCol('alliances', nullable=True)
+    alliance_id = ReferenceCol('alliances', pk_name='alliance_id', nullable=True)
     alliance = relationship('EveAllianceInfo', backref='corporations')
 
     # def __init__(self, corporation_id, corporation_name, corporation_ticker, member_count=member_count,  **kwargs):
