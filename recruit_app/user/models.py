@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime as dt
 
-from flask_login import UserMixin
+#from flask_login import UserMixin
+from flask.ext.security import UserMixin, RoleMixin
 
 from recruit_app.extensions import bcrypt
 from recruit_app.database import (
@@ -14,9 +15,10 @@ from recruit_app.database import (
 )
 
 
-class Role(SurrogatePK, Model):
+class Role(RoleMixin, SurrogatePK, Model):
     __tablename__ = 'roles'
     name = Column(db.String(80), unique=True, nullable=False)
+    description = db.Column(db.String(255))
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='roles')
 
@@ -25,6 +27,7 @@ class Role(SurrogatePK, Model):
 
     def __repr__(self):
         return '<Role({name})>'.format(name=self.name)
+
 
 class User(UserMixin, SurrogatePK, Model):
 
@@ -56,8 +59,12 @@ class User(UserMixin, SurrogatePK, Model):
     def full_name(self):
         return "{0} {1}".format(self.first_name, self.last_name)
 
+    # def __repr__(self):
+    #     return '<User({username!r})>'.format(username=self.username)
+
     def __repr__(self):
-        return '<User({username!r})>'.format(username=self.username)
+        return self.username
+
 
 class AuthInfo(SurrogatePK, Model):
     __tablename__ = 'auth_info'
@@ -67,6 +74,9 @@ class AuthInfo(SurrogatePK, Model):
 
     main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
     main_character = relationship('EveCharacter', backref='auth_info')
+
+    def __repr__(self):
+        return self.main_character.character_name
 
 
 class EveCharacter(Model):
@@ -110,8 +120,7 @@ class EveApiKeyPair(Model):
     #     db.Model.__init__(self, api_id=api_id, api_key=api_key, user_id=user_id, **kwargs)
 
     def __str__(self):
-        return self.user.username + " - ApiKeyPair"
-
+        return self.api_id
 
 class EveAllianceInfo(Model):
     __tablename__ = 'alliances'
@@ -181,4 +190,6 @@ class HrApplicationComment(SurrogatePK, Model):
 
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='hr_application_comments')
+
+
 

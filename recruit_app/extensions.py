@@ -6,8 +6,11 @@ in app.py
 from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt()
 
-from flask_login import LoginManager
-login_manager = LoginManager()
+# from flask_login import LoginManager
+# login_manager = LoginManager()
+
+from flask.ext.security import Security
+security = Security()
 
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
@@ -28,4 +31,4 @@ from rq_dashboard import RQDashboard
 rqDashboard = RQDashboard()
 
 from flask_admin import Admin
-
+admin = Admin()
