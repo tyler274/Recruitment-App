@@ -1,11 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from .managers import EveManager, AuthInfoManager
 from .eve_api_manager import EveApiManager
 from .forms import UpdateKeyForm
 
-from .models import EveCharacter, EveAllianceInfo
+from .models import EveCharacter, EveAllianceInfo, EveApiKeyPair
+
+import datetime as dt
 
 blueprint = Blueprint("user", __name__, url_prefix='/users',
                         static_folder="../static")
@@ -59,6 +61,23 @@ def api_delete(api_id):
 
     return redirect(url_for('user.api_manage'))
 
+@blueprint.route("/api_update/<api_id>", methods=['GET', 'POST'])
+@login_required
+def api_update(api_id):
+    if EveApiKeyPair.query.filter_by(api_id=api_id).first():
+        api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+        if unicode(api_key_pair.user_id) == unicode(current_user.get_id()):
+            if (dt.datetime.now() - api_key_pair.last_update_time).total_seconds() >= 30:
+                EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key)
+                return redirect(url_for('user.api_manage'))
+            else:
+                flash("Please Wait before refreshing your api", category='message')
+                return redirect(url_for('user.api_manage'))
+        else:
+            return redirect(url_for('user.api_manage'))
+
+    return redirect(url_for('user.api_manage'))
+
 @blueprint.route("/eve_characters", methods=['GET', 'POST'])
 @login_required
 def eve_characters():
@@ -66,13 +85,7 @@ def eve_characters():
     authinfo = []
     if EveManager.get_characters_by_owner_id(current_user.get_id()):
         # characters = EveManager.get_characters_by_owner_id(current_user.get_id())
-        characters = EveCharacter.query.all()
-
-        for character in characters:
-            if character.character_name == u'tyler274':
-                print character.alliance
-                pass
-
+        characters = EveManager.get_characters_by_owner_id(current_user.get_id())
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())

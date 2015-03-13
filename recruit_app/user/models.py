@@ -101,6 +101,8 @@ class EveApiKeyPair(Model):
 
     api_id = Column(db.String(254), unique=True, primary_key=True)
     api_key = Column(db.String(254))
+    last_update_time = Column(db.DateTime(), nullable=True)
+
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='api_keys')
 
@@ -144,3 +146,39 @@ class EveCorporationInfo(Model):
 
     def __str__(self):
         return self.corporation_name
+
+class HrApplication(SurrogatePK, Model):
+    __tablename__ = 'hr_applications'
+
+    is_a_spi = Column(db.String(10))
+    about = Column(db.Text)
+    extra = Column(db.Text)
+
+    corporation_id = ReferenceCol('corporations', pk_name='corporation_id', nullable=True)
+    corporation = relationship('EveCorporationInfo', backref='hr_applications')
+
+    user_id = ReferenceCol('users', nullable=True)
+    reviewer_user_id = ReferenceCol('users', nullable=True)
+    last_user_id = ReferenceCol('users', nullable=True)
+
+    approved_denied = db.Column(db.Boolean)
+
+    user = relationship('User', foreign_keys=[user_id], backref='hr_applications')
+    reviewer_user = relationship('User', foreign_keys=[reviewer_user_id], backref='hr_applications_reviewed')
+    last_user = relationship('User', foreign_keys=[last_user_id], backref='hr_applications_touched')
+
+    def __str__(self):
+        return self.character_name + " - Application"
+
+
+class HrApplicationComment(SurrogatePK, Model):
+    __tablename__ = 'hr_application_comments'
+
+    comment = Column(db.Text)
+
+    application_id = ReferenceCol('hr_applications', nullable=False)
+    application = relationship('HrApplication', backref='comments')
+
+    user_id = ReferenceCol('users', nullable=True)
+    user = relationship('User', backref='hr_application_comments')
+

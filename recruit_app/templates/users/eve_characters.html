@@ -6,7 +6,7 @@
 <div class="col-lg-12 container">
         <h1 class="page-header text-center">Characters</h1>
 
-        <div class="col-lg-12 container" id="example">
+        <div class="col-lg-12 container">
 
             {% if authinfo.main_character_id %}
             {% else %}
@@ -15,7 +15,6 @@
             <div class="row">
                 {% for character in characters %}
                     <div class="col-lg-6">
-
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="panel-title">
@@ -23,8 +22,7 @@
                                         <div class="col-md-12">
                                             <div class="text-left col-md-8">
                                                 {{ character.character_name }}
-                                            </div>
-                                            <div class="text-right col-md-4">
+
                                                 <a href="{{ url_for('user.eve_main_character_change', character_id=character.character_id) }}">
                                                     {% if character.character_id|string == authinfo.main_character_id|string %}
                                                         <button type="button" class="btn btn-default btn-xs">
@@ -44,11 +42,11 @@
 
                             <div class="panel-body">
                                 <div class="col-lg-5 col-sm-2"><img class=
-                                                                            "ra-avatar img-responsive" src=
-                                                                            "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
+                                  "ra-avatar img-responsive" src=
+                                  "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
                                 </div>
 
-                                <div class="col-lg-7 col-sm-2">
+                                <div class="col-lg-7">
                                     <p><strong>Alliance: </strong> {{ character.alliance.alliance_name }} </p>
 
                                     <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>

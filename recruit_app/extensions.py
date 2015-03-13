@@ -27,3 +27,5 @@ bootstrap = Bootstrap()
 from rq_dashboard import RQDashboard
 rqDashboard = RQDashboard()
 
+from flask_admin import Admin
+

@@ -6,6 +6,8 @@ from models import EveCorporationInfo
 from models import AuthInfo
 from models import User
 
+import datetime as dt
+
 from .eve_api_manager import EveApiManager
 
 
@@ -33,7 +35,6 @@ class EveManager:
 
     @staticmethod
     def create_characters_from_list(chars, user_id, api_id):
-
         for char in chars.result:
             if not EveManager.check_if_character_exist(chars.result[char]['name']):
                 EveManager.create_character(chars.result[char]['id'],
@@ -47,16 +48,12 @@ class EveManager:
                                             user_id, api_id)
 
     @staticmethod
-    def update_characters_from_list(chars):
-        for char in chars.result:
+    def update_characters_from_list(characters):
+        for character in characters:
             if EveManager.check_if_character_exist(chars.result[char]['name']):
                 eve_char = EveManager.get_character_by_character_name(chars.result[char]['name'])
                 eve_char.corporation_id = chars.result[char]['corp']['id']
-                eve_char.corporation_name = chars.result[char]['corp']['name']
-                eve_char.corporation_ticker = EveApiManager.get_corporation_ticker_from_id(
-                    chars.result[char]['corp']['id'])
                 eve_char.alliance_id = chars.result[char]['alliance']['id']
-                eve_char.alliance_name = chars.result[char]['alliance']['name']
                 eve_char.save()
 
 
@@ -66,8 +63,20 @@ class EveManager:
             api_pair = EveApiKeyPair()
             api_pair.api_id = api_id
             api_pair.api_key = api_key
+            api_pair.update_time = dt.datetime.now()
             api_pair.user_id = user_id
             api_pair.save()
+
+
+    @staticmethod
+    def update_api_keypair(api_id, api_key):
+        if EveApiKeyPair.query.filter_by(api_id=api_id).first():
+            api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+            characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
+            update_characters_from_list(characters=characters)
+            api_pair.update_time = dt.datetime.now()
+            api_pair.save()
+
 
     @staticmethod
     def create_alliance_info(alliance_id, alliance_name, alliance_ticker, alliance_executor_corp_id,
@@ -139,31 +148,34 @@ class EveManager:
             # Check that its owned by our user_id
             characters = EveCharacter.query.filter_by(api_id=api_id).all()
 
-            for char in characters:
-                if unicode(char.user_id) == unicode(user_id):
-                    char.delete()
+            for character in characters:
+                if unicode(character.user_id) == unicode(user_id):
+                    character.delete()
+
 
     @staticmethod
-    def check_if_character_exist(char_name):
-        return EveCharacter.query.filter_by(character_name=char_name).all()
+    def check_if_character_exist(character_id):
+        if EveCharacter.query.filter_by(character_name=character_name).first():
+            return True
+        return False
+
 
     @staticmethod
     def get_characters_by_owner_id(user_id):
         if EveCharacter.query.filter_by(user_id=user_id).all():
             return EveCharacter.query.filter_by(user_id=user_id).all()
-
         return None
 
     @staticmethod
-    def get_character_by_character_name(char_name):
-        if EveCharacter.query.filter_by(character_name=char_name).all():
-            return EveCharacter.query.filter_by(character_name=char_name).all()
+    def get_character_by_character_name(character_name):
+        if EveCharacter.query.filter_by(character_name=character_name).first():
+            return EveCharacter.query.filter_by(character_name=character_name).first()
+        return None
 
     @staticmethod
-    def get_character_by_id(char_id):
-        if EveCharacter.query.filter_by(character_id=char_id).all():
-            return EveCharacter.query.filter_by(character_id=char_id).all()
-
+    def get_character_by_id(character_id):
+        if EveCharacter.query.filter_by(character_id=character_id).first():
+            return EveCharacter.query.filter_by(character_id=character_id).first()
         return None
 
     @staticmethod
@@ -185,13 +197,15 @@ class EveManager:
         return EveAllianceInfo.query.filter_by(alliance_id=alliance_id).all()
 
     @staticmethod
-    def check_if_corporation_exists_by_id(corp_id):
-        return EveCorporationInfo.query.filter_by(corporation_id=corp_id).all()
+    def check_if_corporation_exists_by_id(corporation_id):
+        if EveCorporationInfo.query.filter_by(corporation_id=corporation_id).first():
+            return True
+        return False
 
     @staticmethod
     def get_alliance_info_by_id(alliance_id):
         if EveManager.check_if_alliance_exists_by_id(alliance_id):
-            return EveAllianceInfo.query.filter_by(alliance_id=alliance_id).all()
+            return EveAllianceInfo.query.filter_by(alliance_id=alliance_id).first()
         else:
             return None
 
