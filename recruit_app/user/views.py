@@ -28,14 +28,13 @@ def api_add():
         characters = EveApiManager.get_characters_from_api(form.data['api_id'],
                                                                form.data['api_key'])
 
+        EveManager.create_api_keypair(form.data['api_id'],
+                                          form.data['api_key'],
+                                          current_user.get_id())
         EveManager.create_alliances_from_list(characters)
         EveManager.create_corporations_from_list(characters)
         EveManager.create_characters_from_list(characters, current_user.get_id(), form.data['api_id'])
 
-
-        EveManager.create_api_keypair(form.data['api_id'],
-                                          form.data['api_key'],
-                                          current_user.get_id())
 
         return redirect(url_for('user.api_manage'))
     else:
