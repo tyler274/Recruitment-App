@@ -21,8 +21,8 @@ class EveManager:
             eve_char = EveCharacter()
             eve_char.character_id = character_id
             eve_char.character_name = character_name
-            eve_char.corporation_id = corporation_id
-            eve_char.alliance_id = alliance_id
+            eve_char.corporation_id = str(corporation_id)
+            eve_char.alliance_id = str(alliance_id)
             eve_char.user_id = user_id
             eve_char.api_id = api_id
             eve_char.save()
