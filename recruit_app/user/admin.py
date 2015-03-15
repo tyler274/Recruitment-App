@@ -22,6 +22,6 @@ class AuthenticatedModelView(ModelView):
         u = User.query.filter_by(id=current_user.get_id()).first()
         r = Role.query.filter_by(name="admin").first()
         user_datastore.add_role_to_user(u, r)
-        if u.has_role('admin'):
+        if u.has_role(r):
             return True
         return False
