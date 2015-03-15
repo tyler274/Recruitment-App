@@ -207,7 +207,7 @@ class EveManager:
 
     @staticmethod
     def check_if_alliance_exists_by_id(alliance_id):
-        return EveAllianceInfo.query.filter_by(alliance_id=alliance_id).all()
+        return EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).all()
 
     @staticmethod
     def check_if_corporation_exists_by_id(corporation_id):
@@ -218,7 +218,7 @@ class EveManager:
     @staticmethod
     def get_alliance_info_by_id(alliance_id):
         if EveManager.check_if_alliance_exists_by_id(alliance_id):
-            return EveAllianceInfo.query.filter_by(alliance_id=alliance_id).first()
+            return EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).first()
         else:
             return None
 
