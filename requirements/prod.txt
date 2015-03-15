@@ -6,14 +6,14 @@ MarkupSafe==0.23
 Werkzeug==0.9.6
 Jinja2==2.7.3
 itsdangerous==0.24
-Flask-Admin
+Flask-Admin==1.1.0
 
 # Database
 Flask-SQLAlchemy==2.0
 SQLAlchemy==0.9.8
 
 # BootStrap
-Flask-Bootstrap
+Flask-Bootstrap==3.2.0.1
 
 # Migrations
 Flask-Migrate==1.3.0
@@ -33,6 +33,7 @@ jsmin>=2.0.11
 # Auth
 Flask-Login==0.2.11
 Flask-Bcrypt==0.6.0
+Flask-Security==1.7.4
 
 # Caching
 Flask-Cache>=0.13.1
@@ -46,4 +47,4 @@ rq-dashboard
 rq-scheduler
 
 # EveLink
-Evelink
+Evelink==0.6.1
