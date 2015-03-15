@@ -27,11 +27,11 @@ def api_add():
     if form.validate_on_submit():
         characters = EveApiManager.get_characters_from_api(form.data['api_id'],
                                                                form.data['api_key'])
-        EveManager.create_characters_from_list(characters, current_user.get_id(), form.data['api_id'])
-
-        EveManager.create_corporations_from_list(characters)
 
         EveManager.create_alliances_from_list(characters)
+        EveManager.create_corporations_from_list(characters)
+        EveManager.create_characters_from_list(characters, current_user.get_id(), form.data['api_id'])
+
 
         EveManager.create_api_keypair(form.data['api_id'],
                                           form.data['api_key'],
