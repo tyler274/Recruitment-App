@@ -18,9 +18,9 @@ roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('roles.id')))
 
-class Role(RoleMixin, SurrogatePK, Model):
+class Role(SurrogatePK, Model, RoleMixin):
     __tablename__ = 'roles'
-    name = Column(db.String(80), unique=True, nullable=False)
+    name = Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
     #user_id = ReferenceCol('users', nullable=True)
     #user = relationship('User', backref='roles')
@@ -32,7 +32,7 @@ class Role(RoleMixin, SurrogatePK, Model):
         return '<Role({name})>'.format(name=self.name)
 
 
-class User(UserMixin, SurrogatePK, Model):
+class User(SurrogatePK, Model, UserMixin):
     __tablename__ = 'users'
     username = Column(db.String(80), unique=True, nullable=False)
     email = Column(db.String(80), unique=True, nullable=False)
