@@ -15,7 +15,6 @@ db = SQLAlchemy()
 from flask.ext.security import Security, SQLAlchemyUserDatastore
 from recruit_app.user.models import User, Role
 security = Security()
-user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
 from flask_migrate import Migrate
 migrate = Migrate()
