@@ -13,6 +13,7 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SECURITY_PASSWORD_HASH = 'bcrypt'
+    SECURITY_LOGIN_USER_TEMPLATE = 'public/login.html'
 
 
 class ProdConfig(Config):

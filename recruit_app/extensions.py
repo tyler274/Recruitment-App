@@ -9,11 +9,13 @@ bcrypt = Bcrypt()
 # from flask_login import LoginManager
 # login_manager = LoginManager()
 
-from flask.ext.security import Security
-security = Security()
-
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
+
+from flask.ext.security import Security, SQLAlchemyUserDatastore
+from recruit_app.user.models import User, Role
+security = Security()
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
 from flask_migrate import Migrate
 migrate = Migrate()

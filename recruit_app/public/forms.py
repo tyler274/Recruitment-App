@@ -3,9 +3,11 @@ from wtforms import TextField, PasswordField
 from wtforms.validators import DataRequired
 
 from recruit_app.user.models import User
+from recruit_app.extensions import user_datastore
 
 class LoginForm(Form):
-    username = TextField('Username', validators=[DataRequired()])
+    # username = TextField('Username', validators=[DataRequired()])
+    email = TextField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
     def __init__(self, *args, **kwargs):
@@ -17,9 +19,10 @@ class LoginForm(Form):
         if not initial_validation:
             return False
 
-        self.user = User.query.filter_by(username=self.username.data).first()
+        # self.user = User.query.filter_by(username=self.username.data).first()
+        self.user = user_datastore.get_user(self.email.data)
         if not self.user:
-            self.username.errors.append('Unknown username')
+            self.email.errors.append('Unknown username')
             return False
 
         if not self.user.check_password(self.password.data):

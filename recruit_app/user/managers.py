@@ -16,22 +16,17 @@ class EveManager:
         pass
 
     @staticmethod
-    def create_character(character_id, character_name, corporation_id,
-                         corporation_name, corporation_ticker, alliance_id,
-                         alliance_name, user_id, api_id):
-
+    def create_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
         if not EveCharacter.query.filter_by(character_id=character_id).all():
             eve_char = EveCharacter()
             eve_char.character_id = character_id
             eve_char.character_name = character_name
             eve_char.corporation_id = corporation_id
-            eve_char.corporation_name = corporation_name
-            eve_char.corporation_ticker = corporation_ticker
             eve_char.alliance_id = alliance_id
-            eve_char.alliance_name = alliance_name
             eve_char.user_id = user_id
             eve_char.api_id = api_id
             eve_char.save()
+
 
     @staticmethod
     def create_characters_from_list(chars, user_id, api_id):
@@ -40,12 +35,29 @@ class EveManager:
                 EveManager.create_character(chars.result[char]['id'],
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
-                                            chars.result[char]['corp']['name'],
-                                            EveApiManager.get_corporation_ticker_from_id(
-                                                chars.result[char]['corp']['id']),
                                             chars.result[char]['alliance']['id'],
-                                            chars.result[char]['alliance']['name'],
                                             user_id, api_id)
+
+
+    @staticmethod
+    def create_corporations_from_list(characters):
+        for character in characters.result:
+            if not EveManager.check_if_corporation_exists_by_id(characters.result[character]['corp']['id']):
+                corpinfo = EveApiManager.get_corporation_information(characters.result[character]['corp']['id'])
+                if corpinfo:
+                    EveManager.create_corporation_info(corp_id=corpinfo['id'], corp_name=corpinfo['name'], corp_ticker=corpinfo['ticker'], corp_member_count=corpinfo['members']['current'], alliance_id=corpinfo['alliance']['id'])
+
+
+    @staticmethod
+    def create_alliances_from_list(characters):
+        for character in characters.result:
+            if characters.result[character]['alliance']['id'] != 0:
+                if not EveManager.check_if_alliance_exists_by_id(characters.result[character]['alliance']['id']):
+                    alliance_info = EveApiManager.get_alliance_information(characters.result[character]['alliance']['id'])
+                    print alliance_info
+                    if alliance_info:
+                        EveManager.create_alliance_info(alliance_id=alliance_info['id'], alliance_name=alliance_info['name'], alliance_ticker=alliance_info['ticker'], alliance_executor_corp_id=alliance_info['executor_id'],alliance_member_count=alliance_info['member_count']['current'])
+
 
     @staticmethod
     def update_characters_from_list(characters):
@@ -155,7 +167,7 @@ class EveManager:
 
     @staticmethod
     def check_if_character_exist(character_id):
-        if EveCharacter.query.filter_by(character_name=character_name).first():
+        if EveCharacter.query.filter_by(character_id=character_id).first():
             return True
         return False
 

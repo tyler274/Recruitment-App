@@ -11,6 +11,7 @@ from recruit_app.extensions import (
     db,
     #login_manager,
     security,
+    user_datastore,
     migrate,
     debug_toolbar,
     bootstrap,
@@ -19,7 +20,6 @@ from recruit_app.extensions import (
 )
 from recruit_app import public, user
 from recruit_app.user import admin as admin_view
-from recruit_app.user.models import User, Role
 
 
 def create_app(config_object=ProdConfig):
@@ -43,7 +43,6 @@ def register_extensions(app):
     cache.init_app(app)
     db.init_app(app)
     #login_manager.init_app(app)
-    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     security.init_app(app, user_datastore)
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)

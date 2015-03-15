@@ -2,7 +2,8 @@ from flask_admin.contrib.sqla import ModelView
 from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo
 from recruit_app.user.models import User, Role
 
-from flask_login import login_required, current_user
+from recruit_app.extensions import user_datastore
+from flask_security import current_user
 
 
 def register_admin_views(admin, db):
@@ -17,5 +18,10 @@ class AuthenticatedModelView(ModelView):
     column_display_pk = True
 
     def is_accessible(self):
-        u = User.query.filter_by(user_id=current_user.get_id()).first()
-        return current_user.is_authenticated()
+        user_datastore.create_role(name="admin", description="Admin Role")
+        u = User.query.filter_by(id=current_user.get_id()).first()
+        r = Role.query.filter_by(name="admin").first()
+        user_datastore.add_role_to_user(u, r)
+        if u.has_role('admin'):
+            return True
+        return False

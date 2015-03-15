@@ -25,12 +25,17 @@ def members():
 def api_add():
     form = UpdateKeyForm()
     if form.validate_on_submit():
-        EveManager.create_api_keypair(form.data['api_id'],
-                                          form.data['api_key'],
-                                          current_user.get_id())
         characters = EveApiManager.get_characters_from_api(form.data['api_id'],
                                                                form.data['api_key'])
         EveManager.create_characters_from_list(characters, current_user.get_id(), form.data['api_id'])
+
+        EveManager.create_corporations_from_list(characters)
+
+        EveManager.create_alliances_from_list(characters)
+
+        EveManager.create_api_keypair(form.data['api_id'],
+                                          form.data['api_key'],
+                                          current_user.get_id())
 
         return redirect(url_for('user.api_manage'))
     else:

@@ -1,0 +1,16 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container-narrow">
+  <h1>Login</h1>
+    <br/>
+    <form id="loginForm" class="form form-register" method="POST" action="" role="form">
+            {{ login_user_form.hidden_tag() }}
+            {{ wtf.quick_form(login_user_form) }}
+    </form>
+    <p><em>Not registered?</em> Click <a href="{{ url_for('public.register')}}">here</a> to register.</p>
+</div>
+{% endblock %}
+

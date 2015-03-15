@@ -14,13 +14,16 @@ from recruit_app.database import (
     SurrogatePK,
 )
 
+roles_users = db.Table('roles_users',
+        db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
+        db.Column('role_id', db.Integer(), db.ForeignKey('roles.id')))
 
 class Role(RoleMixin, SurrogatePK, Model):
     __tablename__ = 'roles'
     name = Column(db.String(80), unique=True, nullable=False)
     description = db.Column(db.String(255))
-    user_id = ReferenceCol('users', nullable=True)
-    user = relationship('User', backref='roles')
+    #user_id = ReferenceCol('users', nullable=True)
+    #user = relationship('User', backref='roles')
 
     def __init__(self, name, **kwargs):
         db.Model.__init__(self, name=name, **kwargs)
@@ -30,7 +33,6 @@ class Role(RoleMixin, SurrogatePK, Model):
 
 
 class User(UserMixin, SurrogatePK, Model):
-
     __tablename__ = 'users'
     username = Column(db.String(80), unique=True, nullable=False)
     email = Column(db.String(80), unique=True, nullable=False)
@@ -41,6 +43,9 @@ class User(UserMixin, SurrogatePK, Model):
     last_name = Column(db.String(30), nullable=True)
     active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
+
+    roles = db.relationship('Role', secondary=roles_users,
+                            backref=db.backref('users', lazy='dynamic'))
 
     def __init__(self, username, email, password=None, **kwargs):
         db.Model.__init__(self, username=username, email=email, **kwargs)
