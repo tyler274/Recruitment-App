@@ -18,7 +18,7 @@ class AuthenticatedModelView(ModelView):
     column_display_pk = True
 
     def is_accessible(self):
-        user_datastore.create_role(name="admin", description="Admin Role")
+        # user_datastore.create_role(name="admin", description="Admin Role")
         u = User.query.filter_by(id=current_user.get_id()).first()
         r = Role.query.filter_by(name="admin").first()
         user_datastore.add_role_to_user(u, r)
