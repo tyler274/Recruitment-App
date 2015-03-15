@@ -56,7 +56,7 @@ class EveManager:
                     alliance_info = EveApiManager.get_alliance_information(characters.result[character]['alliance']['id'])
                     print alliance_info
                     if alliance_info:
-                        EveManager.create_alliance_info(alliance_id=alliance_info['id'], alliance_name=alliance_info['name'], alliance_ticker=alliance_info['ticker'], alliance_executor_corp_id=alliance_info['executor_id'],alliance_member_count=alliance_info['member_count']['current'])
+                        EveManager.create_alliance_info(alliance_id=alliance_info['id'], alliance_name=alliance_info['name'], alliance_ticker=alliance_info['ticker'], alliance_executor_corp_id=alliance_info['executor_id'],alliance_member_count=alliance_info['member_count'])
 
 
     @staticmethod
