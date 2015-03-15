@@ -96,10 +96,10 @@ class EveManager:
                              alliance_member_count, is_blue=None):
         if not EveManager.check_if_alliance_exists_by_id(alliance_id):
             alliance_info = EveAllianceInfo()
-            alliance_info.alliance_id = alliance_id
+            alliance_info.alliance_id = str(alliance_id)
             alliance_info.alliance_name = alliance_name
             alliance_info.alliance_ticker = alliance_ticker
-            alliance_info.executor_corp_id = alliance_executor_corp_id
+            alliance_info.executor_corp_id = str(alliance_executor_corp_id)
             alliance_info.member_count = alliance_member_count
             alliance_info.is_blue = is_blue
             alliance_info.save()
@@ -108,7 +108,7 @@ class EveManager:
     def update_alliance_info(alliance_id, alliance_executor_corp_id, alliance_member_count, is_blue=None):
         if EveManager.check_if_alliance_exists_by_id(alliance_id):
             alliance_info = EveAllianceInfo.query.filter_by(alliance_id=alliance_id).all()
-            alliance_info.executor_corp_id = alliance_executor_corp_id
+            alliance_info.executor_corp_id = str(alliance_executor_corp_id)
             alliance_info.member_count = alliance_member_count
             alliance_info.is_blue = is_blue
             alliance_info.save()
@@ -117,7 +117,7 @@ class EveManager:
     def create_corporation_info(corp_id, corp_name, corp_ticker, corp_member_count, alliance_id, is_blue=None):
         if not EveManager.check_if_corporation_exists_by_id(corp_id):
             corp_info = EveCorporationInfo()
-            corp_info.corporation_id = corp_id
+            corp_info.corporation_id = str(corp_id)
             corp_info.corporation_name = corp_name
             corp_info.corporation_ticker = corp_ticker
             corp_info.member_count = corp_member_count
@@ -131,7 +131,7 @@ class EveManager:
         if EveManager.check_if_corporation_exists_by_id(corp_id):
             corp_info = EveCorporationInfo.query.filter_by(corporation_id=corp_id).all()
             corp_info.member_count = corp_member_count
-            corp_info.alliance_id = alliance_id
+            corp_info.alliance_id = str(alliance_id)
             corp_info.is_blue = is_blue
             corp_info.save()
 
