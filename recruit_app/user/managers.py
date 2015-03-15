@@ -17,7 +17,7 @@ class EveManager:
 
     @staticmethod
     def create_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
-        if not EveCharacter.query.filter_by(character_id=character_id).all():
+        if not EveCharacter.query.filter_by(character_id=str(character_id)).all():
             eve_char = EveCharacter()
             eve_char.character_id = character_id
             eve_char.character_name = character_name
