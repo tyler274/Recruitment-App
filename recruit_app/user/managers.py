@@ -198,7 +198,7 @@ class EveManager:
 
     @staticmethod
     def check_if_character_owned_by_user(character_id, user_id):
-        character = EveCharacter.query.filter_by(character_id=character_id).first()
+        character = EveCharacter.query.filter_by(character_id=str(character_id)).first()
         print character
         if unicode(character.user_id) == unicode(user_id):
             return True
@@ -211,7 +211,7 @@ class EveManager:
 
     @staticmethod
     def check_if_corporation_exists_by_id(corporation_id):
-        if EveCorporationInfo.query.filter_by(corporation_id=corporation_id).first():
+        if EveCorporationInfo.query.filter_by(corporation_id=str(corporation_id)).first():
             return True
         return False
 
