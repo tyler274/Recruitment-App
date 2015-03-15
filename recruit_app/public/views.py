@@ -5,7 +5,7 @@ from flask import (Blueprint, request, render_template, flash, url_for,
 from flask_security.utils import login_user, logout_user
 from flask_security.decorators import login_required
 
-from recruit_app.extensions import security
+from recruit_app.extensions import security, user_datastore
 from recruit_app.user.models import User
 from recruit_app.public.forms import LoginForm
 from recruit_app.user.forms import RegisterForm
@@ -63,6 +63,8 @@ def register():
                         email=form.email.data,
                         password=form.password.data,
                         active=True)
+        # user_datastore.create_user(email=form.email.data, username=form.username.data, password=form.password.data, active=True)
+
         flash("Thank you for registering. You can now log in.", 'success')
         return redirect(url_for('public.home'))
     else:

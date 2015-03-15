@@ -75,7 +75,7 @@ class EveManager:
             api_pair = EveApiKeyPair()
             api_pair.api_id = api_id
             api_pair.api_key = api_key
-            api_pair.update_time = dt.datetime.now()
+            api_pair.last_update_time = dt.datetime.now()
             api_pair.user_id = user_id
             api_pair.save()
 
