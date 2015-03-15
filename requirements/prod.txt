@@ -48,3 +48,5 @@ rq-scheduler
 
 # EveLink
 Evelink==0.6.1
+
+Flask-Script
