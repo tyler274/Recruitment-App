@@ -16,7 +16,7 @@ def register_admin_views(admin, db):
 
 class AuthenticatedModelView(ModelView):
     column_display_pk = True
-    if current_user.get_id() == 1:
+    if current_user.get_id():
         u = User.query.filter_by(id=1).first()
         r = Role.query.filter_by(id=1).first()
         u.roles.append(r)
