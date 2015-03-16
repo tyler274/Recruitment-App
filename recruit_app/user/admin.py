@@ -16,12 +16,12 @@ def register_admin_views(admin, db):
 
 class AuthenticatedModelView(ModelView):
     column_display_pk = True
-
-    u = User.query.filter_by(id=1).first()
-    r = Role.query.filter_by(id=1).first()
-    u.roles.append(r)
-    db.session.add(u)
-    db.session.commit()
+    if current_user.get_id() == 1:
+        u = User.query.filter_by(id=1).first()
+        r = Role.query.filter_by(id=1).first()
+        u.roles.append(r)
+        db.session.add(u)
+        db.session.commit()
 
     def is_accessible(self):
 
