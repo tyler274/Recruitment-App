@@ -65,8 +65,9 @@ class EveManager:
         for character in characters.result:
             if EveManager.check_if_character_exist(characters.result[character]['id']):
                 eve_char = EveManager.get_character_by_character_name(characters.result[character]['name'])
-                eve_char.corporation_id = characters.result[character]['corp']['id']
-                eve_char.alliance_id = characters.result[character]['alliance']['id']
+                eve_char.corporation_id = str(characters.result[character]['corp']['id'])
+                if characters.result[character]['alliance']['id'] != 0:
+                    eve_char.alliance_id = str(characters.result[character]['alliance']['id'])
                 eve_char.save()
 
 
@@ -107,7 +108,7 @@ class EveManager:
     @staticmethod
     def update_alliance_info(alliance_id, alliance_executor_corp_id, alliance_member_count, is_blue=None):
         if EveManager.check_if_alliance_exists_by_id(alliance_id):
-            alliance_info = EveAllianceInfo.query.filter_by(alliance_id=alliance_id).all()
+            alliance_info = EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).all()
             alliance_info.executor_corp_id = str(alliance_executor_corp_id)
             alliance_info.member_count = alliance_member_count
             alliance_info.is_blue = is_blue
@@ -168,7 +169,7 @@ class EveManager:
 
     @staticmethod
     def check_if_character_exist(character_id):
-        if EveCharacter.query.filter_by(character_id=character_id).first():
+        if EveCharacter.query.filter_by(character_id=str(character_id)).first():
             return True
         return False
 
