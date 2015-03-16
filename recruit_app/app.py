@@ -20,7 +20,7 @@ from recruit_app.extensions import (
 )
 from recruit_app import public, user
 from recruit_app.user import admin as admin_view
-from recruit_app.user.models import User, Role
+from recruit_app.user.models import User, Role, roles_users
 
 
 def create_app(config_object=ProdConfig):
@@ -60,6 +60,10 @@ def register_blueprints(app):
     return None
 
 def register_admin(admin, db):
+    # if not Role.query.filter_by(name="admin").first():
+    #         a = Role.create(name="admin", description="Admin Role")
+    #         u = User.query.filter_by(id=1).first()
+
     admin_view.register_admin_views(admin, db)
 
     return None

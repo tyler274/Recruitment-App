@@ -17,13 +17,13 @@ def register_admin_views(admin, db):
 class AuthenticatedModelView(ModelView):
     column_display_pk = True
 
-    def is_accessible(self):
-        if not Role.query.filter_by(name="admin").first():
-            a = Role.create(name="admin", description="Admin Role")
-            ru = roles_users('1','1')
-            db.session.add(ru)
-            db.session.commit()
+    u = User.query.filter_by(id=1).first()
+    r = Role.query.filter_by(id=1).first()
+    u.roles.append(r)
+    db.session.add(u)
+    db.session.commit()
 
+    def is_accessible(self):
 
         if current_user.has_role("admin"):
             return True
