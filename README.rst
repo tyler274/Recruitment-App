@@ -51,6 +51,15 @@ To open the interactive shell, run ::
 
     python manage.py shell
 
+
+Make sure to add the admin role to a user
+::
+    from recruit_app.user.models import User, Role
+    u = User.query.filter_by(id="1").first()
+    r = Role(name="admin", description="administrator")
+    u.roles.append(r)
+    u.save()
+
 By default, you will have access to ``app``, ``db``, and the ``User`` model.
 
 

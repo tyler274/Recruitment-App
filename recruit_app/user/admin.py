@@ -18,7 +18,6 @@ class AuthenticatedModelView(ModelView):
     column_display_pk = True
 
     def is_accessible(self):
-
         if current_user.has_role("admin"):
             return True
         return False
