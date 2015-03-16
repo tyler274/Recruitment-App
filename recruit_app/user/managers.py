@@ -63,10 +63,10 @@ class EveManager:
     @staticmethod
     def update_characters_from_list(characters):
         for character in characters:
-            if EveManager.check_if_character_exist(chars.result[char]['name']):
-                eve_char = EveManager.get_character_by_character_name(chars.result[char]['name'])
-                eve_char.corporation_id = chars.result[char]['corp']['id']
-                eve_char.alliance_id = chars.result[char]['alliance']['id']
+            if EveManager.check_if_character_exist(characters.result[character]['name']):
+                eve_char = EveManager.get_character_by_character_name(characters.result[character]['name'])
+                eve_char.corporation_id = characters.result[character]['corp']['id']
+                eve_char.alliance_id = characters.result[character]['alliance']['id']
                 eve_char.save()
 
 
