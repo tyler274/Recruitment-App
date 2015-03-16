@@ -7,12 +7,12 @@ from flask_security import current_user
 
 
 def register_admin_views(admin, db):
-    admin.add_view(AuthenticatedModelView(EveCharacter, db.session))
-    admin.add_view(AuthenticatedModelView(EveCorporationInfo, db.session))
-    admin.add_view(AuthenticatedModelView(EveAllianceInfo, db.session))
-    admin.add_view(AuthenticatedModelView(EveApiKeyPair, db.session))
-    admin.add_view(AuthenticatedModelView(User, db.session, endpoint="users"))
-    admin.add_view(AuthenticatedModelView(Role, db.session))
+    admin.add_view(AuthenticatedModelView(EveCharacter, db.session, category='EvE'))
+    admin.add_view(AuthenticatedModelView(EveCorporationInfo, db.session, category='EvE'))
+    admin.add_view(AuthenticatedModelView(EveAllianceInfo, db.session, category='Eve'))
+    admin.add_view(AuthenticatedModelView(EveApiKeyPair, db.session, category='EvE'))
+    admin.add_view(AuthenticatedModelView(User, db.session, endpoint="users", category='Users'))
+    admin.add_view(AuthenticatedModelView(Role, db.session, category='Users'))
 
 class AuthenticatedModelView(ModelView):
     column_display_pk = True
