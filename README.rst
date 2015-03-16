@@ -43,6 +43,12 @@ Deployment
 
 In your production environment, make sure the ``RECRUIT_APP_ENV`` environment variable is set to ``"prod"``.
 
+Don't forget to define your postgresql db using
+
+::
+
+    export DATABASE_URL="postgres://username:password@domain-name:5432/database-name"
+
 
 Shell
 -----

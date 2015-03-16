@@ -55,7 +55,7 @@ class EveManager:
             if characters.result[character]['alliance']['id'] != 0:
                 if not EveManager.check_if_alliance_exists_by_id(characters.result[character]['alliance']['id']):
                     alliance_info = EveApiManager.get_alliance_information(characters.result[character]['alliance']['id'])
-                    print alliance_info
+                    # print alliance_info
                     if alliance_info:
                         EveManager.create_alliance_info(alliance_id=alliance_info['id'], alliance_name=alliance_info['name'], alliance_ticker=alliance_info['ticker'], alliance_executor_corp_id=alliance_info['executor_id'],alliance_member_count=alliance_info['member_count'])
 
@@ -199,7 +199,7 @@ class EveManager:
     @staticmethod
     def check_if_character_owned_by_user(character_id, user_id):
         character = EveCharacter.query.filter_by(character_id=str(character_id)).first()
-        print character
+        # print character
         if unicode(character.user_id) == unicode(user_id):
             return True
 
