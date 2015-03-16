@@ -86,7 +86,7 @@ class EveManager:
         if EveApiKeyPair.query.filter_by(api_id=api_id).first():
             api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
-            update_characters_from_list(characters=characters)
+            EveManager.update_characters_from_list(characters=characters)
             api_pair.update_time = dt.datetime.now()
             api_pair.save()
 
