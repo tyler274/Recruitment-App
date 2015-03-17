@@ -14,6 +14,7 @@ def register_admin_views(admin, db):
     admin.add_view(AuthenticatedModelView(User, db.session, endpoint="users", category='Users'))
     admin.add_view(AuthenticatedModelView(Role, db.session, category='Users'))
 
+
 class AuthenticatedModelView(ModelView):
     column_display_pk = True
 

@@ -12,7 +12,7 @@ bcrypt = Bcrypt()
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
-from flask.ext.security import Security, SQLAlchemyUserDatastore
+from flask_security import Security, SQLAlchemyUserDatastore
 from recruit_app.user.models import User, Role
 security = Security()
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
@@ -30,7 +30,17 @@ from flask_bootstrap import Bootstrap
 bootstrap = Bootstrap()
 
 from rq_dashboard import RQDashboard
-rqDashboard = RQDashboard()
+from flask_security import current_user
+def check_if_admin():
+    if current_user:
+        if current_user.has_role("admin"):
+            return True
+        else:
+            return False
+    else:
+        return False
+
+rqDashboard = RQDashboard(auth_handler=check_if_admin)
 
 from flask_admin import Admin
 admin = Admin()
