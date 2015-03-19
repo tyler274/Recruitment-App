@@ -15,6 +15,16 @@ def register_admin_views(admin, db):
     admin.add_view(AuthenticatedModelView(Role, db.session, category='Users'))
 
 
+def check_if_admin():
+    if current_user:
+        if current_user.has_role("admin"):
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
 class AuthenticatedModelView(ModelView):
     column_display_pk = True
 
@@ -22,3 +32,7 @@ class AuthenticatedModelView(ModelView):
         if current_user.has_role("admin"):
             return True
         return False
+
+    def _handle_view(self, name, **kwargs):
+        if not self.is_accessible():
+            abort(401)

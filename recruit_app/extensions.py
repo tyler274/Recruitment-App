@@ -30,17 +30,9 @@ from flask_bootstrap import Bootstrap
 bootstrap = Bootstrap()
 
 from rq_dashboard import RQDashboard
-from flask_security import current_user
-def check_if_admin():
-    if current_user:
-        if current_user.has_role("admin"):
-            return True
-        else:
-            return False
-    else:
-        return False
-
+from recruit_app.user.admin import check_if_admin
 rqDashboard = RQDashboard(auth_handler=check_if_admin)
 
 from flask_admin import Admin
 admin = Admin()
+
