@@ -7,7 +7,7 @@ from flask.ext.script import Manager, Shell, Server
 from flask.ext.migrate import MigrateCommand
 
 from recruit_app.app import create_app
-from recruit_app.user.models import User
+from recruit_app.user.models import User, Role
 from recruit_app.settings import DevConfig, ProdConfig
 from recruit_app.database import db
 

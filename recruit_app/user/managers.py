@@ -10,10 +10,34 @@ import datetime as dt
 
 from .eve_api_manager import EveApiManager
 
+from recruit_app.extensions import bcrypt
+
+from redis import Redis
+redis_conn = Redis()
+
+from rq.decorators import job
+
+from flask import flash
+
 
 class EveManager:
     def __init__(self):
         pass
+
+    @staticmethod
+    def update_user_api(api_id, user_id):
+        if EveApiKeyPair.query.filter_by(api_id=api_id).first():
+            api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+            if unicode(api_key_pair.user_id) == unicode(user_id):
+                if (dt.datetime.utcnow() - api_key_pair.last_update_time).total_seconds() >= 30:
+                    # TODO: Switch from 30 second time out to the cache expiry time
+                    EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key)
+                    #return "Success"
+                else:
+                    flash("Please Wait before refreshing your api", category='message')
+                    #return "Wait"
+        # else:
+            # return "Wrong User"
 
     @staticmethod
     def create_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
@@ -77,7 +101,7 @@ class EveManager:
             api_pair = EveApiKeyPair()
             api_pair.api_id = api_id
             api_pair.api_key = api_key
-            api_pair.last_update_time = dt.datetime.now()
+            api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.user_id = user_id
             api_pair.save()
 
@@ -88,7 +112,7 @@ class EveManager:
             api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
             EveManager.update_characters_from_list(characters=characters)
-            api_pair.update_time = dt.datetime.now()
+            api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
 
 
