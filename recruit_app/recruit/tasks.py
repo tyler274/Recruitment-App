@@ -1,6 +1,6 @@
-from .models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from .managers import EveManager
-from .eve_api_manager import EveApiManager
+from recruit_app.user.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
+from recruit_app.user.managers import EveManager
+from recruit_app.user.eve_api_manager import EveApiManager
 
 
 

@@ -69,21 +69,8 @@ def api_delete(api_id):
 @blueprint.route("/api_update/<api_id>", methods=['GET', 'POST'])
 @login_required
 def api_update(api_id):
-    # if EveApiKeyPair.query.filter_by(api_id=api_id).first():
-    #     api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
-    #     if unicode(api_key_pair.user_id) == unicode(current_user.get_id()):
-    #         if (dt.datetime.now() - api_key_pair.last_update_time).total_seconds() >= 30:
-    #             # TODO: Switch from 30 second time out to the cache expiry time
-    #             EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key)
-    #             return redirect(url_for('user.api_manage'))
-    #         else:
-    #             flash("Please Wait before refreshing your api", category='message')
-    #             return redirect(url_for('user.api_manage'))
-    #     else:
-    #         return redirect(url_for('user.api_manage'))
-
     # Break out application logic from the view to the manager
-    update = EveManager.update_user_api(api_id, current_user.get_id())
+    EveManager.update_user_api(api_id, current_user.get_id())
 
     # if update == "Wait":
     #     flash("Please Wait before refreshing your api", category='message')

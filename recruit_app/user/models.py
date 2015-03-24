@@ -101,6 +101,8 @@ class EveCharacter(Model):
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='characters')
 
+    skillpoints = Column(db.Integer, nullable=True)
+
     # def __init__(self, character_id, character_name, corporation_id,  **kwargs):
     #     db.Model.__init__(self, character_id=character_id, character_name=character_name, corporation_id=corporation_id, **kwargs)
 

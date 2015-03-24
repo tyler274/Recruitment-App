@@ -28,6 +28,7 @@ class EveManager:
     def update_user_api(api_id, user_id):
         if EveApiKeyPair.query.filter_by(api_id=api_id).first():
             api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+
             if unicode(api_key_pair.user_id) == unicode(user_id):
                 if (dt.datetime.utcnow() - api_key_pair.last_update_time).total_seconds() >= 30:
                     # TODO: Switch from 30 second time out to the cache expiry time
@@ -41,7 +42,7 @@ class EveManager:
 
     @staticmethod
     def create_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
-        if not EveCharacter.query.filter_by(character_id=str(character_id)).all():
+        if not EveCharacter.query.filter_by(character_id=str(character_id)).first():
             eve_char = EveCharacter()
             eve_char.character_id = character_id
             eve_char.character_name = character_name
@@ -54,10 +55,33 @@ class EveManager:
 
 
     @staticmethod
+    def update_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
+        if EveCharacter.query.filter_by(character_id=str(character_id)).first():
+            eve_char = EveCharacter.query.filter_by(character_id=str(character_id)).first()
+            eve_char.character_id = str(character_id)
+            eve_char.character_name = character_name
+            eve_char.corporation_id = str(corporation_id)
+            if alliance_id != 0:
+                eve_char.alliance_id = str(alliance_id)
+
+            eve_char.user_id = user_id
+            eve_char.api_id = api_id
+            eve_char.save()
+
+
+    @staticmethod
     def create_characters_from_list(chars, user_id, api_id):
         for char in chars.result:
-            if not EveManager.check_if_character_exist(chars.result[char]['name']):
+
+            if not EveManager.check_if_character_exist(chars.result[char]['id']):
                 EveManager.create_character(chars.result[char]['id'],
+                                            chars.result[char]['name'],
+                                            chars.result[char]['corp']['id'],
+                                            chars.result[char]['alliance']['id'],
+                                            user_id, api_id)
+
+            else:
+                EveManager.update_character(chars.result[char]['id'],
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
                                             chars.result[char]['alliance']['id'],
@@ -85,13 +109,27 @@ class EveManager:
 
 
     @staticmethod
-    def update_characters_from_list(characters):
+    def update_characters_from_list(characters, user_id, api_id):
+        EveManager.create_alliances_from_list(characters)
+        EveManager.create_corporations_from_list(characters)
+        EveManager.create_characters_from_list(characters, user_id, api_id)
+
+        print "test"
         for character in characters.result:
             if EveManager.check_if_character_exist(characters.result[character]['id']):
                 eve_char = EveManager.get_character_by_character_name(characters.result[character]['name'])
-                eve_char.corporation_id = str(characters.result[character]['corp']['id'])
-                if characters.result[character]['alliance']['id'] != 0:
-                    eve_char.alliance_id = str(characters.result[character]['alliance']['id'])
+
+                if str(characters.result[character]['alliance']['id']) != eve_char.alliance_id:
+
+                    if characters.result[character]['alliance']['id'] != 0:
+                        eve_char.alliance_id = str(characters.result[character]['alliance']['id'])
+
+                    elif characters.result[character]['alliance']['id'] == 0:
+                        eve_char.alliance_id = None
+
+                if str(characters.result[character]['corp']['id']) != eve_char.corporation_id:
+                    eve_char.corporation_id = str(characters.result[character]['corp']['id'])
+
                 eve_char.save()
 
 
@@ -108,10 +146,13 @@ class EveManager:
 
     @staticmethod
     def update_api_keypair(api_id, api_key):
+        print "api update"
         if EveApiKeyPair.query.filter_by(api_id=api_id).first():
             api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
-            EveManager.update_characters_from_list(characters=characters)
+            EveManager.update_characters_from_list(characters=characters,
+                                                   user_id=api_pair.user_id,
+                                                   api_id=api_pair.api_id)
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
 
@@ -182,13 +223,14 @@ class EveManager:
 
     @staticmethod
     def delete_characters_by_api_id(api_id, user_id):
-        if EveCharacter.query.filter_by(api_id=api_id).all():
+        if EveCharacter.query.filter_by(api_id=api_id).first():
             # Check that its owned by our user_id
             characters = EveCharacter.query.filter_by(api_id=api_id).all()
 
             for character in characters:
                 if unicode(character.user_id) == unicode(user_id):
-                    character.delete()
+                    character.user_id = 0
+                    character.save()
 
 
     @staticmethod
