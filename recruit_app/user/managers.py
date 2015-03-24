@@ -145,7 +145,7 @@ class EveManager:
 
     @staticmethod
     def update_api_keypair(api_id, api_key):
-        print "api update"
+        # print "api update"
         if EveApiKeyPair.query.filter_by(api_id=api_id).first():
             api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
