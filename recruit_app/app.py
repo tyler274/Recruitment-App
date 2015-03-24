@@ -22,6 +22,10 @@ from recruit_app import public, user, recruit
 from recruit_app.user import admin as admin_view
 from recruit_app.user.models import User, Role
 
+from recruit_app.recruit.models import HrApplication
+
+import flask_whooshalchemy as whooshalchemy
+
 
 def create_app(config_object=ProdConfig):
     '''An application factory, as explained here:
@@ -35,6 +39,7 @@ def create_app(config_object=ProdConfig):
     register_blueprints(app)
     register_errorhandlers(app)
     register_admin(admin, db)
+    register_search(app)
     return app
 
 
@@ -62,6 +67,11 @@ def register_blueprints(app):
 
 def register_admin(admin, db):
     admin_view.register_admin_views(admin, db)
+
+    return None
+
+def register_search(app):
+    whooshalchemy.whoosh_index(app, HrApplication)
 
     return None
 

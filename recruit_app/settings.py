@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 os_env = os.environ
 
@@ -17,12 +18,14 @@ class Config(object):
     SECURITY_LOGIN_USER_TEMPLATE = 'public/login.html'
 
 
+
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL')  # TODO: Change me
     DEBUG_TB_ENABLED = True  # Disable Debug toolbar
+    WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 
 class DevConfig(Config):
@@ -33,6 +36,7 @@ class DevConfig(Config):
     # Put the db file in project root
     DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+    WHOOSH_BASE = os.path.join(basedir, 'search.db')
     DEBUG_TB_ENABLED = True
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.

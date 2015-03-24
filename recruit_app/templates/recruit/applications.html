@@ -1,0 +1,56 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="col-lg-12 container">
+    <h1 class="page-header text-center">Personal Applications
+        <div class="text-right">
+            <a href="placeholder url">
+                <button type="button" class="btn btn-success" disabled>Create Application</button>
+            </a>
+        </div>
+    </h1>
+    <div class="col-lg-12 container">
+        {% if authinfo.main_character_id %}
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Character</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                {% for application in applications %}
+                    <tr>
+                        <td class="text-center">{{ application.user.auth_info.main_character.character_name }}</td>
+                        <td class="text-center">
+                            {% if application.approved_denied == None %}
+                                <div class="panel panel-warning" role="alert">Pending</div>
+                            {% elif  application.approved_denied == True %}
+                                <div class="panel panel-success" role="alert">Approved</div>
+                            {% else %}
+                                <div class="panel panel-danger" role="alert">Rejected</div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="/hr_application_personal_view/{{ application.id }}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            </a>
+
+                            {% if application.approved_denied == None %}
+                                <a href="/hr_application_personal_removal/{{ application.id }}">
+                                    <button type="button" class="btn btn-danger"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
