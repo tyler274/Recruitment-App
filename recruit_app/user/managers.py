@@ -114,7 +114,6 @@ class EveManager:
         EveManager.create_corporations_from_list(characters)
         EveManager.create_characters_from_list(characters, user_id, api_id)
 
-        print "test"
         for character in characters.result:
             if EveManager.check_if_character_exist(characters.result[character]['id']):
                 eve_char = EveManager.get_character_by_character_name(characters.result[character]['name'])
