@@ -16,6 +16,10 @@ class HrApplication(SurrogatePK, Model):
 
     about = Column(db.Text)
     extra = Column(db.Text)
+    scale = Column(db.Integer)
+    reason_for_joining = Column(db.Text)
+
+
 
     user_id = ReferenceCol('users', nullable=True)
     reviewer_user_id = ReferenceCol('users', nullable=True)

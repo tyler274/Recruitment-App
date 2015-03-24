@@ -23,7 +23,7 @@ Then run the following commands to bootstrap your environment.
     git clone https://github.com/tyler274/recruit_app
     cd recruit_app
     pip install -r requirements/dev.txt
-    go
+    python manage.py server
 
 You will see a pretty welcome screen.
 
