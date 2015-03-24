@@ -18,7 +18,7 @@ from recruit_app.extensions import (
     rqDashboard,
     admin,
 )
-from recruit_app import public, user
+from recruit_app import public, user, recruit
 from recruit_app.user import admin as admin_view
 from recruit_app.user.models import User, Role
 
@@ -56,6 +56,7 @@ def register_extensions(app):
 def register_blueprints(app):
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(recruit.views.blueprint)
 
     return None
 
