@@ -31,7 +31,7 @@ def applications():
     return render_template('recruit/applications.html', authinfo=authinfo, applications=applications)
 
 
-@blueprint.route("/applications/<application_id>", methods=['GET', 'POST'])
+@blueprint.route("/applications/<application_id>/", methods=['GET', 'POST'])
 @login_required
 def application_view(application_id):
     user_id = current_user.get_id()
@@ -63,18 +63,22 @@ def application_interact(application_id, action):
     if AuthInfoManager.get_or_create(current_user.get_id()):
         auth_info = AuthInfoManager.get_or_create(current_user.get_id())
 
-    application_status = HrManager.alter_application(application_id, action, user_id)
+    if HrApplication.query.filter_by(id=int(application_id)).first():
+        application = HrApplication.query.filter_by(id=int(application_id)).first()
 
-    # flash("%s's application approved" % application.main_character, category='message')
-    # flash("%s's application rejected" % application.main_character, category='message')
-    # flash("%s's application pending" % application.main_character, category='message')
-    # elif application.user_id == user_id:
-    #     if action == "delete" and application.approve_deny == "Pending":
-    #         application.delete()
+        # alter_application takes one of 4 actions
+        if current_user.has_role("admin") or current_user.has_role("recruiter"):
+            application_status = HrManager.alter_application(application_id, action, user_id)
+
+            flash("%s's application %s" % (application.main_character, application_status), category='message')
+
+        elif application.user_id == user_id:
+            if action == "delete" and application.approve_deny == "Pending":
+                application_status = HrManager.alter_application(application_id, action, user_id)
 
 
-    if application:
-        return redirect(url_for('recruit.application_view', application_id=application.id))
+        if application_status and application_status != "deleted":
+            return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return redirect(url_for('recruit.applications'))
 
