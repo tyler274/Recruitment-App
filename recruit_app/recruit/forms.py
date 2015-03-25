@@ -24,4 +24,8 @@ class HrApplicationForm(Form):
 
     submit = SubmitField(label='Submit')
 
+class HRApplicationCommentForm(Form):
+    comment = TextField(label="Comment", validators=[DataRequired()])
+
+
 

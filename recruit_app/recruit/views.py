@@ -5,10 +5,10 @@ from flask_security import current_user, roles_accepted
 from recruit_app.user.managers import EveManager, AuthInfoManager
 from recruit_app.user.eve_api_manager import EveApiManager
 
-from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair
-from recruit_app.recruit.models import HrApplication
+from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, User
+from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
-from recruit_app.recruit.forms import HrApplicationForm
+from recruit_app.recruit.forms import HrApplicationForm, HRApplicationCommentForm
 
 import datetime as dt
 
@@ -52,14 +52,36 @@ def application_create():
 def application_view(application_id):
     user_id = current_user.get_id()
     comments = []
+    characters = []
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         auth_info = AuthInfoManager.get_or_create(current_user.get_id())
 
+    if current_user.has_role("recruiter") or current_user.has_role("admin"):
+        if HrApplication.query.filter_by(id=int(application_id)).first():
+            application = HrApplication.query.filter_by(id=int(application_id)).first()
+
+            characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
+
+            comments = HrApplicationComment.query.filter_by(application_id=application_id).all()
+
+            form = HRApplicationCommentForm()
+            if request.method == 'POST':
+                if form.validate_on_submit():
+                    HrManager.create_comment(application.id, comment, user_id)
+
+            return render_template('recruit/application.html',
+                               auth_info=auth_info,
+                               current_user=current_user,
+                               application=application,
+                               characters=characters,
+                               comments=comments,
+                               form=form)
+
     if HrManager.check_if_application_owned_by_user(application_id, user_id):
         if HrApplication.query.filter_by(id=int(application_id)).first():
             application = HrApplication.query.filter_by(id=int(application_id)).first()
-            characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
+
             return render_template('recruit/application.html',
                                auth_info=auth_info,
                                current_user=current_user,
@@ -67,8 +89,6 @@ def application_view(application_id):
                                characters=characters,
                                comments=comments)
 
-    if request.method == 'POST':
-        pass
 
     return redirect(url_for('recruit.applications'))
 
@@ -87,8 +107,8 @@ def application_interact(application_id, action):
         # alter_application takes one of 4 actions
         if current_user.has_role("admin") or current_user.has_role("recruiter"):
             application_status = HrManager.alter_application(application_id, action, user_id)
-
-            flash("%s's application %s" % (application.main_character, application_status), category='message')
+            print application.user.auth_info[0].main_character
+            flash("%s's application %s" % (application.user.auth_info[0].main_character, application_status), category='message')
 
         elif application.user_id == user_id:
             if action == "delete" and application.approve_deny == "Pending":

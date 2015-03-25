@@ -32,6 +32,15 @@ class HrManager:
         return False
 
     @staticmethod
+    def create_comment(application_id, comment, user_id):
+        comment = HRApplicationComment()
+        comment.application_id = application_id
+        comment.user_id = user_id
+        comment.comment = comment
+        comment.last_update_time = dt.datetime.utcnow()
+        comment.save()
+
+    @staticmethod
     def alter_application(application_id, action, user_id):
         if HrApplication.query.filter_by(id=int(application_id)).first():
             application = HrApplication.query.filter_by(id=int(application_id)).first()
@@ -40,6 +49,7 @@ class HrManager:
                 application.approved_denied = "Approved"
                 application.reviewer_user_id = user_id
                 application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
                 application.save()
                 return "approved"
 
@@ -47,6 +57,7 @@ class HrManager:
                 application.approved_denied = "Rejected"
                 application.reviewer_user_id = user_id
                 application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
                 application.save()
                 return "rejected"
 
@@ -54,8 +65,17 @@ class HrManager:
                 application.approved_denied = "Pending"
                 application.reviewer_user_id = user_id
                 application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
                 application.save()
                 return "pending"
+
+            elif action == "undecided":
+                application.approved_denied = "undecided"
+                application.reviewer_user_id = user_id
+                application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
+                application.save()
+                return "undecided"
 
             elif action == "delete":
                 application.delete()

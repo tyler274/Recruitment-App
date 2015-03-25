@@ -78,7 +78,7 @@ class AuthInfo(SurrogatePK, Model):
     user = relationship('User', backref='auth_info')
 
     main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
-    main_character = relationship('EveCharacter', backref='auth_info')
+    main_character = relationship('EveCharacter', lazy='subquery', backref=db.backref('auth_info', lazy='dynamic'))
 
     def __repr__(self):
         return self.main_character.character_name

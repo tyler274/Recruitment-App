@@ -1,5 +1,5 @@
 from flask_admin.contrib.sqla import ModelView
-from recruit_app.recruit.models import HrApplication
+from recruit_app.recruit.models import HrApplication, HrApplicationComment
 
 from recruit_app.extensions import user_datastore, db
 from flask_security import current_user
@@ -7,6 +7,7 @@ from flask_security import current_user
 
 def register_admin_views(admin, db):
     admin.add_view(AuthenticatedModelView(HrApplication, db.session, category='Recruitment'))
+    admin.add_view(AuthenticatedModelView(HrApplicationComment, db.session, category='Recruitment'))
     # admin.add_view(AuthenticatedModelView(EveCorporationInfo, db.session, category='EvE'))
     # admin.add_view(AuthenticatedModelView(EveAllianceInfo, db.session, category='EvE'))
     # admin.add_view(AuthenticatedModelView(EveApiKeyPair, db.session, category='EvE'))
