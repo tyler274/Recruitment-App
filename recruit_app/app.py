@@ -19,10 +19,11 @@ from recruit_app.extensions import (
     admin,
 )
 from recruit_app import public, user, recruit
-from recruit_app.user import admin as admin_view
+from recruit_app.user import admin as user_admin_view
 from recruit_app.user.models import User, Role
 
 from recruit_app.recruit.models import HrApplication
+from recruit_app.recruit import admin as recruit_admin_view
 
 import flask_whooshalchemy as whooshalchemy
 
@@ -66,7 +67,8 @@ def register_blueprints(app):
     return None
 
 def register_admin(admin, db):
-    admin_view.register_admin_views(admin, db)
+    user_admin_view.register_admin_views(admin, db)
+    recruit_admin_view.register_admin_views(admin, db)
 
     return None
 

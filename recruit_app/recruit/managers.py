@@ -31,3 +31,33 @@ class HrManager:
 
         return False
 
+    @staticmethod
+    def alter_application(application_id, action, user_id):
+        if HrApplication.query.filter_by(id=int(application_id)).first():
+            application = HrApplication.query.filter_by(id=int(application_id)).first()
+
+            if action == "approve":
+                application.approved_denied = "Approved"
+                application.reviewer_user_id = user_id
+                application.last_user_id = user_id
+                application.save()
+                return "approved"
+
+            elif action == "reject":
+                application.approved_denied = "Rejected"
+                application.reviewer_user_id = user_id
+                application.last_user_id = user_id
+                application.save()
+                return "rejected"
+
+            elif action == "pending":
+                application.approved_denied = "Pending"
+                application.reviewer_user_id = user_id
+                application.last_user_id = user_id
+                application.save()
+                return "pending"
+
+            elif action == "delete":
+                application.delete()
+                return "deleted"
+

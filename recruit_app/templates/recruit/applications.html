@@ -21,24 +21,24 @@
                 </tr>
                 {% for application in applications %}
                     <tr>
-                        <td class="text-center">{{ application.user.auth_info.main_character.character_name }}</td>
+                        <td class="text-center">{{ application.main_character }}</td>
                         <td class="text-center">
-                            {% if application.approved_denied == None %}
+                            {% if application.approved_denied == "Pending" %}
                                 <div class="panel panel-warning" role="alert">Pending</div>
-                            {% elif  application.approved_denied == True %}
+                            {% elif application.approved_denied == "Approved" %}
                                 <div class="panel panel-success" role="alert">Approved</div>
-                            {% else %}
+                            {% elif application.approved_denied == "Rejected" %}
                                 <div class="panel panel-danger" role="alert">Rejected</div>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="/hr_application_personal_view/{{ application.id }}">
+                            <a href="{{ url_for('recruit.application_view', application_id=application.id) }}">
                                 <button type="button" class="btn btn-primary"><span
                                         class="glyphicon glyphicon-eye-open"></span></button>
                             </a>
 
-                            {% if application.approved_denied == None %}
-                                <a href="/hr_application_personal_removal/{{ application.id }}">
+                            {% if application.approved_denied == "Pending" %}
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="delete") }}">
                                     <button type="button" class="btn btn-danger"><span
                                             class="glyphicon glyphicon-remove"></span></button>
                                 </a>

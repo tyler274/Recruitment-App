@@ -25,8 +25,8 @@ class Role(SurrogatePK, Model, RoleMixin):
     #user_id = ReferenceCol('users', nullable=True)
     #user = relationship('User', backref='roles')
 
-    def __init__(self, name, **kwargs):
-        db.Model.__init__(self, name=name, **kwargs)
+    # def __init__(self, name, **kwargs):
+    #     db.Model.__init__(self, name=name, **kwargs)
 
     def __repr__(self):
         return '<Role({name})>'.format(name=self.name)

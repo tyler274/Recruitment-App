@@ -66,7 +66,7 @@ Make sure to add the admin role to a user
     u.roles.append(r)
     u.save()
 
-By default, you will have access to ``app``, ``db``, and the ``User`` model.
+By default, you will have access to ``app``, ``db``, ``Role``, and the ``User`` model.
 
 
 Running Tests
