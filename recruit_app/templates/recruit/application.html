@@ -3,12 +3,12 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
-<div class="col-lg-12 container">
+<div class=" container-fluid">
     <h1 class="page-header text-center">Personal Application</h1>
-    <div class="col-lg-12 container">
+    <div class="container-fluid">
         {% if auth_info.main_character_id %}
             <div class="container-fluid">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-sm-4">
                 <div class="row">
                     <form class="form-signin">
                         <div class="form-group">
@@ -76,7 +76,7 @@
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_extra" name="extra"
-                                          disabled>{{ application.extra }}</textarea>
+                                          disabled>{{ application.scale }}</textarea>
                             </div>
                         </div>
 
@@ -114,6 +114,159 @@
                 </div>
 
             </div>
+            <div class="col-sm-4">
+                <div class="row">
+                    <label class="control-label  " for="id_extra">Characters</label>
+                    {% for character in characters %}
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="text-left col-md-8">
+                                                    {{ character.character_name }}
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <a href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                                                        <button type="button" class="btn btn-default btn-xs">
+                                                            Jack Knife
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-body">
+                                    <div class="col-lg-5 col-sm-4"><img class=
+                                      "ra-avatar img-responsive" src=
+                                      "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
+                                    </div>
+
+                                    <div class="col-lg-7">
+                                        <p><strong>Alliance: </strong> {{ character.alliance.alliance_name }} </p>
+
+                                        <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>
+
+                                        <p><strong>Corporation Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+                <div class="row">
+                    <form class="form-signin">
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">Status</label>
+                            <div class=" ">
+                                {% if application.approved_denied == "Pending" %}
+                                    <div class="alert alert-warning" role="alert">Pending</div>
+                                {% elif application.approved_denied == "Approved" %}
+                                    <div class="alert alert-success" role="alert">Approved</div>
+                                {% elif application.approved_denied == "Rejected" %}
+                                    <div class="alert alert-danger" role="alert">Rejected</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">Reviewer</label>
+
+                            <div class=" ">
+                                {% if application.reviewer_user.auth_info == None %}
+                                    <div class="alert alert-info" role="alert">pending</div>
+                                {% else %}
+                                    <div class="alert alert-info"
+                                         role="alert">{{ application.reviewer_user.auth_info }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">Last Action</label>
+
+                            <div class=" ">
+                                {% if application.last_action_user.auth_info == None %}
+                                    <div class="alert alert-info" role="alert">pending</div>
+                                {% else %}
+                                    <div class="alert alert-info"
+                                         role="alert">{{ application.last_action_user.auth_info }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="id_character_name">User Account</label>
+
+                            <div class=" ">
+                                <input class=" form-control" value="{{ application.user.username }}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_character_name">Main Character Name</label>
+
+                            <div class=" ">
+                                <input class=" form-control" value="{{ application.main_character }}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_about">How long have you been playing EVE and what have you done in that time?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.about }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_extra" name="extra"
+                                          disabled>{{ application.scale }}</textarea>
+                            </div>
+                        </div>
+
+                        {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+                            <div class="form-group text-center">
+                                <label class="control-label text-center" for="id_extra">Actions</label>
+
+                                <div class="container-fluid well">
+
+                                    <div class="row text-center">
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="approve") }}">
+                                            <button type="button" class="btn btn-lg btn-success">Approve</button>
+                                        </a>
+
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
+                                            <button type="button" class="btn btn-lg btn-info">Reject</button>
+                                        </a>
+
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="delete") }}">
+                                            <button type="button" class="btn btn-lg btn-danger">Delete</button>
+                                        </a>
+
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="pending") }}">
+                                            <button type="button" class="btn btn-lg btn-warning">Mark In Progress
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <br/>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    </form>
+
+                </div>
+
+            </div>
+
 
         </div>
         {% else %}

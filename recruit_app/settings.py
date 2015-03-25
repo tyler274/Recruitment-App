@@ -16,6 +16,7 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SECURITY_PASSWORD_HASH = 'bcrypt'
     SECURITY_LOGIN_USER_TEMPLATE = 'public/login.html'
+    JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
 
 
 
