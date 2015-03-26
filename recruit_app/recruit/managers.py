@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from recruit_app.user.models import EveCharacter, EveApiKeyPair, EveAllianceInfo, EveCorporationInfo, AuthInfo, User
 
-from recruit_app.recruit.models import HrApplication
+from recruit_app.recruit.models import HrApplication, HrApplicationComment
 
 import datetime as dt
 
@@ -35,8 +35,8 @@ class HrManager:
     def create_comment(application_id, comment, user_id):
         comment = HrApplicationComment()
         comment.application_id = application_id
-        comment.user_id = user_id
         comment.comment = comment
+        comment.user_id = user_id
         comment.last_update_time = dt.datetime.utcnow()
         comment.save()
 
@@ -50,7 +50,22 @@ class HrManager:
         application.favorite_role = favorite_role
         application.most_fun = most_fun
         application.user_id = user_id
+        application.last_update_time = dt.datetime.utcnow()
         application.save()
+
+    @staticmethod
+    def update_application(about, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, user_id):
+        if HrApplication.query.filter_by(id=application_id).first():
+            application = HrApplication.query.filter_by(id=application_id).first()
+            application.about = about
+            application.scale = scale
+            application.reason_for_joining = reason_for_joining
+            application.favorite_ship = favorite_ship
+            application.favorite_role = favorite_role
+            application.most_fun = most_fun
+            application.user_id = user_id
+            application.last_update_time = dt.datetime.utcnow()
+            application.save()
 
     @staticmethod
     def alter_application(application_id, action, user_id):

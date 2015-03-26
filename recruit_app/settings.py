@@ -31,8 +31,8 @@ class Config(object):
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = "CynosuralFieldGenerator@gmail.com"
-    MAIL_PASSWORD = "86nb4Tntfxi4Ij"
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
     JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
 

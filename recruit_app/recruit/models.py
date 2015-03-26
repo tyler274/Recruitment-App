@@ -51,7 +51,7 @@ class HrApplicationComment(SurrogatePK, Model):
     comment = Column(db.Text, nullable=True)
 
     application_id = ReferenceCol('hr_applications', nullable=False)
-    used_id = ReferenceCol('users', nullable=False)
+    user_id = ReferenceCol('users', nullable=False)
 
     last_update_time = Column(db.DateTime(), nullable=True)
 

@@ -25,6 +25,8 @@
                                     </div>
                                 {% elif application.approved_denied == "Rejected" %}
                                     <div class="alert alert-danger" role="alert">Rejected</div>
+                                {% elif application.approved_denied == "undecided" %}
+                                    <div class="alert alert-warning" role="alert">Undecided</div>
                                 {% endif %}
                             </div>
                         </div>
@@ -68,9 +70,9 @@
                                 <input class=" form-control" value="{{ application.user.auth_info[0].main_character }}" disabled>
                             </div>
                         </div>
-                        {% if application.approved_denied == "Pending" %}
+                        {% if application.approved_denied == "Pending" and application.user_id|int == current_user.get_id()|int %}
                             {{ wtf.quick_form(form_app) }}
-                        {% else %}
+                        {% else  %}
                             <div class="form-group">
                                 <label class="control-label  " for="id_about">How long have you been playing EVE and what have you done in that time?</label>
 
@@ -228,6 +230,12 @@
                                                 <div class="panel-body">{{ comment.comment }}</div>
                                             </div>
                                         {% endfor %}
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form-signin" role="form" action="" method="POST">
+                                            {{ form_comment.hidden_tag() }}
+                                            {{ wtf.quick_form(form_comment) }}
+                                        </form>
                                     </div>
                                 </div>
                             </div>

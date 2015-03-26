@@ -67,36 +67,24 @@ def application_view(application_id):
     characters = []
 
     form_app = HrApplicationForm()
+    form_comment = HrApplicationCommentForm()
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         auth_info = AuthInfoManager.get_or_create(current_user.get_id())
 
-    if current_user.has_role("recruiter") or current_user.has_role("admin"):
-        if HrApplication.query.filter_by(id=int(application_id)).first():
-            application = HrApplication.query.filter_by(id=int(application_id)).first()
+    if HrApplication.query.filter_by(id=int(application_id)).first():
+        application = HrApplication.query.filter_by(id=int(application_id)).first()
 
+        if current_user.has_role("recruiter") or current_user.has_role("admin"):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
 
             comments = HrApplicationComment.query.filter_by(application_id=application_id).all()
 
-            form = HrApplicationCommentForm()
             if request.method == 'POST':
-                if form.validate_on_submit():
-                    HrManager.create_comment(application.id, form.data['comment'], user_id)
+                if form_comment.validate_on_submit():
+                    HrManager.create_comment(application_id, form_comment.comment.data, user_id)
 
-            return render_template('recruit/application.html',
-                               auth_info=auth_info,
-                               current_user=current_user,
-                               application=application,
-                               characters=characters,
-                               comments=comments,
-                               form=form,
-                               form_app=form_app)
-
-    if HrManager.check_if_application_owned_by_user(application_id, user_id):
-        if HrApplication.query.filter_by(id=int(application_id)).first():
-            application = HrApplication.query.filter_by(id=int(application_id)).first()
-
+        if HrManager.check_if_application_owned_by_user(application_id, user_id):
             form_app.about.data = application.about
             form_app.scale.data = application.scale
             form_app.reason_for_joining.data = application.reason_for_joining
@@ -105,16 +93,24 @@ def application_view(application_id):
             form_app.most_fun.data = application.most_fun
 
             if request.method == 'POST':
-                pass
+                HrManager.update_application(about=form_app.about.data,
+                                         scale=form_app.scale.data,
+                                         reason_for_joining=form_app.reason_for_joining.data,
+                                         favorite_ship=form_app.favorite_ship.data,
+                                         favorite_role=form_app.favorite_role.data,
+                                         most_fun=form_app.most_fun.data,
+                                         application_id=application.id,
+                                         user_id=user_id)
 
+        if HrManager.check_if_application_owned_by_user(application_id, user_id) or current_user.has_role("recruiter") or current_user.has_role("admin"):
             return render_template('recruit/application.html',
-                               auth_info=auth_info,
-                               current_user=current_user,
-                               application=application,
-                               characters=characters,
-                               comments=comments,
-                               form_app=form_app)
-
+                                       auth_info=auth_info,
+                                       current_user=current_user,
+                                       application=application,
+                                       characters=characters,
+                                       comments=comments,
+                                       form_comment=form_comment,
+                                       form_app=form_app)
 
     return redirect(url_for('recruit.applications'))
 
