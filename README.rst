@@ -49,6 +49,11 @@ Don't forget to define your postgresql db using
 
     export DATABASE_URL="postgres://username:password@domain-name:5432/database-name"
 
+Define your gmail username and pass environment variables
+::
+
+    export MAIL_USERNAME="gmail_username"
+    export MAIL_PASSWORD="gmail_password"
 
 Shell
 -----
