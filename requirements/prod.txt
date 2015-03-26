@@ -54,3 +54,5 @@ Evelink==0.6.1
 
 Flask-Script
 psycopg2
+
+Flask-Whooshalchemy

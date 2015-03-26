@@ -28,7 +28,7 @@ def applications():
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())
 
     if current_user.has_role("recruiter") or current_user.has_role("admin"):
-        applications = HrApplication.query.order_by(id).all()
+        applications = HrApplication.query.order_by(HrApplication.id)
 
     return render_template('recruit/applications.html', authinfo=authinfo, applications=applications)
 
