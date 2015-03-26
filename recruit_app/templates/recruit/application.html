@@ -25,7 +25,7 @@
                                     </div>
                                 {% elif application.approved_denied == "Rejected" %}
                                     <div class="alert alert-danger" role="alert">Rejected</div>
-                                {% elif application.approved_denied == "undecided" %}
+                                {% elif application.approved_denied == "Undecided" %}
                                     <div class="alert alert-warning" role="alert">Undecided</div>
                                 {% endif %}
                             </div>
@@ -74,11 +74,19 @@
                             {{ wtf.quick_form(form_app) }}
                         {% else  %}
                             <div class="form-group">
-                                <label class="control-label  " for="id_about">How long have you been playing EVE and what have you done in that time?</label>
+                                <label class="control-label  " for="id_about">How long have you been playing EVE?</label>
 
                                 <div class=" ">
                                     <textarea class=" form-control" id="id_about" name="about"
-                                              disabled>{{ application.about }}</textarea>
+                                              disabled>{{ application.how_long }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_about">What have you done in that time?</label>
+
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_about" name="about"
+                                              disabled>{{ application.have_done }}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -226,13 +234,20 @@
                                                     <div class="panel-title">
                                                         {{ comment.user.auth_info[0].main_character }} - {{ comment.last_update_time }}
                                                     </div>
+                                                    {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
+                                                        <a href="{{ url_for('recruit.application_comment_action', application_id=application.id, comment_id=comment.id, action="delete") }}">
+                                                            <button type="button" class="btn-xs btn-danger">
+                                                                Delete
+                                                            </button>
+                                                        </a>
+                                                    {% endif %}
                                                 </div>
                                                 <div class="panel-body">{{ comment.comment }}</div>
                                             </div>
                                         {% endfor %}
                                     </div>
                                     <div class="modal-body">
-                                        <form class="form-signin" role="form" action="" method="POST">
+                                        <form class="form-signin" role="form" action="{{ url_for('recruit.application_comment_create', application_id=application.id) }}" method="POST">
                                             {{ form_comment.hidden_tag() }}
                                             {{ wtf.quick_form(form_comment) }}
                                         </form>

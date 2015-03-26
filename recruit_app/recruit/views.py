@@ -44,7 +44,8 @@ def application_create():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            HrManager.create_application(about=form.data['about'],
+            HrManager.create_application(how_long=form.how_long.data,
+                                         have_done=form.have_done.data,
                                          scale=form.data['scale'],
                                          reason_for_joining=form.data['reason_for_joining'],
                                          favorite_ship=form.data['favorite_ship'],
@@ -80,12 +81,9 @@ def application_view(application_id):
 
             comments = HrApplicationComment.query.filter_by(application_id=application_id).all()
 
-            if request.method == 'POST':
-                if form_comment.validate_on_submit():
-                    HrManager.create_comment(application_id, form_comment.comment.data, user_id)
-
         if HrManager.check_if_application_owned_by_user(application_id, user_id):
-            form_app.about.data = application.about
+            form_app.how_long.data = application.how_long
+            form_app.have_done.data = application.have_done
             form_app.scale.data = application.scale
             form_app.reason_for_joining.data = application.reason_for_joining
             form_app.favorite_ship.data = application.favorite_ship
@@ -93,7 +91,8 @@ def application_view(application_id):
             form_app.most_fun.data = application.most_fun
 
             if request.method == 'POST':
-                HrManager.update_application(about=form_app.about.data,
+                HrManager.update_application(how_long=form.how_long.data,
+                                         have_done=form.have_done.data,
                                          scale=form_app.scale.data,
                                          reason_for_joining=form_app.reason_for_joining.data,
                                          favorite_ship=form_app.favorite_ship.data,
@@ -113,6 +112,64 @@ def application_view(application_id):
                                        form_app=form_app)
 
     return redirect(url_for('recruit.applications'))
+
+
+@blueprint.route("/applications/<application_id>/comment/", methods=['POST'])
+@login_required
+def application_comment_create(application_id):
+    user_id = current_user.get_id()
+    form_comment = HrApplicationCommentForm()
+
+    if current_user.has_role("recruiter") or current_user.has_role("admin"):
+
+        if HrApplication.query.filter_by(id=int(application_id)).first():
+
+            if request.method == 'POST':
+
+                if form_comment.validate_on_submit():
+                    application = HrApplication.query.filter_by(id=int(application_id)).first()
+
+                    HrManager.create_comment(application_id, form_comment.comment.data, user_id)
+
+                    if application.approved_denied == "Pending":
+                        application.approved_denied = "Undecided"
+                        application.save()
+
+                    return redirect(url_for('recruit.application_view', application_id=application_id))
+
+            return redirect(url_for('recruit.application_view', application_id=application_id))
+
+    return redirect(url_for('recruit.applications'))
+
+@blueprint.route("/applications/<application_id>/comment/<comment_id>/<action>", methods=['GET', 'POST'])
+@login_required
+def application_comment_action(application_id, comment_id, action):
+    user_id = current_user.get_id()
+    form_comment = HrApplicationCommentForm()
+
+    if current_user.has_role("recruiter") or current_user.has_role("admin"):
+        if HrApplication.query.filter_by(id=int(application_id)).first():
+            if HrApplicationComment.query.filter_by(id=comment_id).first():
+
+                comment = HrApplicationComment.query.filter_by(id=comment_id).first()
+
+                if str(comment.user_id) == str(user_id) or current_user.has_role("admin"):
+
+                    if request.method == 'POST' and action == "edit":
+                        flash("request method if", category="message")
+                        if form_comment.validate_on_submit():
+                            flash("comment valid", category="message")
+                            comment.comment = form_comment.comment.data
+                            comment.save()
+
+                    elif action == "delete":
+                        comment.delete()
+
+
+            return redirect(url_for('recruit.application_view', application_id=application_id))
+
+    return redirect(url_for('recruit.applications'))
+
 
 @blueprint.route("/applications/<application_id>/<action>", methods=['GET', 'POST'])
 @login_required

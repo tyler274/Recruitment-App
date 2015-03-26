@@ -32,18 +32,19 @@ class HrManager:
         return False
 
     @staticmethod
-    def create_comment(application_id, comment, user_id):
+    def create_comment(application_id, comment_data, user_id):
         comment = HrApplicationComment()
         comment.application_id = application_id
-        comment.comment = comment
+        comment.comment = comment_data
         comment.user_id = user_id
         comment.last_update_time = dt.datetime.utcnow()
         comment.save()
 
     @staticmethod
-    def create_application(about, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, user_id):
+    def create_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, user_id):
         application = HrApplication()
-        application.about = about
+        application.how_long = how_long
+        application.have_done = have_done
         application.scale = scale
         application.reason_for_joining = reason_for_joining
         application.favorite_ship = favorite_ship
@@ -54,10 +55,11 @@ class HrManager:
         application.save()
 
     @staticmethod
-    def update_application(about, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, user_id):
+    def update_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, user_id):
         if HrApplication.query.filter_by(id=application_id).first():
             application = HrApplication.query.filter_by(id=application_id).first()
-            application.about = about
+            application.how_long = how_long
+            application.have_done = have_done
             application.scale = scale
             application.reason_for_joining = reason_for_joining
             application.favorite_ship = favorite_ship
@@ -96,7 +98,7 @@ class HrManager:
                 return "pending"
 
             elif action == "undecided":
-                application.approved_denied = "undecided"
+                application.approved_denied = "Undecided"
                 application.last_user_id = user_id
                 application.last_update_time = dt.datetime.utcnow()
                 application.save()
