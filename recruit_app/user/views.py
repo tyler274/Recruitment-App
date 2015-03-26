@@ -43,9 +43,9 @@ def api_add():
 @blueprint.route("/api_manage", methods=['GET', 'POST'])
 @login_required
 def api_manage():
-    context = {'apikeypairs': EveManager.get_api_key_pairs(current_user.get_id())}
+    api_key_pairs = EveManager.get_api_key_pairs(current_user.get_id())
 
-    return render_template("users/api_manage.html", context=context)
+    return render_template("users/api_manage.html", api_key_pairs=api_key_pairs)
 
 
 @blueprint.route("/api_delete/<api_id>", methods=['GET', 'POST'])

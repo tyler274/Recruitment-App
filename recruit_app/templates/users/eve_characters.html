@@ -3,18 +3,21 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
-<div class="col-lg-12 container">
+<div class=" container-fluid">
         <h1 class="page-header text-center">Characters</h1>
+        <div class="container-fluid">
 
-        <div class="col-lg-12 container">
-
-            {% if authinfo.main_character_id %}
-            {% else %}
-                <div class="alert alert-danger" role="alert">No primary character set</div>
+            {% if not current_user.auth_info[0].main_character_id %}
+                <div class="alert alert-danger" role="alert">
+                    No primary character set. Have you added any API keys?
+                    <a href="{{ url_for('user.api_add') }}">
+                        <button type="button" class="btn btn-success">Add Key</button>
+                    </a>
+                </div>
             {% endif %}
             <div class="row">
                 {% for character in characters %}
-                    <div class="col-lg-6">
+                    <div class="">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="panel-title">
@@ -24,7 +27,7 @@
                                                 {{ character.character_name }}
 
                                                 <a href="{{ url_for('user.eve_main_character_change', character_id=character.character_id) }}">
-                                                    {% if character.character_id|string == authinfo.main_character_id|string %}
+                                                    {% if character.character_id|string == current_user.auth_info[0].main_character_id|string %}
                                                         <button type="button" class="btn btn-default btn-xs">
                                                             Refresh Primary
                                                         </button>

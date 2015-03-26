@@ -1,0 +1,14 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+
+<h1>Change password</h1>
+<form action="{{ url_for_security('change_password') }}" method="POST" name="change_password_form">
+  {{ change_password_form.hidden_tag() }}
+  {{ change_password_form.hidden_tag() }}
+  {{ wtf.quick_form(change_password_form) }}
+</form>
+
+{% endblock %}

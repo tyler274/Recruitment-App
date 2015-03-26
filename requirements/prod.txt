@@ -38,6 +38,9 @@ Flask-Security==1.7.4
 # Caching
 Flask-Cache>=0.13.1
 
+#Mail
+Flask-Mail
+
 # Debug toolbar
 Flask-DebugToolbar==0.9.1
 

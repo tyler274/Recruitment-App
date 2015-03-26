@@ -5,8 +5,13 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="page-header text-center">Personal Application</h1>
-        {% if auth_info.main_character_id %}
+        {% if current_user.auth_info %}
+        {% if current_user.auth_info[0].main_character_id %}
+            {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
             <div class="col-sm-4">
+            {% else %}
+            <div class="">
+            {% endif %}
                 <div class="row">
                     <form class="form-signin">
                         <div class="form-group">
@@ -15,7 +20,9 @@
                                 {% if application.approved_denied == "Pending" %}
                                     <div class="alert alert-warning" role="alert">Pending</div>
                                 {% elif application.approved_denied == "Approved" %}
-                                    <div class="alert alert-success" role="alert">Approved</div>
+                                    <div class="alert alert-success" role="alert">Approved
+                                        <div>Put {{ request.url }} in your in game app and apply</div>
+                                    </div>
                                 {% elif application.approved_denied == "Rejected" %}
                                     <div class="alert alert-danger" role="alert">Rejected</div>
                                 {% endif %}
@@ -26,9 +33,9 @@
                             <label class="control-label  " for="id_extra">Reviewer</label>
 
                             <div class=" ">
-                                {% if application.reviewer_user.auth_info == None %}
-                                    <div class="alert alert-info" role="alert">pending</div>
-                                {% else %}
+                                {% if not application.reviewer_user.auth_info %}
+                                    <div class="alert alert-info" role="alert">Pending</div>
+                                {% elif application.reviewer_user.auth_info %}
                                     <div class="alert alert-info"
                                          role="alert">{{ application.reviewer_user.auth_info[0].main_character }}</div>
                                 {% endif %}
@@ -38,9 +45,9 @@
                             <label class="control-label  " for="id_extra">Last Action</label>
 
                             <div class=" ">
-                                {% if application.last_action_user.auth_info == None %}
-                                    <div class="alert alert-info" role="alert">pending</div>
-                                {% else %}
+                                {% if not application.last_action_user.auth_info %}
+                                    <div class="alert alert-info" role="alert">Pending</div>
+                                {% elif application.reviewer_user.auth_info %}
                                     <div class="alert alert-info"
                                          role="alert">{{ application.last_action_user.auth_info[0].main_character }}</div>
                                 {% endif %}
@@ -51,7 +58,7 @@
                             <label class="control-label" for="id_character_name">User Account</label>
 
                             <div class=" ">
-                                <input class=" form-control" value="{{ application.user.username }}" disabled>
+                                <input class=" form-control" value="{{ application.user.email }}" disabled>
                             </div>
                         </div>
                         <div class="form-group">
@@ -61,22 +68,58 @@
                                 <input class=" form-control" value="{{ application.user.auth_info[0].main_character }}" disabled>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label  " for="id_about">How long have you been playing EVE and what have you done in that time?</label>
+                        {% if application.approved_denied == "Pending" %}
+                            {{ wtf.quick_form(form_app) }}
+                        {% else %}
+                            <div class="form-group">
+                                <label class="control-label  " for="id_about">How long have you been playing EVE and what have you done in that time?</label>
 
-                            <div class=" ">
-                                <textarea class=" form-control" id="id_about" name="about"
-                                          disabled>{{ application.about }}</textarea>
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_about" name="about"
+                                              disabled>{{ application.about }}</textarea>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label  " for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
 
-                            <div class=" ">
-                                <textarea class=" form-control" id="id_extra" name="extra"
-                                          disabled>{{ application.scale }}</textarea>
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_extra" name="extra"
+                                              disabled>{{ application.scale }}</textarea>
+                                </div>
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_extra">Reason for Joining?</label>
+
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_extra" name="extra"
+                                              disabled>{{ application.reason_for_joining }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_extra">What's your favorite ship, why?</label>
+
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_extra" name="extra"
+                                              disabled>{{ application.favorite_ship }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_extra">What's your favorite role to play, why?</label>
+
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_extra" name="extra"
+                                              disabled>{{ application.favorite_role }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label  " for="id_extra">What's the most fun you've ever had in EVE?</label>
+
+                                <div class=" ">
+                                    <textarea class=" form-control" id="id_extra" name="extra"
+                                              disabled>{{ application.most_fun }}</textarea>
+                                </div>
+                            </div>
+                        {% endif %}
 
                         {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
                             <div class="form-group text-center">
@@ -114,85 +157,88 @@
 
             </div>
             {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
-            <div class="col-sm-4">
-                <div class="row">
-                    <label class="control-label  " for="id_extra">Characters</label>
-                    {% for character in characters %}
-                        <div class="container-fluid">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title">
-                                        <div class="row">
-                                            <div class="">
-                                                <div class="text-left col-md-8">
-                                                    {{ character.character_name }}
-                                                </div>
-                                                <div class="col-md-9">
-                                                    <a href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
-                                                        <button type="button" class="btn btn-default btn-xs">
-                                                            Jack Knife
-                                                        </button>
-                                                    </a>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <label class="control-label  " for="id_extra">Characters</label>
+                        {% for character in characters %}
+                            <div class="container-fluid">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <div class="panel-title">
+                                            <div class="row">
+                                                <div class="">
+                                                    <div class="text-left col-md-8">
+                                                        {{ character.character_name }}
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        <a href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                                                            <button type="button" class="btn btn-default btn-xs">
+                                                                Jack Knife
+                                                            </button>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="panel-body">
-                                    <div class="col-lg-5 col-sm-4"><img class=
-                                      "ra-avatar img-responsive" src=
-                                      "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
-                                    </div>
+                                    <div class="panel-body">
+                                        <div class="col-lg-5 col-sm-4"><img class=
+                                          "ra-avatar img-responsive" src=
+                                          "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
+                                        </div>
 
-                                    <div class="col-lg-7">
-                                        <p><strong>Alliance: </strong> {{ character.alliance.alliance_name }} </p>
+                                        <div class="col-lg-7">
+                                            <p><strong>Alliance: </strong> {{ character.alliance.alliance_name }} </p>
 
-                                        <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>
+                                            <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>
 
-                                        <p><strong>Corporation Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
+                                            <p><strong>Corporation Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="row">
-                    <label class="control-label  " for="id_extra">Comments</label>
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                                <h4 class="panel-title">
-                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                       href="#collapseThree" aria-expanded="false"
-                                       aria-controls="collapseThree">
-                                        Comments - {{ comments|length }}
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                                 aria-labelledby="headingThree">
-                                <div class="panel-body">
-                                    {% for comment in comments %}
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading" role="tab" id="">
-                                                <div class="panel-title">
-                                                    {{ comment.user.auth_info[0].main_character }} - {{ comment.last_update_time }}
+                <div class="col-sm-4">
+                    <div class="row">
+                        <label class="control-label  " for="id_extra">Comments</label>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseThree" aria-expanded="false"
+                                           aria-controls="collapseThree">
+                                            Comments - {{ comments|length }}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                                     aria-labelledby="headingThree">
+                                    <div class="panel-body">
+                                        {% for comment in comments %}
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading" role="tab" id="">
+                                                    <div class="panel-title">
+                                                        {{ comment.user.auth_info[0].main_character }} - {{ comment.last_update_time }}
+                                                    </div>
                                                 </div>
+                                                <div class="panel-body">{{ comment.comment }}</div>
                                             </div>
-                                            <div class="panel-body">{{ comment.comment }}</div>
-                                        </div>
-                                    {% endfor %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
 
+        {% else %}
+            <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+        {% endif %}
         {% else %}
             <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
         {% endif %}

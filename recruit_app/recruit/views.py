@@ -8,7 +8,7 @@ from recruit_app.user.eve_api_manager import EveApiManager
 from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, User
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
-from recruit_app.recruit.forms import HrApplicationForm, HRApplicationCommentForm
+from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm
 
 import datetime as dt
 
@@ -33,18 +33,30 @@ def applications():
 @blueprint.route("/applications/create/", methods=['GET', 'POST'])
 @login_required
 def application_create():
+    user_id = current_user.get_id()
     applications = []
     authinfo = []
-
-    form = HrApplicationForm()
-    if HrApplication.query.filter_by(user_id=current_user.get_id()).first():
-        # characters = EveManager.get_characters_by_owner_id(current_user.get_id())
-        applications = HrApplication.query.filter_by(user_id=current_user.get_id()).all()
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())
 
-    return render_template('recruit/applications.html', authinfo=authinfo, applications=applications)
+    form = HrApplicationForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            HrManager.create_application(about=form.data['about'],
+                                         scale=form.data['scale'],
+                                         reason_for_joining=form.data['reason_for_joining'],
+                                         favorite_ship=form.data['favorite_ship'],
+                                         favorite_role=form.data['favorite_role'],
+                                         most_fun=form.data['most_fun'],
+                                         user_id=user_id)
+            flash("Application Created", category='message')
+            return redirect(url_for('recruit.applications'))
+
+    return render_template('recruit/application_create.html',
+                           authinfo=authinfo,
+                           form=form)
 
 
 @blueprint.route("/applications/<application_id>/", methods=['GET', 'POST'])
@@ -53,6 +65,8 @@ def application_view(application_id):
     user_id = current_user.get_id()
     comments = []
     characters = []
+
+    form_app = HrApplicationForm()
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         auth_info = AuthInfoManager.get_or_create(current_user.get_id())
@@ -65,10 +79,10 @@ def application_view(application_id):
 
             comments = HrApplicationComment.query.filter_by(application_id=application_id).all()
 
-            form = HRApplicationCommentForm()
+            form = HrApplicationCommentForm()
             if request.method == 'POST':
                 if form.validate_on_submit():
-                    HrManager.create_comment(application.id, comment, user_id)
+                    HrManager.create_comment(application.id, form.data['comment'], user_id)
 
             return render_template('recruit/application.html',
                                auth_info=auth_info,
@@ -76,18 +90,30 @@ def application_view(application_id):
                                application=application,
                                characters=characters,
                                comments=comments,
-                               form=form)
+                               form=form,
+                               form_app=form_app)
 
     if HrManager.check_if_application_owned_by_user(application_id, user_id):
         if HrApplication.query.filter_by(id=int(application_id)).first():
             application = HrApplication.query.filter_by(id=int(application_id)).first()
+
+            form_app.about.data = application.about
+            form_app.scale.data = application.scale
+            form_app.reason_for_joining.data = application.reason_for_joining
+            form_app.favorite_ship.data = application.favorite_ship
+            form_app.favorite_role.data = application.favorite_role
+            form_app.most_fun.data = application.most_fun
+
+            if request.method == 'POST':
+                pass
 
             return render_template('recruit/application.html',
                                auth_info=auth_info,
                                current_user=current_user,
                                application=application,
                                characters=characters,
-                               comments=comments)
+                               comments=comments,
+                               form_app=form_app)
 
 
     return redirect(url_for('recruit.applications'))
@@ -100,6 +126,8 @@ def application_interact(application_id, action):
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         auth_info = AuthInfoManager.get_or_create(current_user.get_id())
+        if auth_info.main_character_id == None:
+            return redirect(url_for('user.eve_characters'))
 
     if HrApplication.query.filter_by(id=int(application_id)).first():
         application = HrApplication.query.filter_by(id=int(application_id)).first()

@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, SubmitField, SelectMultipleField
+from wtforms import TextField, PasswordField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 from recruit_app.user.models import User
@@ -8,10 +8,9 @@ from recruit_app.user.managers import EveManager
 from recruit_app.user.eve_api_manager import EveApiManager
 
 class HrApplicationForm(Form):
-    main_character = SelectMultipleField("Main Character", choices=[], validators=[DataRequired()])
     about = TextField("How long have you been playing EVE and what have you done in that time?", validators=[DataRequired()])
 
-    scale = SelectMultipleField("On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?", choices=[('1','1'),('2','2'),('3','3'),(
+    scale = SelectField("On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?", choices=[('1','1'),('2','2'),('3','3'),(
                                 '4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10')] , validators=[DataRequired()])
 
     reason_for_joining = TextField("Reason for Joining?", validators=[DataRequired()])
@@ -24,7 +23,7 @@ class HrApplicationForm(Form):
 
     submit = SubmitField(label='Submit')
 
-class HRApplicationCommentForm(Form):
+class HrApplicationCommentForm(Form):
     comment = TextField(label="Comment", validators=[DataRequired()])
 
 

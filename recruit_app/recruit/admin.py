@@ -4,6 +4,8 @@ from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.extensions import user_datastore, db
 from flask_security import current_user
 
+from flask import abort
+
 
 def register_admin_views(admin, db):
     admin.add_view(AuthenticatedModelView(HrApplication, db.session, category='Recruitment'))

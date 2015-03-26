@@ -2,7 +2,9 @@
 import datetime as dt
 
 #from flask_login import UserMixin
-from flask.ext.security import UserMixin, RoleMixin
+from flask_security import UserMixin, RoleMixin
+
+from flask_security.utils import verify_and_update_password
 
 from recruit_app.extensions import bcrypt
 from recruit_app.database import (
@@ -34,25 +36,32 @@ class Role(SurrogatePK, Model, RoleMixin):
 
 class User(SurrogatePK, Model, UserMixin):
     __tablename__ = 'users'
-    username = Column(db.String(80), unique=True, nullable=False)
+
+    username = Column(db.String(80), unique=True, nullable=True)
     email = Column(db.String(80), unique=True, nullable=False)
     #: The hashed password
     password = Column(db.String(128), nullable=True)
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    first_name = Column(db.String(30), nullable=True)
-    last_name = Column(db.String(30), nullable=True)
     active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
+
+    confirmed_at = Column(db.DateTime, nullable=True)
+
+    last_login_at = Column(db.DateTime())
+    current_login_at = Column(db.DateTime())
+    last_login_ip = Column(db.String(100))
+    current_login_ip = Column(db.String(100))
+    login_count = Column(db.Integer)
 
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
 
-    def __init__(self, username, email, password=None, **kwargs):
-        db.Model.__init__(self, username=username, email=email, **kwargs)
-        if password:
-            self.set_password(password)
-        else:
-            self.password = None
+    # def __init__(self, username, email, password=None, **kwargs):
+    #     db.Model.__init__(self, username=username, email=email, **kwargs)
+    #     if password:
+    #         self.set_password(password)
+    #     else:
+    #         self.password = None
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password)
@@ -68,7 +77,7 @@ class User(SurrogatePK, Model, UserMixin):
     #     return '<User({username!r})>'.format(username=self.username)
 
     def __repr__(self):
-        return self.username
+        return '<User({name})>'.format(name=self.email)
 
 
 class AuthInfo(SurrogatePK, Model):
@@ -81,7 +90,7 @@ class AuthInfo(SurrogatePK, Model):
     main_character = relationship('EveCharacter', lazy='subquery', backref=db.backref('auth_info', lazy='dynamic'))
 
     def __repr__(self):
-        return self.main_character.character_name
+        return '<AuthInfo({name})>'.format(name=self.user)
 
 
 class EveCharacter(Model):

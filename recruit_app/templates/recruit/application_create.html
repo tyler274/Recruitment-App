@@ -1,0 +1,22 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container-fluid">
+        {% if current_user.auth_info %}
+            {% if current_user.auth_info[0].main_character_id %}
+                <h1 class="page-header text-center">Create Personal Application</h1>
+                <form action="{{ url_for('recruit.application_create') }}" class="form-signin" role="form" action="" method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ wtf.quick_form(form) }}
+                </form>
+            {% else %}
+                <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+        {% endif %}
+</div>
+
+{% endblock %}

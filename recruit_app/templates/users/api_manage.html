@@ -5,8 +5,7 @@
 {% block content %}
     <div class="col-lg-12">
         <div class="row row-centered">
-            {% if context.apikeypairs %}
-            {% else %}
+            {% if not api_key_pairs %}
                 <div class="alert alert-danger" role="alert">No api keys found</div>
             {% endif %}
             <h1 class="page-header text-center">API Key Management
@@ -24,8 +23,8 @@
                       <th class="text-center">Characters</th>
 	                    <th class="text-center">Action</th>
 	                </tr>
-	                {% if context.apikeypairs %}
-	                  {% for pair in context.apikeypairs %}
+	                {% if api_key_pairs %}
+                        {% for pair in api_key_pairs %}
 	                      <tr>
 	                          <td class="text-center">{{ pair.api_id }}</td>
 	                          <td class="text-center">{{ pair.api_key }}</td>

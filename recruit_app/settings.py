@@ -15,7 +15,25 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SECURITY_PASSWORD_HASH = 'bcrypt'
+    SECURITY_PASSWORD_SALT = "fasc89erek"
+    SECURITY_CONFIRMABLE = True
+    SECURITY_REGISTERABLE = True
+    SECURITY_RECOVERABLE = True
+    SECURITY_CHANGEABLE = True
+    SECURITY_TRACKABLE = True
+
+    SECURITY_REGISTER_USER_TEMPLATE = 'public/register.html'
     SECURITY_LOGIN_USER_TEMPLATE = 'public/login.html'
+    SECURITY_FORGOT_PASSWORD_TEMPLATE = 'public/forgot.html'
+    SECURITY_CHANGE_PASSWORD_TEMPLATE = 'public/change.html'
+    SECURITY_RESET_PASSWORD_TEMPLATE = 'public/reset.html'
+
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = "CynosuralFieldGenerator@gmail.com"
+    MAIL_PASSWORD = "86nb4Tntfxi4Ij"
+
     JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
 
 

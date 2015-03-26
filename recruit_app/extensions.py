@@ -17,6 +17,9 @@ from recruit_app.user.models import User, Role
 security = Security()
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
+# from flask_login import LoginManager
+# login_manager = LoginManager()
+
 from flask_migrate import Migrate
 migrate = Migrate()
 
@@ -35,4 +38,7 @@ rqDashboard = RQDashboard(auth_handler=check_if_admin)
 
 from flask_admin import Admin
 admin = Admin()
+
+from flask_mail import Mail
+mail = Mail()
 

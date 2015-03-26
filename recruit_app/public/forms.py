@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField
+from wtforms import TextField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 
 from recruit_app.user.models import User
@@ -9,6 +9,7 @@ class LoginForm(Form):
     # username = TextField('Username', validators=[DataRequired()])
     email = TextField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField(label='Log In')
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)

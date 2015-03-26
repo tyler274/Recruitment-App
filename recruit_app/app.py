@@ -17,6 +17,7 @@ from recruit_app.extensions import (
     bootstrap,
     rqDashboard,
     admin,
+    mail,
 )
 from recruit_app import public, user, recruit
 from recruit_app.user import admin as user_admin_view
@@ -50,11 +51,12 @@ def register_extensions(app):
     cache.init_app(app)
     db.init_app(app)
     #login_manager.init_app(app)
-    security.init_app(app, user_datastore)
+    security.init_app(app, user_datastore, register_blueprint=True)
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)
     rqDashboard.init_app(app)
     admin.init_app(app)
+    mail.init_app(app)
     migrate.init_app(app, db)
     return None
 

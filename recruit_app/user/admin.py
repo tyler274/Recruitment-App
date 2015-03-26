@@ -1,9 +1,11 @@
 from flask_admin.contrib.sqla import ModelView
 from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo
-from recruit_app.user.models import User, Role, roles_users
+from recruit_app.user.models import User, Role, roles_users, AuthInfo
 
 from recruit_app.extensions import user_datastore, db
 from flask_security import current_user
+
+from flask import abort
 
 
 def register_admin_views(admin, db):
@@ -13,6 +15,7 @@ def register_admin_views(admin, db):
     admin.add_view(AuthenticatedModelView(EveApiKeyPair, db.session, category='EvE'))
     admin.add_view(AuthenticatedModelView(User, db.session, endpoint="users", category='Users'))
     admin.add_view(AuthenticatedModelView(Role, db.session, category='Users'))
+    admin.add_view(AuthenticatedModelView(AuthInfo, db.session, category='Users'))
 
 
 def check_if_admin():

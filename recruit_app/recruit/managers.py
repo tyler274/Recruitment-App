@@ -33,12 +33,24 @@ class HrManager:
 
     @staticmethod
     def create_comment(application_id, comment, user_id):
-        comment = HRApplicationComment()
+        comment = HrApplicationComment()
         comment.application_id = application_id
         comment.user_id = user_id
         comment.comment = comment
         comment.last_update_time = dt.datetime.utcnow()
         comment.save()
+
+    @staticmethod
+    def create_application(about, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, user_id):
+        application = HrApplication()
+        application.about = about
+        application.scale = scale
+        application.reason_for_joining = reason_for_joining
+        application.favorite_ship = favorite_ship
+        application.favorite_role = favorite_role
+        application.most_fun = most_fun
+        application.user_id = user_id
+        application.save()
 
     @staticmethod
     def alter_application(application_id, action, user_id):
@@ -63,7 +75,6 @@ class HrManager:
 
             elif action == "pending":
                 application.approved_denied = "Pending"
-                application.reviewer_user_id = user_id
                 application.last_user_id = user_id
                 application.last_update_time = dt.datetime.utcnow()
                 application.save()
@@ -71,7 +82,6 @@ class HrManager:
 
             elif action == "undecided":
                 application.approved_denied = "undecided"
-                application.reviewer_user_id = user_id
                 application.last_user_id = user_id
                 application.last_update_time = dt.datetime.utcnow()
                 application.save()
