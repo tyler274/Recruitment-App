@@ -29,6 +29,8 @@
                                 <div class="panel panel-success" role="alert">Approved</div>
                             {% elif application.approved_denied == "Rejected" %}
                                 <div class="panel panel-danger" role="alert">Rejected</div>
+                            {% elif application.approved_denied == "Undecided" %}
+                                <div class="panel panel-danger" role="alert">Undecided</div>
                             {% endif %}
                         </td>
                         <td class="text-center">

@@ -75,9 +75,9 @@ class User(SurrogatePK, Model, UserMixin):
 
     # def __repr__(self):
     #     return '<User({username!r})>'.format(username=self.username)
-
     def __repr__(self):
         return '<User({name})>'.format(name=self.email)
+
 
 
 class AuthInfo(SurrogatePK, Model):
