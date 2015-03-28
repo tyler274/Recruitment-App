@@ -8,7 +8,7 @@ from recruit_app.user.eve_api_manager import EveApiManager
 from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, User
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
-from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm
+from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
 
 import datetime as dt
 
@@ -20,8 +20,11 @@ blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
 def applications():
     applications = []
     authinfo = []
+    search_results = []
 
     recruiter_queue = []
+
+    search_form = SearchForm()
 
     if HrApplication.query.filter_by(user_id=current_user.get_id()).first():
         # characters = EveManager.get_characters_by_owner_id(current_user.get_id())
@@ -33,9 +36,18 @@ def applications():
     if current_user.has_role("recruiter") or current_user.has_role("admin"):
         recruiter_queue = HrApplication.query.filter(
             HrApplication.hidden == False,
-            HrApplication.approved_denied == "Pending" or HrApplication.approved_denied == "Undecided").all()
-    
-    return render_template('recruit/applications.html', authinfo=authinfo, applications=applications)
+            (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided") ).all()
+
+    if request.method == 'POST':
+        if search_form.validate_on_submit():
+            search_results = HrApplication.query.whoosh_search(search_form.search.data).all()
+            recruiter_queue = search_results
+
+    return render_template('recruit/applications.html',
+                           applications=applications,
+                           recruiter_queue=recruiter_queue,
+                           search_form=search_form,
+                           search_results=search_results)
 
 
 @blueprint.route("/applications/create/", methods=['GET', 'POST'])
@@ -59,7 +71,9 @@ def application_create():
                                          favorite_ship=form.data['favorite_ship'],
                                          favorite_role=form.data['favorite_role'],
                                          most_fun=form.data['most_fun'],
+                                         main_character_name=current_user.auth_info[0].main_character.character_name,
                                          user_id=user_id)
+
             flash("Application Created", category='message')
             return redirect(url_for('recruit.applications'))
 
@@ -107,6 +121,7 @@ def application_view(application_id):
                                          favorite_role=form_app.favorite_role.data,
                                          most_fun=form_app.most_fun.data,
                                          application_id=application.id,
+                                         main_character_name=current_user.auth_info[0].main_character.character_name,
                                          user_id=user_id)
 
         if HrManager.check_if_application_owned_by_user(application_id, user_id) or current_user.has_role("recruiter") or current_user.has_role("admin"):

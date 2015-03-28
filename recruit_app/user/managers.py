@@ -71,21 +71,30 @@ class EveManager:
 
     @staticmethod
     def create_characters_from_list(chars, user_id, api_id):
+        Errors = []
         for char in chars.result:
 
             if not EveManager.check_if_character_exist(chars.result[char]['id']):
-                EveManager.create_character(chars.result[char]['id'],
+                if EveManager.create_character(chars.result[char]['id'],
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
                                             chars.result[char]['alliance']['id'],
-                                            user_id, api_id)
+                                            user_id, api_id):
+                    pass
+
+                else:
+                    Errors.append("Character Creation")
 
             else:
-                EveManager.update_character(chars.result[char]['id'],
+                if EveManager.update_character(chars.result[char]['id'],
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
                                             chars.result[char]['alliance']['id'],
-                                            user_id, api_id)
+                                            user_id, api_id):
+                    pass
+
+                else:
+                    Errors.append("Character Creation")
 
 
     @staticmethod
@@ -141,6 +150,9 @@ class EveManager:
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.user_id = user_id
             api_pair.save()
+            return True
+        else:
+            return False
 
 
     @staticmethod

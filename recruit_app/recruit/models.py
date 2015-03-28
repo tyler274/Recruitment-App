@@ -15,10 +15,12 @@ import flask_whooshalchemy as whooshalchemy
 
 class HrApplication(SurrogatePK, Model):
     __tablename__ = 'hr_applications'
-    __searchable__ = ['how_long','have_done','reason_for_joining','favorite_ship','most_fun']
+    __searchable__ = ['how_long','have_done','reason_for_joining','favorite_ship','most_fun','main_character_name']
 
     #main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
     #main_character = relationship('EveCharacter', backref='applications')
+
+    main_character_name = Column(db.Text, nullable=True)
 
     how_long = Column(db.Text, nullable=True)
     have_done = Column(db.Text, nullable=True)

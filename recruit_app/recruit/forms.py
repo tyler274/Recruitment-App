@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, SubmitField, SelectField, TextAreaField
+from wtforms import TextField, PasswordField, SubmitField, SelectField, TextAreaField, StringField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 from recruit_app.user.models import User
@@ -29,5 +29,8 @@ class HrApplicationCommentForm(Form):
     comment = TextAreaField(label="Comment", validators=[DataRequired()])
     submit = SubmitField(label='Add Comment')
 
+class SearchForm(Form):
+    search = StringField('search', validators=[DataRequired()])
+    submit = SubmitField(label='Submit')
 
 

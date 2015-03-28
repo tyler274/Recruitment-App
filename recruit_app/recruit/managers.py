@@ -41,7 +41,7 @@ class HrManager:
         comment.save()
 
     @staticmethod
-    def create_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, user_id):
+    def create_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, main_character_name, user_id):
         application = HrApplication()
         application.how_long = how_long
         application.have_done = have_done
@@ -51,11 +51,12 @@ class HrManager:
         application.favorite_role = favorite_role
         application.most_fun = most_fun
         application.user_id = user_id
+        application.main_character_name = main_character_name
         application.last_update_time = dt.datetime.utcnow()
         application.save()
 
     @staticmethod
-    def update_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, user_id):
+    def update_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, main_character_name, user_id):
         if HrApplication.query.filter_by(id=application_id).first():
             application = HrApplication.query.filter_by(id=application_id).first()
             application.how_long = how_long
@@ -66,6 +67,7 @@ class HrManager:
             application.favorite_role = favorite_role
             application.most_fun = most_fun
             application.user_id = user_id
+            application.main_character_name = main_character_name
             application.last_update_time = dt.datetime.utcnow()
             application.save()
 

@@ -25,6 +25,7 @@ from recruit_app.user.models import User, Role
 
 from recruit_app.recruit.models import HrApplication
 from recruit_app.recruit import admin as recruit_admin_view
+from recruit_app.recruit import search as recruit_search
 
 import flask_whooshalchemy as whooshalchemy
 
@@ -74,8 +75,9 @@ def register_admin(admin, db):
 
     return None
 
+
 def register_search(app):
-    whooshalchemy.whoosh_index(app, HrApplication)
+    recruit_search.register_search_models(app)
 
     return None
 

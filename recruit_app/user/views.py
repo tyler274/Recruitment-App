@@ -27,12 +27,18 @@ def api_add():
         characters = EveApiManager.get_characters_from_api(form.data['api_id'],
                                                                form.data['api_key'])
 
-        EveManager.create_api_keypair(form.data['api_id'],
+        if EveManager.create_api_keypair(form.data['api_id'],
                                           form.data['api_key'],
-                                          current_user.get_id())
-        EveManager.create_alliances_from_list(characters)
-        EveManager.create_corporations_from_list(characters)
-        EveManager.create_characters_from_list(characters, current_user.get_id(), form.data['api_id'])
+                                          current_user.get_id()):
+            EveManager.create_alliances_from_list(characters)
+            EveManager.create_corporations_from_list(characters)
+            if EveManager.create_characters_from_list(characters, current_user.get_id(), form.data['api_id']):
+                flash("API key added", category="message")
+            else:
+                flash("Character error, RIP. (contact IT)", category="message")
+        else:
+            flash("API Key already in use", category='message')
+            return render_template("users/api_add.html", form=form)
 
 
         return redirect(url_for('user.api_manage'))
