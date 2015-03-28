@@ -20,6 +20,9 @@ blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
 def applications():
     applications = []
     authinfo = []
+
+    recruiter_queue = []
+
     if HrApplication.query.filter_by(user_id=current_user.get_id()).first():
         # characters = EveManager.get_characters_by_owner_id(current_user.get_id())
         applications = HrApplication.query.filter_by(user_id=current_user.get_id()).all()
@@ -28,8 +31,10 @@ def applications():
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())
 
     if current_user.has_role("recruiter") or current_user.has_role("admin"):
-        applications = HrApplication.query.order_by(HrApplication.id)
-
+        recruiter_queue = HrApplication.query.filter(
+            HrApplication.hidden == False,
+            HrApplication.approved_denied == "Pending" or HrApplication.approved_denied == "Undecided").all()
+    
     return render_template('recruit/applications.html', authinfo=authinfo, applications=applications)
 
 
@@ -94,8 +99,8 @@ def application_view(application_id):
             form_app.most_fun.data = application.most_fun
 
             if request.method == 'POST':
-                HrManager.update_application(how_long=form.how_long.data,
-                                         have_done=form.have_done.data,
+                HrManager.update_application(how_long=form_app.how_long.data,
+                                         have_done=form_app.have_done.data,
                                          scale=form_app.scale.data,
                                          reason_for_joining=form_app.reason_for_joining.data,
                                          favorite_ship=form_app.favorite_ship.data,
@@ -203,10 +208,4 @@ def application_interact(application_id, action):
             return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return redirect(url_for('recruit.applications'))
-
-
-
-
-
-
 

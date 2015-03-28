@@ -41,9 +41,9 @@ class Config(object):
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
-    DEBUG = True
+    DEBUG = False
     SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL')  # TODO: Change me
-    DEBUG_TB_ENABLED = True  # Disable Debug toolbar
+    DEBUG_TB_ENABLED = False  # Disable Debug toolbar
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 
@@ -54,6 +54,7 @@ class DevConfig(Config):
     DB_NAME = 'dev.db'
     # Put the db file in project root
     DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
+    #SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL')  # TODO: Change me
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
     DEBUG_TB_ENABLED = True
