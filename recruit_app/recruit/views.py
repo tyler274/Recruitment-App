@@ -88,6 +88,8 @@ def application_queue(option=None, page=1):
     if option == "all":
         recruiter_queue = query.paginate(page, error_out=False)
 
+    elif option == "history":
+        recruiter_queue = HrApplication.query.order_by(HrApplication.id)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,

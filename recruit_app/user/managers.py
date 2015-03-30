@@ -86,7 +86,7 @@ class EveManager:
                     Errors.append("Character Creation")
 
             else:
-                if EveCharacter.query.filter_by(id=str(chars.result[char]['id'])).first().user_id == None:
+                if EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first().user_id == None:
                     if EveManager.update_character(chars.result[char]['id'],
                                                 chars.result[char]['name'],
                                                 chars.result[char]['corp']['id'],
@@ -98,6 +98,7 @@ class EveManager:
                         Errors.append("Character Creation")
                 else:
                         Errors.append("Character Creation")
+        return Errors
 
 
     @staticmethod
