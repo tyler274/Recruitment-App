@@ -86,15 +86,18 @@ class EveManager:
                     Errors.append("Character Creation")
 
             else:
-                if EveManager.update_character(chars.result[char]['id'],
-                                            chars.result[char]['name'],
-                                            chars.result[char]['corp']['id'],
-                                            chars.result[char]['alliance']['id'],
-                                            user_id, api_id):
-                    pass
+                if EveCharacter.query.filter_by(id=str(chars.result[char]['id'])).first().user_id == None:
+                    if EveManager.update_character(chars.result[char]['id'],
+                                                chars.result[char]['name'],
+                                                chars.result[char]['corp']['id'],
+                                                chars.result[char]['alliance']['id'],
+                                                user_id, api_id):
+                        pass
 
+                    else:
+                        Errors.append("Character Creation")
                 else:
-                    Errors.append("Character Creation")
+                        Errors.append("Character Creation")
 
 
     @staticmethod
@@ -240,7 +243,12 @@ class EveManager:
 
             for character in characters:
                 if unicode(character.user_id) == unicode(user_id):
-                    character.user_id = 0
+                    auth_info = AuthInfo.query.filter_by(main_character_id=character.id).first()
+                    if auth_info:
+                        auth_info.main_character_id = None
+                        auth_info.save()
+
+                    character.user_id = None
                     character.save()
 
 
