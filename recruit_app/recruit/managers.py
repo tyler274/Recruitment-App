@@ -41,7 +41,7 @@ class HrManager:
         comment.save()
 
     @staticmethod
-    def create_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, main_character_name, user_id):
+    def create_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, main_character_name, user_id, characters):
         application = HrApplication()
         application.how_long = how_long
         application.have_done = have_done
@@ -51,12 +51,18 @@ class HrManager:
         application.favorite_role = favorite_role
         application.most_fun = most_fun
         application.user_id = user_id
+
+        for character in characters:
+                eve_character = EveCharacter.query.filter_by(character_id=character).first()
+                application.characters.append(eve_character)
+
         application.main_character_name = main_character_name
         application.last_update_time = dt.datetime.utcnow()
         application.save()
 
+
     @staticmethod
-    def update_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, main_character_name, user_id):
+    def update_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, application_id, main_character_name, user_id, characters):
         if HrApplication.query.filter_by(id=application_id).first():
             application = HrApplication.query.filter_by(id=application_id).first()
             application.how_long = how_long
@@ -67,6 +73,11 @@ class HrManager:
             application.favorite_role = favorite_role
             application.most_fun = most_fun
             application.user_id = user_id
+
+            for character in characters:
+                eve_character = EveCharacter.query.filter_by(character_id=character).first()
+                application.characters.append(eve_character)
+
             application.main_character_name = main_character_name
             application.last_update_time = dt.datetime.utcnow()
             application.save()
@@ -75,6 +86,45 @@ class HrManager:
     def alter_application(application_id, action, user_id):
         if HrApplication.query.filter_by(id=int(application_id)).first():
             application = HrApplication.query.filter_by(id=int(application_id)).first()
+
+            if action == "approve":
+                application.approved_denied = "Approved"
+                application.reviewer_user_id = user_id
+                application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
+                application.save()
+                return "approved"
+
+            elif action == "reject":
+                application.approved_denied = "Rejected"
+                application.reviewer_user_id = user_id
+                application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
+                application.save()
+                return "rejected"
+
+            elif action == "pending":
+                application.approved_denied = "Pending"
+                application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
+                application.save()
+                return "pending"
+
+            elif action == "undecided":
+                application.approved_denied = "Undecided"
+                application.last_user_id = user_id
+                application.last_update_time = dt.datetime.utcnow()
+                application.save()
+                return "undecided"
+
+            elif action == "delete":
+                application.delete()
+                return "deleted"
+
+    @staticmethod
+    def alter_alt_application(alt_application_id, action, user_id):
+        if HrAltApplication.query.filter_by(id=int(alt_application_id)).first():
+            alt_application = HrAltApplication.query.filter_by(id=int(alt_application_id)).first()
 
             if action == "approve":
                 application.approved_denied = "Approved"

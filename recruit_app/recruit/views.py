@@ -10,6 +10,8 @@ from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
 
+from flask_sqlalchemy import Pagination
+
 import datetime as dt
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
@@ -34,9 +36,12 @@ def applications():
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())
 
     if current_user.has_role("recruiter") or current_user.has_role("admin"):
-        recruiter_queue = HrApplication.query.filter(
-            HrApplication.hidden == False,
-            (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided") ).all()
+        # recruiter_queue = HrApplication.query.filter(
+        #     HrApplication.hidden == False,
+        #     (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided") ).all()
+        query = HrApplication.query.filter(HrApplication.hidden == False,
+                                           (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided"))
+        recruiter_queue = query.paginate(1, 3, False)
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
@@ -50,17 +55,63 @@ def applications():
                            search_results=search_results)
 
 
+@blueprint.route("/application_queue/", methods=['GET', 'POST'])
+@blueprint.route("/application_queue/<option>/", methods=['GET', 'POST'])
+@blueprint.route("/application_queue/<int:page>/", methods=['GET', 'POST'])
+@login_required
+@roles_accepted('admin', 'recruiter')
+def application_queue(option=None, page=1):
+    applications = []
+    authinfo = []
+    search_results = []
+
+    recruiter_queue = []
+
+    search_form = SearchForm()
+
+    if AuthInfoManager.get_or_create(current_user.get_id()):
+        authinfo = AuthInfoManager.get_or_create(current_user.get_id())
+
+    # recruiter_queue = HrApplication.query.filter(
+    #     HrApplication.hidden == False,
+    #     (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided") ).all()
+    query = HrApplication.query.filter(HrApplication.hidden == False,
+                                       (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided")).order_by(HrApplication.id)
+    recruiter_queue = query.paginate(page, 5, False)
+
+
+    if request.method == 'POST':
+        if search_form.validate_on_submit():
+            search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
+            recruiter_queue = search_results.paginate(page, 5, False)
+
+    if option == "all":
+        recruiter_queue = query.paginate(page, error_out=False)
+
+
+    return render_template('recruit/application_queue.html',
+                           recruiter_queue=recruiter_queue,
+                           search_form=search_form,
+                           search_results=search_results)
+
+
 @blueprint.route("/applications/create/", methods=['GET', 'POST'])
 @login_required
 def application_create():
     user_id = current_user.get_id()
     applications = []
     authinfo = []
+    character_choices = []
 
     if AuthInfoManager.get_or_create(current_user.get_id()):
         authinfo = AuthInfoManager.get_or_create(current_user.get_id())
 
     form = HrApplicationForm()
+
+    for character in EveCharacter.query.filter_by(user_id=user_id).all():
+        character_choices = character_choices + [(character.character_id, character.character_name)]
+
+    form.characters.choices = character_choices
 
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -72,7 +123,8 @@ def application_create():
                                          favorite_role=form.data['favorite_role'],
                                          most_fun=form.data['most_fun'],
                                          main_character_name=current_user.auth_info[0].main_character.character_name,
-                                         user_id=user_id)
+                                         user_id=user_id,
+                                         characters=form.characters.data)
 
             flash("Application Created", category='message')
             return redirect(url_for('recruit.applications'))
@@ -103,26 +155,31 @@ def application_view(application_id):
 
             comments = HrApplicationComment.query.filter_by(application_id=application_id).all()
 
-        if HrManager.check_if_application_owned_by_user(application_id, user_id):
-            form_app.how_long.data = application.how_long
-            form_app.have_done.data = application.have_done
-            form_app.scale.data = application.scale
-            form_app.reason_for_joining.data = application.reason_for_joining
-            form_app.favorite_ship.data = application.favorite_ship
-            form_app.favorite_role.data = application.favorite_role
-            form_app.most_fun.data = application.most_fun
-
-            if request.method == 'POST':
-                HrManager.update_application(how_long=form_app.how_long.data,
-                                         have_done=form_app.have_done.data,
-                                         scale=form_app.scale.data,
-                                         reason_for_joining=form_app.reason_for_joining.data,
-                                         favorite_ship=form_app.favorite_ship.data,
-                                         favorite_role=form_app.favorite_role.data,
-                                         most_fun=form_app.most_fun.data,
-                                         application_id=application.id,
-                                         main_character_name=current_user.auth_info[0].main_character.character_name,
-                                         user_id=user_id)
+        # if HrManager.check_if_application_owned_by_user(application_id, user_id):
+        #     form_app.how_long.data = application.how_long
+        #     form_app.have_done.data = application.have_done
+        #     form_app.scale.data = application.scale
+        #     form_app.reason_for_joining.data = application.reason_for_joining
+        #     form_app.favorite_ship.data = application.favorite_ship
+        #     form_app.favorite_role.data = application.favorite_role
+        #     form_app.most_fun.data = application.most_fun
+        #     for character in EveCharacter.query.filter_by(user_id=application.user_id).all():
+        #          character_choices = character_choices + [(character.character_id, character.character_name)]
+        #
+        #     form_app.characters.data = application.characters
+        #     form_app.characters.choices = character_choices
+        #
+        #     if request.method == 'POST':
+        #         HrManager.update_application(how_long=form_app.how_long.data,
+        #                                  have_done=form_app.have_done.data,
+        #                                  scale=form_app.scale.data,
+        #                                  reason_for_joining=form_app.reason_for_joining.data,
+        #                                  favorite_ship=form_app.favorite_ship.data,
+        #                                  favorite_role=form_app.favorite_role.data,
+        #                                  most_fun=form_app.most_fun.data,
+        #                                  application_id=application.id,
+        #                                  main_character_name=current_user.auth_info[0].main_character.character_name,
+        #                                  user_id=user_id)
 
         if HrManager.check_if_application_owned_by_user(application_id, user_id) or current_user.has_role("recruiter") or current_user.has_role("admin"):
             return render_template('recruit/application.html',
@@ -187,7 +244,6 @@ def application_comment_action(application_id, comment_id, action):
 
                     elif action == "delete":
                         comment.delete()
-
 
             return redirect(url_for('recruit.application_view', application_id=application_id))
 

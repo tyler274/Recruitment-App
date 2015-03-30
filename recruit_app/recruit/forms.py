@@ -1,5 +1,6 @@
-from flask_wtf import Form
-from wtforms import TextField, PasswordField, SubmitField, SelectField, TextAreaField, StringField
+from flask_wtf import Form, RecaptchaField
+from wtforms import TextField, PasswordField,\
+    SubmitField, SelectField, TextAreaField, StringField, SelectMultipleField, widgets, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 from recruit_app.user.models import User
@@ -7,7 +8,15 @@ from recruit_app.user.models import User
 from recruit_app.user.managers import EveManager
 from recruit_app.user.eve_api_manager import EveApiManager
 
+
 class HrApplicationForm(Form):
+
+    characters = SelectMultipleField(label="Characters which are applying", validators=[DataRequired()],
+                                     option_widget=widgets.CheckboxInput(),
+                                     widget=widgets.ListWidget(prefix_label=False))
+
+    alt_app = BooleanField(label="Is this an application for an alt?, leave unchecked if you're not sure")
+
     how_long = TextAreaField("How long have you been playing EVE?", validators=[DataRequired()])
 
     have_done = TextAreaField("What have you done in that time?", validators=[DataRequired()])
@@ -23,14 +32,17 @@ class HrApplicationForm(Form):
 
     most_fun = TextAreaField("What's the most fun you've ever had in EVE?", validators=[DataRequired()])
 
+    recaptcha = RecaptchaField()
+
     submit = SubmitField(label='Submit')
+
 
 class HrApplicationCommentForm(Form):
     comment = TextAreaField(label="Comment", validators=[DataRequired()])
     submit = SubmitField(label='Add Comment')
 
 class SearchForm(Form):
-    search = StringField('search', validators=[DataRequired()])
+    search = StringField('Search')
     submit = SubmitField(label='Submit')
 
 

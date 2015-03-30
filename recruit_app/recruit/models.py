@@ -13,6 +13,12 @@ from recruit_app.database import (
 
 import flask_whooshalchemy as whooshalchemy
 
+
+character_apps = db.Table('app_characters',
+        db.Column('app_id', db.Integer(), db.ForeignKey('hr_applications.id')),
+        db.Column('character_id', db.String(), db.ForeignKey('characters.character_id')))
+
+
 class HrApplication(SurrogatePK, Model):
     __tablename__ = 'hr_applications'
     __searchable__ = ['how_long','have_done','reason_for_joining','favorite_ship','most_fun','main_character_name']
@@ -21,6 +27,11 @@ class HrApplication(SurrogatePK, Model):
     #main_character = relationship('EveCharacter', backref='applications')
 
     main_character_name = Column(db.Text, nullable=True)
+
+    alt_application = Column(db.Boolean, default=False)
+
+    characters = db.relationship('EveCharacter', secondary=character_apps,
+                            backref=db.backref('alt_apps', lazy='dynamic'))
 
     how_long = Column(db.Text, nullable=True)
     have_done = Column(db.Text, nullable=True)
@@ -49,6 +60,8 @@ class HrApplication(SurrogatePK, Model):
     #     return self.user.auth_info + " - Application"
     def __repr__(self):
         return '<Application %r>' % (self.user.auth_info)
+
+
 
 class HrApplicationComment(SurrogatePK, Model):
     __tablename__ = 'hr_comments'

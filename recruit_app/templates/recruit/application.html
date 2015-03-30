@@ -64,73 +64,76 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label" for="id_character_name">Characters Applying</label>
+                            <div class=" ">
+                                {% for character in application.characters %}
+                                    <input class="form-control" value="{{ character.character_name }}" disabled>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label" for="id_character_name">Main Character Name</label>
 
                             <div class=" ">
-                                <input class=" form-control" value="{{ application.user.auth_info[0].main_character }}" disabled>
+                                <input class=" form-control" value="{{ application.main_character_name }}" disabled>
                             </div>
                         </div>
-                        {% if application.approved_denied == "Pending" and application.user_id|int == current_user.get_id()|int %}
-                            {{ wtf.quick_form(form_app) }}
-                        {% else  %}
-                            <div class="form-group">
-                                <label class="control-label  " for="id_about">How long have you been playing EVE?</label>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_about">How long have you been playing EVE?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_about" name="about"
-                                              disabled>{{ application.how_long }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.how_long }}</textarea>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_about">What have you done in that time?</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_about">What have you done in that time?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_about" name="about"
-                                              disabled>{{ application.have_done }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.have_done }}</textarea>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_extra" name="extra"
-                                              disabled>{{ application.scale }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_extra" name="extra"
+                                          disabled>{{ application.scale }}</textarea>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_extra">Reason for Joining?</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">Reason for Joining?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_extra" name="extra"
-                                              disabled>{{ application.reason_for_joining }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_extra" name="extra"
+                                          disabled>{{ application.reason_for_joining }}</textarea>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_extra">What's your favorite ship, why?</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">What's your favorite ship, why?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_extra" name="extra"
-                                              disabled>{{ application.favorite_ship }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_extra" name="extra"
+                                          disabled>{{ application.favorite_ship }}</textarea>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_extra">What's your favorite role to play, why?</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">What's your favorite role to play, why?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_extra" name="extra"
-                                              disabled>{{ application.favorite_role }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_extra" name="extra"
+                                          disabled>{{ application.favorite_role }}</textarea>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label  " for="id_extra">What's the most fun you've ever had in EVE?</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  " for="id_extra">What's the most fun you've ever had in EVE?</label>
 
-                                <div class=" ">
-                                    <textarea class=" form-control" id="id_extra" name="extra"
-                                              disabled>{{ application.most_fun }}</textarea>
-                                </div>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_extra" name="extra"
+                                          disabled>{{ application.most_fun }}</textarea>
                             </div>
-                        {% endif %}
-
+                        </div>
                         {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
                             <div class="form-group text-center">
                                 <label class="control-label text-center" for="id_extra">Actions</label>

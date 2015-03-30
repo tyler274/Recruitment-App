@@ -9,7 +9,28 @@
                 <h1 class="page-header text-center">Create Personal Application</h1>
                 <form action="{{ url_for('recruit.application_create') }}" class="form-signin" role="form" action="" method="POST">
                     {{ form.hidden_tag() }}
-                    {{ wtf.quick_form(form) }}
+                    <div class="container-fluid">
+                        <dt>{{ form.characters.label }}
+                        <dd>{{ form.characters()|safe }}
+                          {% if form.characters.errors %}
+                            <ul class=errors>
+                            {% for error in form.characters.errors %}
+                              <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </dd>
+                    </div>
+                    {{ wtf.form_field(form.alt_app) }}
+                    {{ wtf.form_field(form.how_long) }}
+                    {{ wtf.form_field(form.have_done) }}
+                    {{ wtf.form_field(form.scale) }}
+                    {{ wtf.form_field(form.reason_for_joining) }}
+                    {{ wtf.form_field(form.favorite_ship) }}
+                    {{ wtf.form_field(form.favorite_role) }}
+                    {{ wtf.form_field(form.most_fun) }}
+                    {{ wtf.form_field(form.recaptcha) }}
+                    {{ wtf.form_field(form.submit) }}
                 </form>
             {% else %}
                 <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>

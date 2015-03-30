@@ -1,0 +1,63 @@
+
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+
+{% block content %}
+<div class="container-fluid">
+    {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+        <div class="container-fluid">
+            <h1 class="page-header text-center">Application Queue
+            </h1>
+            <div class="col-sm-6">
+                    {{ search_form.hidden_tag() }}
+                    {{ wtf.quick_form(search_form, action=url_for('recruit.application_queue')) }}
+            </div>
+            <div class="container-fluid">
+                {% if current_user.auth_info[0].main_character %}
+                    {{ render_pagination(recruiter_queue) }}
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="text-center">Character</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                        {% for queue in recruiter_queue.items %}
+                            <tr>
+                                <td class="text-center">{{ queue.user.auth_info[0].main_character }}</td>
+                                <td class="text-center">
+                                    {% if queue.approved_denied == "Pending" %}
+                                        <div class="panel panel-warning" role="alert">Pending</div>
+                                    {% elif queue.approved_denied == "Approved" %}
+                                        <div class="panel panel-success" role="alert">Approved</div>
+                                    {% elif queue.approved_denied == "Rejected" %}
+                                        <div class="panel panel-danger" role="alert">Rejected</div>
+                                    {% elif queue.approved_denied == "Undecided" %}
+                                        <div class="panel panel-danger" role="alert">Undecided</div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
+                                        <button type="button" class="btn btn-primary"><span
+                                                class="glyphicon glyphicon-eye-open"></span></button>
+                                    </a>
+
+                                    {% if ( queue.approved_denied == "Pending" and (queue.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
+                                        <a href="{{ url_for('recruit.application_interact', application_id=queue.id, action="delete") }}">
+                                            <button type="button" class="btn btn-danger"><span
+                                                    class="glyphicon glyphicon-remove"></span></button>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
