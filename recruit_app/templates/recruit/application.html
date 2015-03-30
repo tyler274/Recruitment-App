@@ -51,7 +51,7 @@
                                     <div class="alert alert-info" role="alert">Pending</div>
                                 {% elif application.reviewer_user.auth_info %}
                                     <div class="alert alert-info"
-                                         role="alert">{{ application.last_action_user.auth_info[0].main_character }}</div>
+                                         role="alert">{{ application.last_action_user.auth_info[0].main_character.character_name }}</div>
                                 {% endif %}
                             </div>
                         </div>
