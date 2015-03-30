@@ -89,7 +89,7 @@ def application_queue(option=None, page=1):
         recruiter_queue = query.paginate(page, error_out=False)
 
     elif option == "history":
-        recruiter_queue = HrApplication.query.order_by(HrApplication.id)
+        recruiter_queue = HrApplication.query.paginate(page, error_out=False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
