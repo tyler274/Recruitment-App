@@ -244,7 +244,7 @@ class EveManager:
 
             for character in characters:
                 if unicode(character.user_id) == unicode(user_id):
-                    auth_info = AuthInfo.query.filter_by(main_character_id=character.id).first()
+                    auth_info = AuthInfo.query.filter_by(main_character_id=character.character_id).first()
                     if auth_info:
                         auth_info.main_character_id = None
                         auth_info.save()
