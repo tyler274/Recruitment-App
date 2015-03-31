@@ -1,9 +1,13 @@
-from flask_wtf import Form
+from flask_wtf import Form, RecaptchaField
+from flask import request
 from wtforms import TextField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 
 from recruit_app.user.models import User
 from recruit_app.extensions import user_datastore
+
+from flask_security.forms import ConfirmRegisterForm, RegisterForm
+
 
 class LoginForm(Form):
     # username = TextField('Username', validators=[DataRequired()])
@@ -34,3 +38,11 @@ class LoginForm(Form):
             self.username.errors.append('User not activated')
             return False
         return True
+
+
+class ConfirmRegisterFormRecaptcha(ConfirmRegisterForm):
+    recaptcha = RecaptchaField()
+
+    def __init__(self, *args, **kwargs):
+        super(ConfirmRegisterForm, self).__init__(*args, **kwargs)
+

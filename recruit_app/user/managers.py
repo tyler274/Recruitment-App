@@ -279,7 +279,7 @@ class EveManager:
         return None
 
     @staticmethod
-    def get_character_alliance_id_by_id(char_id):
+    def get_character_alliance_id_by_character_id(char_id):
         if EveCharacter.query.filter_by(character_id=char_id).all():
             return EveCharacter.query.filter_by(character_id=char_id).first().alliance_id
 
@@ -345,3 +345,11 @@ class AuthInfoManager:
             authinfo = AuthInfoManager.get_or_create(user_id)
             authinfo.main_character_id = char_id
             authinfo.save()
+
+    @staticmethod
+    def create_role_pair(role_name):
+        pass
+
+    @staticmethod
+    def check_if_role_leader(user):
+        pass

@@ -39,6 +39,7 @@ class Config(object):
     RECAPTCHA_PARAMETERS = {'hl': 'zh', 'render': 'explicit'}
     RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
+    RECAPTCHA_USE_SSL = True
     RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 

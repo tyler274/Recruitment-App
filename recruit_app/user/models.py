@@ -34,6 +34,20 @@ class Role(SurrogatePK, Model, RoleMixin):
         return '<Role({name})>'.format(name=self.name)
 
 
+class RolePair(SurrogatePK, Model):
+    __tablename__ = 'role_pair'
+    member_role_id = ReferenceCol('roles', nullable=True)
+    leader_role_id = ReferenceCol('roles', nullable=True)
+    name = Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+    member_role = relationship('Role', foreign_keys=[member_role_id], backref='member_pairs')
+    reviewer_user = relationship('Role', foreign_keys=[leader_role_id], backref='leader_pairs')
+
+    def __repr__(self):
+        return '<RolePair({name})>'.format(name=self.name)
+
+
 class User(SurrogatePK, Model, UserMixin):
     __tablename__ = 'users'
 

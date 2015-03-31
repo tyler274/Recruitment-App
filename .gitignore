@@ -68,3 +68,4 @@ local_settings.py
 
 *.db
 migrations/
+.idea/
