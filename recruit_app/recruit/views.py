@@ -104,7 +104,7 @@ def application_view(application_id):
     form_app = HrApplicationForm()
     form_comment = HrApplicationCommentForm()
 
-    application = HrApplication.query.filter_by(id=int(application_id)).first()
+    application = HrApplication.query.filter_by(id=application_id).first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin"):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()

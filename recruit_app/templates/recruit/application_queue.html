@@ -15,7 +15,21 @@
                     {{ wtf.quick_form(search_form, action=url_for('recruit.application_queue')) }}
                 </div>
                 <div class="container-fluid">
+                    <div class="col-sm-5">
+                    <a href="{{ url_for('recruit.application_queue', option="all") }}">
+                        <button type="button" class="btn btn-danger">
+                            List All
+                        </button>
+                    </a>
+                    <a href="{{ url_for('recruit.application_queue', option="history") }}">
+                        <button type="button" class="btn btn-danger">
+                            History
+                        </button>
+                    </a>
+                    </div>
+                    <div class="col-sm-5">
                     {{ render_pagination(recruiter_queue) }}
+                    </div>
                     <table class="table table-bordered">
                         <tr>
                             <th class="text-center">Character</th>
