@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired
 from recruit_app.user.models import User
 from recruit_app.extensions import user_datastore
 
-from flask_security.forms import ConfirmRegisterForm, RegisterForm
+from flask_security.forms import ConfirmRegisterForm, PasswordConfirmFormMixin
 
 
 class LoginForm(Form):
@@ -40,7 +40,7 @@ class LoginForm(Form):
         return True
 
 
-class ConfirmRegisterFormRecaptcha(ConfirmRegisterForm):
+class ConfirmRegisterFormRecaptcha(ConfirmRegisterForm, PasswordConfirmFormMixin):
     recaptcha = RecaptchaField()
 
     def __init__(self, *args, **kwargs):
