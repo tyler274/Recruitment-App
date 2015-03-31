@@ -38,7 +38,7 @@ def home():
     #         return redirect(redirect_url)
     #     else:
     #         flash_errors(form)
-    
+
     return render_template("public/home.html", login_user_form=form)
 
 @blueprint.route("/login/", methods=["GET", "POST"])

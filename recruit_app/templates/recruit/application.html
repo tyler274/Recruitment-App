@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">Reviewer</label>
+                            <label class="control-label" for="id_extra">Reviewer</label>
 
                             <div class=" ">
                                 {% if not application.reviewer_user.auth_info %}
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">Last Action</label>
+                            <label class="control-label" for="id_extra">Last Action</label>
 
                             <div class=" ">
                                 {% if not application.last_action_user.auth_info %}
@@ -59,6 +59,13 @@
                                         {{ application.last_action_user.auth_info[0].main_character.character_name }}
                                     </div>
                                 {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_character_name">Is this an application for an alt?</label>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.alt_application }}</textarea>
                             </div>
                         </div>
 
@@ -81,11 +88,11 @@
                             <label class="control-label" for="id_character_name">Main Character Name</label>
 
                             <div class=" ">
-                                <input class=" form-control" value="{{ application.main_character_name }}" disabled>
+                                <input class="form-control" value="{{ application.main_character_name }}" disabled>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_about">How long have you been playing EVE?</label>
+                            <label class="control-label" for="id_about">How long have you been playing EVE?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_about" name="about"
@@ -93,7 +100,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_about">What have you done in that time?</label>
+                            <label class="control-label" for="id_about">What have you done in that time?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_about" name="about"
@@ -101,7 +108,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
+                            <label class="control-label" for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_extra" name="extra"
@@ -109,7 +116,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">Reason for Joining?</label>
+                            <label class="control-label" for="id_extra">Reason for Joining?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_extra" name="extra"
@@ -117,7 +124,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">What's your favorite ship, why?</label>
+                            <label class="control-label" for="id_extra">What's your favorite ship, why?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_extra" name="extra"
@@ -125,7 +132,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">What's your favorite role to play, why?</label>
+                            <label class="control-label" for="id_extra">What's your favorite role to play, why?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_extra" name="extra"
