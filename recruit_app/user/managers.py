@@ -67,11 +67,14 @@ class EveManager:
             eve_char.user_id = user_id
             eve_char.api_id = api_id
             eve_char.save()
+            return True
+        return False
 
 
     @staticmethod
-    def create_characters_from_list(chars, user_id, api_id):
-        Errors = []
+    def create_characters_from_list(chars, user, api_id):
+        errors = []
+
         for char in chars.result:
 
             if not EveManager.check_if_character_exist(chars.result[char]['id']):
@@ -79,35 +82,39 @@ class EveManager:
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
                                             chars.result[char]['alliance']['id'],
-                                            user_id, api_id):
+                                            user.id, api_id):
                     pass
 
                 else:
-                    Errors.append("Character Creation")
+                    errors.append("Character Creation on" + chars.result[char]['name'] + "failed")
 
             else:
-                if EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first().user_id == None:
+                if EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first().user_id is None:
                     if EveManager.update_character(chars.result[char]['id'],
                                                 chars.result[char]['name'],
                                                 chars.result[char]['corp']['id'],
                                                 chars.result[char]['alliance']['id'],
-                                                user_id, api_id):
+                                                user.id, api_id):
                         pass
 
                     else:
-                        Errors.append("Character Creation")
+                        errors.append("Character Creation/Update on " + chars.result[char]['name'] + "failed")
                 else:
-                        Errors.append("Character Creation")
-        return Errors
+                        errors.append("Character " + chars.result[char]['name'] + "in use")
+        return errors
 
 
     @staticmethod
-    def create_corporations_from_list(characters):
+    def create_corporations_from_character_list(characters):
         for character in characters.result:
             if not EveManager.check_if_corporation_exists_by_id(characters.result[character]['corp']['id']):
-                corpinfo = EveApiManager.get_corporation_information(characters.result[character]['corp']['id'])
-                if corpinfo:
-                    EveManager.create_corporation_info(corp_id=corpinfo['id'], corp_name=corpinfo['name'], corp_ticker=corpinfo['ticker'], corp_member_count=corpinfo['members']['current'], alliance_id=corpinfo['alliance']['id'])
+                corp_info = EveApiManager.get_corporation_information(characters.result[character]['corp']['id'])
+                if corp_info:
+                    EveManager.create_corporation_info(corp_id=corp_info['id'],
+                                                       corp_name=corp_info['name'],
+                                                       corp_ticker=corp_info['ticker'],
+                                                       corp_member_count=corp_info['members']['current'],
+                                                       alliance_id=corp_info['alliance']['id'])
 
 
     @staticmethod
@@ -118,13 +125,17 @@ class EveManager:
                     alliance_info = EveApiManager.get_alliance_information(characters.result[character]['alliance']['id'])
                     # print alliance_info
                     if alliance_info:
-                        EveManager.create_alliance_info(alliance_id=alliance_info['id'], alliance_name=alliance_info['name'], alliance_ticker=alliance_info['ticker'], alliance_executor_corp_id=alliance_info['executor_id'],alliance_member_count=alliance_info['member_count'])
+                        EveManager.create_alliance_info(alliance_id=alliance_info['id'],
+                                                        alliance_name=alliance_info['name'],
+                                                        alliance_ticker=alliance_info['ticker'],
+                                                        alliance_executor_corp_id=alliance_info['executor_id'],
+                                                        alliance_member_count=alliance_info['member_count'])
 
 
     @staticmethod
     def update_characters_from_list(characters, user_id, api_id):
         EveManager.create_alliances_from_list(characters)
-        EveManager.create_corporations_from_list(characters)
+        EveManager.create_corporations_from_character_list(characters)
         EveManager.create_characters_from_list(characters, user_id, api_id)
 
         for character in characters.result:
@@ -162,14 +173,18 @@ class EveManager:
     @staticmethod
     def update_api_keypair(api_id, api_key):
         # print "api update"
-        if EveApiKeyPair.query.filter_by(api_id=api_id).first():
-            api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+        api_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+        if api_pair:
+
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
+
             EveManager.update_characters_from_list(characters=characters,
                                                    user_id=api_pair.user_id,
                                                    api_id=api_pair.api_id)
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
+            return True
+        return False
 
 
     @staticmethod
@@ -217,9 +232,8 @@ class EveManager:
             corp_info.save()
 
     @staticmethod
-    def get_api_key_pairs(user_id):
-        if EveApiKeyPair.query.filter_by(user_id=user_id).all():
-            return EveApiKeyPair.query.filter_by(user_id=user_id).all()
+    def get_api_key_pairs(user):
+        return EveApiKeyPair.query.filter_by(user_id=user.id).all()
 
     @staticmethod
     def check_if_api_key_pair_exist(api_id):
@@ -237,13 +251,13 @@ class EveManager:
                 apikeypair.delete()
 
     @staticmethod
-    def delete_characters_by_api_id(api_id, user_id):
-        if EveCharacter.query.filter_by(api_id=api_id).first():
+    def delete_characters_by_api_id(api_id, user):
+        characters = EveCharacter.query.filter_by(api_id=api_id).all()
+        if characters:
             # Check that its owned by our user_id
-            characters = EveCharacter.query.filter_by(api_id=api_id).all()
 
             for character in characters:
-                if unicode(character.user_id) == unicode(user_id):
+                if unicode(character.user.id) == unicode(user.id):
                     auth_info = AuthInfo.query.filter_by(main_character_id=character.character_id).first()
                     if auth_info:
                         auth_info.main_character_id = None
@@ -261,10 +275,8 @@ class EveManager:
 
 
     @staticmethod
-    def get_characters_by_owner_id(user_id):
-        if EveCharacter.query.filter_by(user_id=user_id).all():
-            return EveCharacter.query.filter_by(user_id=user_id).all()
-        return None
+    def get_characters_by_owner(user):
+        return EveCharacter.query.filter_by(user_id=user.id).all()
 
     @staticmethod
     def get_character_by_character_name(character_name):
@@ -329,22 +341,22 @@ class AuthInfoManager:
         pass
 
     @staticmethod
-    def get_or_create(user_id):
-        if AuthInfo.query.filter_by(user_id=user_id).all():
-            return AuthInfo.query.filter_by(user_id=user_id).first()
+    def get_or_create(user):
+        auth_info = AuthInfo.query.filter_by(user_id=user.id).first()
+        if auth_info:
+            return auth_info
         else:
             # We have to create
-            authinfo = AuthInfo()
-            authinfo.user_id = user_id
-            authinfo.save()
-            return authinfo
+            auth_info = AuthInfo()
+            auth_info.user_id = user.id
+            auth_info.save()
+            return auth_info
 
     @staticmethod
-    def update_main_character_id(char_id, user_id):
-        if User.query.filter_by(id=user_id).all():
-            authinfo = AuthInfoManager.get_or_create(user_id)
-            authinfo.main_character_id = char_id
-            authinfo.save()
+    def update_main_character_id(char_id, user):
+        auth_info = AuthInfoManager.get_or_create(user)
+        auth_info.main_character_id = char_id
+        auth_info.save()
 
     @staticmethod
     def create_role_pair(role_name):

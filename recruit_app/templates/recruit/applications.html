@@ -1,9 +1,11 @@
 
 {% extends "layout.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% from "bootstrap/pagination.html" import render_pagination %}
 
 {% block content %}
 <div class="container-fluid">
+    {% if current_user.auth_info[0].main_character %}
     <div class="container-fluid">
         <h1 class="page-header text-center">Personal Applications
             <div class="text-right">
@@ -13,48 +15,48 @@
             </div>
         </h1>
         <div class="container-fluid">
-            {% if current_user.auth_info[0].main_character %}
-                <table class="table table-bordered">
+            {{ render_pagination(personal_applications) }}
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Character</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                {% for application in personal_applications.items %}
                     <tr>
-                        <th class="text-center">Character</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                    {% for application in applications %}
-                        <tr>
-                            <td class="text-center">{{ application.user.auth_info[0].main_character }}</td>
-                            <td class="text-center">
-                                {% if application.approved_denied == "Pending" %}
-                                    <div class="panel panel-warning" role="alert">Pending</div>
-                                {% elif application.approved_denied == "Approved" %}
-                                    <div class="panel panel-success" role="alert">Approved</div>
-                                {% elif application.approved_denied == "Rejected" %}
-                                    <div class="panel panel-danger" role="alert">Rejected</div>
-                                {% elif application.approved_denied == "Undecided" %}
-                                    <div class="panel panel-danger" role="alert">In Progress</div>
-                                {% endif %}
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ url_for('recruit.application_view', application_id=application.id) }}">
-                                    <button type="button" class="btn btn-primary"><span
-                                            class="glyphicon glyphicon-eye-open"></span></button>
-                                </a>
+                        <td class="text-center">{{ application.user.auth_info[0].main_character }}</td>
+                        <td class="text-center">
+                            {% if application.approved_denied == "Pending" %}
+                                <div class="panel panel-warning" role="alert">Pending</div>
+                            {% elif application.approved_denied == "Approved" %}
+                                <div class="panel panel-success" role="alert">Approved</div>
+                            {% elif application.approved_denied == "Rejected" %}
+                                <div class="panel panel-danger" role="alert">Rejected</div>
+                            {% elif application.approved_denied == "Undecided" %}
+                                <div class="panel panel-danger" role="alert">In Progress</div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ url_for('recruit.application_view', application_id=application.id) }}">
+                                <button type="button" class="btn btn-primary"><span
+                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            </a>
 
-                                {% if ( application.approved_denied == "Pending" and (application.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                    <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="delete") }}">
-                                        <button type="button" class="btn btn-danger"><span
-                                                class="glyphicon glyphicon-remove"></span></button>
-                                    </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
-            {% endif %}
+                            {% if ( application.approved_denied == "Pending" and (application.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="delete") }}">
+                                    <button type="button" class="btn btn-danger"><span
+                                            class="glyphicon glyphicon-remove"></span></button>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
+    {% else %}
+        <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+    {% endif %}
 </div>
 
 {% endblock %}

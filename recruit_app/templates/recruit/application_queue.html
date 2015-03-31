@@ -5,16 +5,16 @@
 
 {% block content %}
 <div class="container-fluid">
-    {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
-        <div class="container-fluid">
-            <h1 class="page-header text-center">Application Queue
-            </h1>
-            <div class="col-sm-6">
+    {% if current_user.auth_info[0].main_character %}
+        {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+            <div class="container-fluid">
+                <h1 class="page-header text-center">Application Queue
+                </h1>
+                <div class="col-sm-6">
                     {{ search_form.hidden_tag() }}
                     {{ wtf.quick_form(search_form, action=url_for('recruit.application_queue')) }}
-            </div>
-            <div class="container-fluid">
-                {% if current_user.auth_info[0].main_character %}
+                </div>
+                <div class="container-fluid">
                     {{ render_pagination(recruiter_queue) }}
                     <table class="table table-bordered">
                         <tr>
@@ -54,11 +54,11 @@
                             </tr>
                         {% endfor %}
                     </table>
-                {% else %}
-                    <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
-                {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
     {% endif %}
 </div>
 

@@ -47,9 +47,9 @@
     </ul>
     {% elif login_user_form %}
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="{{ url_for_security('register') }}">Create account</a></li>
+      <li><a href="{{ url_for('security.register') }}">Create account</a></li>
     </ul>
-    <form id="loginForm" method="POST" class="navbar-form form-inline navbar-right" action="{{ url_for_security('login') }}" name="login_user_form" role="login">
+    <form id="loginForm" method="POST" class="navbar-form form-inline navbar-right" action="{{ url_for('security.login') }}" name="login_user_form" role="login">
       {{ login_user_form.hidden_tag() }}
       <div class="form-group">
         {{ login_user_form.email(placeholder="Email", class_="form-control") }}

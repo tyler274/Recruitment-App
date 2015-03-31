@@ -44,7 +44,7 @@ class Config(object):
     RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
-
+    MAX_NUMBER_PER_PAGE = 5
 
 class ProdConfig(Config):
     """Production configuration."""

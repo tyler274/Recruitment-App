@@ -25,16 +25,20 @@ blueprint = Blueprint('public', __name__, static_folder="../static")
 @blueprint.route("/", methods=["GET", "POST"])
 def home():
     form = LoginForm(request.form)
-    AuthInfoManager.get_or_create(current_user.get_id())
+
+    if current_user.is_authenticated():
+        AuthInfoManager.get_or_create(current_user)
+
     # Handle logging in
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            login_user(form.user)
-            flash("You are logged in.", 'success')
-            redirect_url = request.args.get("next") or url_for("user.members")
-            return redirect(redirect_url)
-        else:
-            flash_errors(form)
+    # if request.method == 'POST':
+    #     if form.validate_on_submit():
+    #         login_user(form.user)
+    #         flash("You are logged in.", 'success')
+    #         redirect_url = request.args.get("next") or url_for("user.members")
+    #         return redirect(redirect_url)
+    #     else:
+    #         flash_errors(form)
+    
     return render_template("public/home.html", login_user_form=form)
 
 @blueprint.route("/login/", methods=["GET", "POST"])
@@ -42,13 +46,13 @@ def login():
     login_user_form = LoginForm(request.form)
     # Handle logging in
     if request.method == 'POST':
-        if form.validate_on_submit():
-            login_user(form.user)
+        if login_user_form.validate_on_submit():
+            login_user(login_user_form.user)
             flash("You are logged in.", 'success')
             redirect_url = request.args.get("next") or url_for("user.members")
             return redirect(redirect_url)
         else:
-            flash_errors(form)
+            flash_errors(login_user_form)
     return render_template("public/login.html", login_user_form=login_user_form)
 
 

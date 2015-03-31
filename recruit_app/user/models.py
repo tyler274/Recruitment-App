@@ -218,6 +218,3 @@ class EveCorporationInfo(Model):
 
 #     user_id = ReferenceCol('users', nullable=True)
 #     user = relationship('User', backref='hr_application_comments')
-
-
-
