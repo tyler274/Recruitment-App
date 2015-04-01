@@ -87,8 +87,6 @@ def api_update(api_id):
 @blueprint.route("/eve_characters", methods=['GET', 'POST'])
 @login_required
 def eve_characters():
-    characters = []
-    authinfo = []
 
     characters = EveCharacter.query.filter_by(user_id=current_user.get_id()).all()
 
@@ -99,7 +97,7 @@ def eve_characters():
 def eve_main_character_change(character_id):
     if EveManager.check_if_character_owned_by_user(character_id, current_user.get_id()):
 
-        AuthInfoManager.update_main_character_id(character_id, current_user.get_id())
+        AuthInfoManager.update_main_character_id(character_id, current_user)
 
         return redirect(url_for('user.eve_characters'))
 

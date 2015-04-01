@@ -298,8 +298,9 @@ class EveManager:
     def check_if_character_owned_by_user(character_id, user_id):
         character = EveCharacter.query.filter_by(character_id=str(character_id)).first()
         # print character
-        if unicode(character.user_id) == unicode(user_id):
-            return True
+        if character:
+            if str(character.user_id) == str(user_id):
+                return True
 
         return False
 

@@ -82,7 +82,7 @@ def register_admin(admin, db):
 
 
 def register_tasks():
-    schedule_tasks()
+    # schedule_tasks()
 
     return None
 
