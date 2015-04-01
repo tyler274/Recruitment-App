@@ -1,4 +1,4 @@
-from recruit_app.user.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
+from recruit_app.user.models import EveCharacter, EveCorporationInfo, EveAllianceInfo, EveApiKeyPair
 from recruit_app.user.managers import EveManager
 from recruit_app.user.eve_api_manager import EveApiManager
 
@@ -7,9 +7,6 @@ from flask import current_app
 from recruit_app.extensions import rq
 
 from redis import Redis
-
-from rq_scheduler import Scheduler
-
 
 # Run Every 2 hours
 # @periodic_task(run_every=crontab(minute=0, hour="*/2"))
@@ -30,7 +27,7 @@ def run_alliance_corp_update():
                                                            corp_member_count=corp_info['members']['current'],
                                                            alliance_id=corp_info['alliance']['id'])
                     else:
-                        EveManager.update_corporation_info(corp_id=corp_info['id'],
+                        EveManager.update_corporation_info(corporation_id=corp_info['id'],
                                                            corp_member_count=corp_info['members']['current'],
                                                            alliance_id=corp_info['alliance']['id'])
                 if character.alliance_id:
@@ -57,6 +54,6 @@ def run_character_update():
     with current_app.app_context():
         # I am not proud of this block of code
         if EveApiManager.check_if_api_server_online():
-            characters = EveCharacter.query.order_by(EveCharacter.character_id).all()
-            for character in characters:
-                print character.api
+            api_keys = EveApiKeyPair.query.order_by(EveApiKeyPair.api_id).all()
+            for api_key in api_keys:
+                EveManager.update_api_keypair(api_key.api_id, api_key.api_key)

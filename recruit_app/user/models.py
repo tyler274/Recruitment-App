@@ -146,6 +146,8 @@ class EveApiKeyPair(Model):
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='api_keys')
 
+    valid = Column(db.Boolean, default=True)
+
     # def __init__(self, api_id, api_key, user_id,  **kwargs):
     #     db.Model.__init__(self, api_id=api_id, api_key=api_key, user_id=user_id, **kwargs)
 

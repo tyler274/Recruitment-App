@@ -63,3 +63,6 @@ Flask-Whooshalchemy
 
 # Forces SSL, nginx is configured to do this atm
 # Flask-SSLify
+
+# python-rq
+Flask-rq

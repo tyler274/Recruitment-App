@@ -180,6 +180,7 @@ class EveManager:
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
             return True
+
         return False
 
 
@@ -241,12 +242,12 @@ class EveManager:
             return False
 
     @staticmethod
-    def delete_api_key_pair(api_id, user_id):
-        if EveApiKeyPair.query.filter_by(api_id=api_id).all():
+    def delete_api_key_pair(api_id, user):
+        api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+        if api_key_pair:
             # Check that its owned by our user_id
-            apikeypair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
-            if unicode(apikeypair.user_id) == unicode(user_id):
-                apikeypair.delete()
+            if unicode(api_key_pair.user_id) == unicode(user.id):
+                api_key_pair.delete()
 
     @staticmethod
     def delete_characters_by_api_id(api_id, user):
