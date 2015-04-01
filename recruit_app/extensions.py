@@ -42,4 +42,7 @@ admin = Admin()
 from flask_mail import Mail
 mail = Mail()
 
+from flask_rq import RQ
+rq = RQ()
+
 

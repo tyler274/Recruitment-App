@@ -52,7 +52,14 @@ rq-scheduler
 # EveLink
 Evelink==0.6.1
 
+# Management scripts
 Flask-Script
+
+# PostgreSQL driver
 psycopg2
 
+# Search library
 Flask-Whooshalchemy
+
+# Forces SSL, nginx is configured to do this atm
+# Flask-SSLify

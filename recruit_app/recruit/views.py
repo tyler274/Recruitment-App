@@ -85,7 +85,7 @@ def application_create():
                                          favorite_role=form.data['favorite_role'],
                                          most_fun=form.data['most_fun'],
                                          main_character_name=current_user.auth_info[0].main_character.character_name,
-                                         user_id=current_user,
+                                         user=current_user,
                                          characters=form.characters.data)
 
             flash("Application Created", category='message')

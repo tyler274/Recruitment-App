@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-from models import EveCharacter
-from models import EveApiKeyPair
-from models import EveAllianceInfo
-from models import EveCorporationInfo
-from models import AuthInfo
-from models import User
+from recruit_app.user.models import EveCharacter,\
+    EveApiKeyPair, EveAllianceInfo, EveCorporationInfo, AuthInfo, User
 
 import datetime as dt
 
-from .eve_api_manager import EveApiManager
+from recruit_app.user.eve_api_manager import EveApiManager
 
 from recruit_app.extensions import bcrypt
 
@@ -110,7 +106,7 @@ class EveManager:
             if not EveManager.check_if_corporation_exists_by_id(characters.result[character]['corp']['id']):
                 corp_info = EveApiManager.get_corporation_information(characters.result[character]['corp']['id'])
                 if corp_info:
-                    EveManager.create_corporation_info(corp_id=corp_info['id'],
+                    EveManager.create_corporation_info(corporation_id=corp_info['id'],
                                                        corp_name=corp_info['name'],
                                                        corp_ticker=corp_info['ticker'],
                                                        corp_member_count=corp_info['members']['current'],
@@ -210,25 +206,27 @@ class EveManager:
             alliance_info.save()
 
     @staticmethod
-    def create_corporation_info(corp_id, corp_name, corp_ticker, corp_member_count, alliance_id, is_blue=None):
-        if not EveManager.check_if_corporation_exists_by_id(corp_id):
+    def create_corporation_info(corporation_id, corp_name, corp_ticker, corp_member_count, alliance_id, is_blue=None):
+        if not EveManager.check_if_corporation_exists_by_id(corporation_id):
             corp_info = EveCorporationInfo()
-            corp_info.corporation_id = str(corp_id)
+            corp_info.corporation_id = str(corporation_id)
             corp_info.corporation_name = corp_name
             corp_info.corporation_ticker = corp_ticker
             corp_info.member_count = corp_member_count
             corp_info.is_blue = is_blue
             if alliance_id:
-                corp_info.alliance_id = alliance_id
+                if alliance_id != 0:
+                    corp_info.alliance_id = str(alliance_id)
             corp_info.save()
 
     @staticmethod
-    def update_corporation_info(corp_id, corp_member_count, alliance_id, is_blue):
-        if EveManager.check_if_corporation_exists_by_id(corp_id):
-            corp_info = EveCorporationInfo.query.filter_by(corporation_id=str(corp_id)).all()
+    def update_corporation_info(corporation_id, corp_member_count, alliance_id):
+        corp_info = EveCorporationInfo.query.filter_by(corporation_id=str(corporation_id)).first()
+        if corp_info:
             corp_info.member_count = corp_member_count
-            corp_info.alliance_id = str(alliance_id)
-            corp_info.is_blue = is_blue
+            if alliance_id:
+                if alliance_id != 0:
+                    corp_info.alliance_id = str(alliance_id)
             corp_info.save()
 
     @staticmethod

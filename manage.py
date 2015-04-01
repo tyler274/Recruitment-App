@@ -3,8 +3,8 @@
 import os
 import sys
 import subprocess
-from flask.ext.script import Manager, Shell, Server
-from flask.ext.migrate import MigrateCommand
+from flask_script import Manager, Shell, Server
+from flask_migrate import MigrateCommand
 
 from recruit_app.app import create_app
 from recruit_app.user.models import User, Role
@@ -20,6 +20,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 TEST_PATH = os.path.join(HERE, 'tests')
 
 manager = Manager(app)
+
 
 def _make_context():
     """Return context dict for a shell session so you can access

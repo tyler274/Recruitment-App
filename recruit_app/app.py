@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 '''The app module, containing the app factory function.'''
 from flask import Flask, render_template
-from flask_security import SQLAlchemyUserDatastore
 
 from recruit_app.settings import ProdConfig
 from recruit_app.assets import assets
@@ -18,18 +17,18 @@ from recruit_app.extensions import (
     rqDashboard,
     admin,
     mail,
+    rq,
 )
 from recruit_app import public, user, recruit
 from recruit_app.user import admin as user_admin_view
-from recruit_app.user.models import User, Role
-
-from recruit_app.recruit.models import HrApplication
 from recruit_app.recruit import admin as recruit_admin_view
 from recruit_app.recruit import search as recruit_search
-
 from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
 
-import flask_whooshalchemy as whooshalchemy
+from recruit_app.scheduled_tasks import schedule_tasks
+from redis import Redis
+
+from rq_scheduler import Scheduler
 
 
 def create_app(config_object=ProdConfig):
@@ -45,6 +44,8 @@ def create_app(config_object=ProdConfig):
     register_errorhandlers(app)
     register_admin(admin, db)
     register_search(app)
+    register_tasks()
+
     return app
 
 
@@ -60,6 +61,7 @@ def register_extensions(app):
     rqDashboard.init_app(app)
     admin.init_app(app)
     mail.init_app(app)
+    rq.init_app(app)
     migrate.init_app(app, db)
     return None
 
@@ -71,9 +73,16 @@ def register_blueprints(app):
 
     return None
 
+
 def register_admin(admin, db):
     user_admin_view.register_admin_views(admin, db)
     recruit_admin_view.register_admin_views(admin, db)
+
+    return None
+
+
+def register_tasks():
+    schedule_tasks()
 
     return None
 

@@ -15,6 +15,8 @@ from recruit_app.database import db
 
 from recruit_app.user.managers import AuthInfoManager
 
+from recruit_app.user.tasks import run_alliance_corp_update
+
 blueprint = Blueprint('public', __name__, static_folder="../static")
 
 # @login_manager.user_loader
