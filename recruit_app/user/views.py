@@ -68,7 +68,7 @@ def api_delete(api_id):
                     # TODO disable services and such
                     pass
 
-    EveManager.delete_characters_by_api_id(api_id, current_user)
+    EveManager.delete_characters_by_api_id_user(api_id, current_user)
     EveManager.delete_api_key_pair(api_id, current_user)
 
     return redirect(url_for('user.api_manage'))
@@ -77,10 +77,12 @@ def api_delete(api_id):
 @login_required
 def api_update(api_id):
     # Break out application logic from the view to the manager
-    EveManager.update_user_api(api_id, current_user.get_id())
+    update = EveManager.update_user_api(api_id, current_user)
 
-    # if update == "Wait":
-    #     flash("Please Wait before refreshing your api", category='message')
+    if update == "Wait":
+        flash(u'Please wait before refreshing your api', category='message')
+    elif update == "Success":
+        flash(u'API key Refreshed', category='message')
 
     return redirect(url_for('user.api_manage'))
 

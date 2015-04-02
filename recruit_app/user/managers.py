@@ -21,20 +21,18 @@ class EveManager:
         pass
 
     @staticmethod
-    def update_user_api(api_id, user_id):
-        if EveApiKeyPair.query.filter_by(api_id=api_id).first():
-            api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
-
-            if unicode(api_key_pair.user_id) == unicode(user_id):
+    def update_user_api(api_id, user):
+        api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
+        if api_key_pair:
+            if unicode(api_key_pair.user_id) == unicode(user.id):
                 if (dt.datetime.utcnow() - api_key_pair.last_update_time).total_seconds() >= 30:
                     # TODO: Switch from 30 second time out to the cache expiry time
                     EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key)
-                    #return "Success"
+                    return "Success"
                 else:
-                    flash("Please Wait before refreshing your api", category='message')
-                    #return "Wait"
-        # else:
-            # return "Wrong User"
+                    return "Wait"
+        else:
+            return "Wrong User"
 
     @staticmethod
     def create_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
@@ -152,6 +150,7 @@ class EveManager:
                 eve_char.save()
 
 
+
     @staticmethod
     def create_api_keypair(api_id, api_key, user_id):
         if not EveApiKeyPair.query.filter_by(api_id=api_id).all():
@@ -250,7 +249,7 @@ class EveManager:
                 api_key_pair.delete()
 
     @staticmethod
-    def delete_characters_by_api_id(api_id, user):
+    def delete_characters_by_api_id_user(api_id, user):
         characters = EveCharacter.query.filter_by(api_id=api_id).all()
         if characters:
             # Check that its owned by our user_id
@@ -264,6 +263,21 @@ class EveManager:
 
                     character.user_id = None
                     character.save()
+
+
+    @staticmethod
+    def delete_characters_by_api_id(api_id):
+        characters = EveCharacter.query.filter_by(api_id=api_id).all()
+        if characters:
+            # Check that its owned by our user_id
+            for character in characters:
+                auth_info = AuthInfo.query.filter_by(main_character_id=character.character_id).first()
+                if auth_info:
+                    auth_info.main_character_id = None
+                    auth_info.save()
+
+                character.user_id = None
+                character.save()
 
 
     @staticmethod

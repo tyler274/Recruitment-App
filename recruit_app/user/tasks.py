@@ -50,10 +50,22 @@ def run_alliance_corp_update():
                                                                 alliance_member_count=alliance_info['member_count'])
 
 @job('low')
-def run_character_update():
+def run_api_key_update():
     with current_app.app_context():
         # I am not proud of this block of code
         if EveApiManager.check_if_api_server_online():
             api_keys = EveApiKeyPair.query.order_by(EveApiKeyPair.api_id).all()
             for api_key in api_keys:
+                if not EveApiManager.check_api_is_type_account(api_key.api_id,
+                                                               api_key.api_key):
+                    EveManager.delete_characters_by_api_id(api_key.api_id)
+
+                if not EveApiManager.check_api_is_full(api_key.api_id,
+                                                       api_key.api_key):
+                    EveManager.delete_characters_by_api_id(api_key.api_id)
+
+                if not EveApiManager.check_api_is_not_expire(api_key.api_id,
+                                                             api_key.api_key):
+                    EveManager.delete_characters_by_api_id(api_key.api_id)
+
                 EveManager.update_api_keypair(api_key.api_id, api_key.api_key)

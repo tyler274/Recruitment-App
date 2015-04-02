@@ -3,7 +3,7 @@ from redis import Redis
 
 from rq_scheduler import Scheduler
 
-from recruit_app.user.tasks import run_alliance_corp_update, run_character_update
+from recruit_app.user.tasks import run_alliance_corp_update, run_api_key_update
 
 import datetime as dt
 
@@ -19,7 +19,7 @@ def schedule_tasks():
         )
     scheduler.schedule(
         scheduled_time=dt.datetime.now(),
-        func=run_character_update,
+        func=run_api_key_update,
         interval=10800,
         queue_name='low',
         )
