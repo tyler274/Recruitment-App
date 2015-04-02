@@ -230,18 +230,14 @@
                 <div class="col-sm-4">
                     <div class="row">
                         <label class="control-label  " for="id_extra">Comments</label>
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div >
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="headingThree">
                                     <h4 class="panel-title">
-                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                           href="#collapseThree" aria-expanded="false"
-                                           aria-controls="collapseThree">
-                                            Comments - {{ comments|length }}
-                                        </a>
+                                        Comments - {{ comments|length }}
                                     </h4>
                                 </div>
-                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                                <div
                                      aria-labelledby="headingThree">
                                     <div class="panel-body">
                                         {% for comment in comments %}
