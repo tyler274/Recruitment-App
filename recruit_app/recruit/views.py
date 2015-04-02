@@ -198,7 +198,7 @@ def application_interact(application_id, action):
 
             application_status = HrManager.alter_application(application, action, current_user)
 
-            flash("%s's application %s" % (application.user.auth_info[0].main_character,
+            flash("%s's application %s" % (application.main_character_name,
                                            application_status),
                   category='message')
 
