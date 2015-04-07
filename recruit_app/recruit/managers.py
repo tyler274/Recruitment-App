@@ -46,19 +46,28 @@ class HrManager:
         comment.save()
 
     @staticmethod
-    def create_application(how_long, have_done, scale, reason_for_joining, favorite_ship, favorite_role, most_fun, main_character_name, user, characters):
+    def create_application(form, main_character_name, user):
         application = HrApplication()
-        application.how_long = how_long
-        application.have_done = have_done
-        application.scale = scale
-        application.reason_for_joining = reason_for_joining
-        application.favorite_ship = favorite_ship
-        application.favorite_role = favorite_role
-        application.most_fun = most_fun
+        application.alt_application = form.alt_application.data
+        application.how_long = form.how_long.data
+        application.notable_accomplishments = form.notable_accomplishments.data
+        application.corporation_history = form.corporation_history.data
+        application.why_leaving = form.why_leaving.data
+        application.what_know = form.what_know.data
+        application.what_expect = form.what_expect.data
+        application.bought_characters = form.bought_characters.data
+        application.why_interested = form.why_interested.data
+        #application.reason_for_joining = form.reason_for_joining.data
+        application.find_out = form.find_out.data
+        application.favorite_role = form.favorite_role.data
+        application.thesis = form.thesis.data
+
+        application.scale = form.scale.data
+
         application.hidden = False
         application.user_id = user.id
 
-        for character in characters:
+        for character in form.characters.data:
                 # The form data for characters selected is the character id
                 eve_character = EveCharacter.query.filter_by(character_id=character).first()
                 application.characters.append(eve_character)

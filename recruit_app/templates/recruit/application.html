@@ -92,6 +92,14 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label" for="id_about">Please give a maximum 2000 character thesis on the meaning of the word "The" (not required)</label>
+                            <a href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.thesis }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label" for="id_about">How long have you been playing EVE?</label>
 
                             <div class=" ">
@@ -100,11 +108,59 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="id_about">What have you done in that time?</label>
+                            <label class="control-label" for="id_about">Any notable accomplishments in that time?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_about" name="about"
-                                          disabled>{{ application.have_done }}</textarea>
+                                          disabled>{{ application.notable_accomplishments }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">Walk us through your Corporation history:</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.corporation_history }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">Why are you leaving your current Corporation?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.why_leaving }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">What do you know about KarmaFleet?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.what_know }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">How do you expect daily life in KarmaFleet to be?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.what_expect }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">Are any of your characters bought, and if so, which ones?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.bought_characters }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">Why are you interested in joining KarmaFleet?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.why_interested }}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -116,22 +172,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="id_extra">Reason for Joining?</label>
-
-                            <div class=" ">
-                                <textarea class=" form-control" id="id_extra" name="extra"
-                                          disabled>{{ application.reason_for_joining }}</textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="id_extra">What's your favorite ship, why?</label>
-
-                            <div class=" ">
-                                <textarea class=" form-control" id="id_extra" name="extra"
-                                          disabled>{{ application.favorite_ship }}</textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="control-label" for="id_extra">What's your favorite role to play, why?</label>
 
                             <div class=" ">
@@ -140,11 +180,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  " for="id_extra">What's the most fun you've ever had in EVE?</label>
+                            <label class="control-label" for="id_extra">How did you find out about KarmaFleet?</label>
 
                             <div class=" ">
                                 <textarea class=" form-control" id="id_extra" name="extra"
-                                          disabled>{{ application.most_fun }}</textarea>
+                                          disabled>{{ application.find_out }}</textarea>
                             </div>
                         </div>
                         {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
@@ -200,6 +240,20 @@
                                                         <a href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
                                                             <button type="button" class="btn btn-default btn-xs">
                                                                 Jack Knife
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        <a href="http://eve-search.com/search/{{ character.character_name }}/">
+                                                            <button type="button" class="btn btn-default btn-xs">
+                                                                Forum Search
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        <a href="http://eve-search.com/search/{{ character.character_name }}/forum/734105">
+                                                            <button type="button" class="btn btn-default btn-xs">
+                                                                Bazaar Search
                                                             </button>
                                                         </a>
                                                     </div>

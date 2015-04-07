@@ -77,16 +77,9 @@ def application_create():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            application = HrManager.create_application(how_long=form.how_long.data,
-                                         have_done=form.have_done.data,
-                                         scale=form.data['scale'],
-                                         reason_for_joining=form.data['reason_for_joining'],
-                                         favorite_ship=form.data['favorite_ship'],
-                                         favorite_role=form.data['favorite_role'],
-                                         most_fun=form.data['most_fun'],
-                                         main_character_name=current_user.auth_info[0].main_character.character_name,
-                                         user=current_user,
-                                         characters=form.characters.data)
+            application = HrManager.create_application(form,
+                                                       main_character_name=current_user.auth_info[0].main_character.character_name,
+                                                       user=current_user)
 
             flash("Application Created", category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
