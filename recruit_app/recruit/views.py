@@ -81,7 +81,7 @@ def application_create():
                                                        main_character_name=current_user.auth_info[0].main_character.character_name,
                                                        user=current_user)
 
-            flash("Application Created, apply in game with" + url_for('recruit.application_view', _external=True, application_id=application.id) + " In the body", category='message')
+            flash("Application Created, apply in game with \"" + url_for('recruit.application_view', _external=True, application_id=application.id) + "\" in the body", category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return render_template('recruit/application_create.html',
