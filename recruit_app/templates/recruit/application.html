@@ -254,7 +254,11 @@
                                                         </a>
                                                     {% endif %}
                                                 </div>
-                                                <div class="panel-body" style="word-break: break-word;">{{ comment.comment }}</div>
+                                                <div class="panel-body">
+                                                    <p>
+                                                        {{ comment.comment }}
+                                                    </p>
+                                                </div>
                                             </div>
                                         {% endfor %}
                                     </div>
