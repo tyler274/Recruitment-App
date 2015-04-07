@@ -12,18 +12,18 @@
                 </h1>
                 <div class="col-sm-6">
                     {{ search_form.hidden_tag() }}
-                    {{ wtf.quick_form(search_form, action=url_for('recruit.application_queue')) }}
+                    {{ wtf.quick_form(search_form) }}
                 </div>
                 <div class="container-fluid">
                     <div class="col-sm-5">
-                    <a href="{{ url_for('recruit.application_queue', option="all") }}">
+                    <a href="{{ url_for('recruit.application_all') }}">
                         <button type="button" class="btn btn-danger">
-                            List All
+                            List All In Queue
                         </button>
                     </a>
-                    <a href="{{ url_for('recruit.application_queue', option="history") }}">
+                    <a href="{{ url_for('recruit.application_history') }}">
                         <button type="button" class="btn btn-danger">
-                            History
+                            All apps ever
                         </button>
                     </a>
                     </div>
