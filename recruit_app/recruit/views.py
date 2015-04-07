@@ -61,7 +61,7 @@ def application_queue(option=None, page=1):
                            search_results=search_results)
 
 
-@blueprint.route("/applications/create/", methods=['GET', 'POST'])
+@blueprint.route("/applications/create", methods=['GET', 'POST'])
 @login_required
 def application_create():
     auth_info = AuthInfoManager.get_or_create(current_user)
@@ -81,7 +81,7 @@ def application_create():
                                                        main_character_name=current_user.auth_info[0].main_character.character_name,
                                                        user=current_user)
 
-            flash("Application Created", category='message')
+            flash("Application Created, apply in game with " + request.url + url_for('recruit.application_view', application_id=application.id), category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return render_template('recruit/application_create.html',
