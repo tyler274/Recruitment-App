@@ -146,10 +146,9 @@ def application_comment_create(application_id):
 
     return redirect(url_for('recruit.applications'))
 
-@blueprint.route("/applications/<application_id>/comment/<comment_id>/<action>", methods=['GET', 'POST'])
+@blueprint.route("/applications/<int:application_id>/comment/<int:comment_id>/<action>/", methods=['GET', 'POST'])
 @login_required
 def application_comment_action(application_id, comment_id, action):
-    user_id = current_user.get_id()
     form_comment = HrApplicationCommentForm()
 
     if current_user.has_role("recruiter") or current_user.has_role("admin"):
@@ -158,7 +157,7 @@ def application_comment_action(application_id, comment_id, action):
 
                 comment = HrApplicationComment.query.filter_by(id=comment_id).first()
 
-                if str(comment.user_id) == str(user_id) or current_user.has_role("admin"):
+                if comment.user_id == current_user.get_id() or current_user.has_role("admin"):
 
                     if request.method == 'POST':
                         if action == "edit":
@@ -167,8 +166,12 @@ def application_comment_action(application_id, comment_id, action):
                                 HrManager.edit_comment(comment, form_comment.comment.data)
 
                         elif action == "delete":
+                            print "wat"
                             comment.delete()
 
+                    elif action == "delete":
+                        print "wat"
+                        comment.delete()
             return redirect(url_for('recruit.application_view', application_id=application_id))
 
     return redirect(url_for('recruit.applications'))
