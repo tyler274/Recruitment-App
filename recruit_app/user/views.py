@@ -17,7 +17,7 @@ blueprint = Blueprint("user", __name__, url_prefix='/users',
 @blueprint.route("/")
 @login_required
 def members():
-    return render_template("users/members.html")
+    return redirect(url_for('public.home'))
 
 @blueprint.route("/api_add", methods=['GET', 'POST'])
 @login_required
