@@ -15,7 +15,7 @@ def run_alliance_corp_update():
                 corpinfo = EveApiManager.get_corporation_information(character.corporation_id)
                 if corpinfo:
                     # print corpinfo
-                    EveManager.create_corporation_info(corp_id=corpinfo['id'], corp_name=corpinfo['name'], corp_ticker=corpinfo['ticker'], corp_member_count=corpinfo['members']['current'], alliance_id=corpinfo['alliance']['id'])
+                    EveManager.create_corporation_info(corporation_id=corpinfo['id'], corp_name=corpinfo['name'], corp_ticker=corpinfo['ticker'], corp_member_count=corpinfo['members']['current'], alliance_id=corpinfo['alliance']['id'])
             if int(character.alliance_id) != 0:
                 if not EveAllianceInfo.query.filter_by(alliance_id=character.alliance_id).first():
                     print character.alliance_id
