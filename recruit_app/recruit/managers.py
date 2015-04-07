@@ -67,6 +67,8 @@ class HrManager:
         application.last_update_time = dt.datetime.utcnow()
         application.save()
 
+        return application
+
 
     @staticmethod
     def update_application(how_long,
