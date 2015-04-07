@@ -81,7 +81,7 @@ def application_create():
                                                        main_character_name=current_user.auth_info[0].main_character.character_name,
                                                        user=current_user)
 
-            flash("Application Created, apply in game with " + request.url + url_for('recruit.application_view', application_id=application.id), category='message')
+            flash("Application Created, apply in game with " + request.path + url_for('recruit.application_view', application_id=application.id), category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return render_template('recruit/application_create.html',
@@ -188,12 +188,12 @@ def application_interact(application_id, action):
     if application:
         # alter_application takes one of 4 actions
         if current_user.has_role("admin") or current_user.has_role("recruiter"):
+            if current_user.has_role("admin") or action != "delete":
+                application_status = HrManager.alter_application(application, action, current_user)
 
-            application_status = HrManager.alter_application(application, action, current_user)
-
-            flash("%s's application %s" % (application.main_character_name,
-                                           application_status),
-                  category='message')
+                flash("%s's application %s" % (application.main_character_name,
+                                               application_status),
+                      category='message')
 
         elif application.user_id == current_user.get_id():
             if action == "delete" and application.approve_deny == "Pending":
