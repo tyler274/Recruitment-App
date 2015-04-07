@@ -1,32 +1,67 @@
 
 {% extends "layout.html" %}
 {% block content %}
-<!-- Main jumbotron for a primary marketing message or call to action -->
-<div class="jumbotron">
-
-  <h1>Welcome to recruit</h1>
-
-  <p>This is a starter Flask template. It includes Bootstrap 3, jQuery 2, Flask-SQLAlchemy, WTForms, and various testing utilities out of the box.</p>
-  <p><a href="https://github.com/sloria/cookiecutter-flask" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-</div><!-- /.jumbotron -->
 
 <div class="body-content">
-  <div class="row">
-    <div class="col-lg-4">
-      <h2><i class="fa fa-code"></i> Bootstrap 3</h2>
-      <p>Sleek, intuitive, and powerful mobile-first front-end framework for faster and easier web development.</p>
-      <p><a class="btn btn-default" href="http://getbootstrap.com/">Official website &raquo;</a></p>
-    </div>
-    <div class="col-lg-4">
-      <h2><i class="fa fa-flask"></i> SQLAlchemy</h2>
-      <p>SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.</p>
-      <p><a href="http://www.sqlalchemy.org/" class="btn btn-default" href="#">Official website &raquo;</a></p>
-   </div>
-    <div class="col-lg-4">
-      <h2><i class="fa fa-edit"></i> WTForms</h2>
-      <p>WTForms is a flexible forms validation and rendering library for python web development.</p>
-      <p><a href="http://wtforms.simplecodes.com/" class="btn btn-default" href="#">Official website &raquo;</a></p>
-    </div>
+  <div class="jumbotron">
+      <h2>
+          How to (successfully) join KarmaFleet using this website
+          (aka a test in instruction)
+      </h2>
+      <ol>
+          <li>
+              <p>
+                  <a href="{{ url_for('security.register') }}">
+                      <button type="button" class="btn btn-info">Register an account</button>
+                  </a>
+                  and
+                  <a href="{{ url_for('security.login') }}">
+                      <button type="button" class="btn btn-info">Login</button>
+                  </a>
+                  if you have not already done so
+              </p>
+          </li>
+          <li>
+              <p>
+                  <a href="{{ url_for('user.api_add') }}">
+                      <button type="button" class="btn btn-info">Add your EvE API Keys</button>
+                  </a>
+              </p>
+          </li>
+          <li>
+              <p>
+                  <a href="{{ url_for('user.eve_characters') }}">
+                      <button type="button" class="btn btn-info">Set your primary/main character</button>
+                  </a>
+              </p>
+          </li>
+          <li>
+              <p>
+                  <a href="{{ url_for('recruit.application_create') }}">
+                      <button type="button" class="btn btn-info">Submit an application</button>
+                  </a>
+                  Fill out all information requested
+              </p>
+          </li>
+          <li>
+              <p>
+                  <a href="{{ url_for('recruit.applications') }}">
+                      <button type="button" class="btn btn-info">Your applications</button>
+                  </a>
+                  After submitting your application, find it in your list of submitted applications and click on the blue eye icon under "actions".
+              </p>
+          </li>
+          <li>
+              <p>
+                  Copy the address/URL of your application. Apply in game on your main character, pasting the application address/URL into the in game application.
+              </p>
+          </li>
+          <li>
+              <p>
+                  Wait for a recruiter to review your application and accept you.
+              </p>
+          </li>
+    </ol>
   </div><!-- /.row -->
 </div>
 {% endblock %}
