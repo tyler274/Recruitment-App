@@ -21,25 +21,43 @@ character_apps = db.Table('app_characters',
 
 class HrApplication(SurrogatePK, Model):
     __tablename__ = 'hr_applications'
-    __searchable__ = ['how_long','have_done','reason_for_joining','favorite_ship','most_fun','main_character_name']
 
-    #main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
-    #main_character = relationship('EveCharacter', backref='applications')
+    __searchable__ = ['thesis',
+                      'how_long',
+                      'notable_accomplishments',
+                      'corporation_history',
+                      'why_leaving',
+                      'what_know',
+                      'what_expect',
+                      'bought_characters',
+                      'why_interested',
+                      'find_out',
+                      'favorite_role',
+                      'main_character_name']
 
     main_character_name = Column(db.Text, nullable=True)
 
     alt_application = Column(db.Boolean, default=False)
 
     characters = db.relationship('EveCharacter', secondary=character_apps,
-                            backref=db.backref('alt_apps', lazy='dynamic'))
+                                 backref=db.backref('alt_apps', lazy='dynamic'))
 
+    thesis = Column(db.Text, nullable=True)
     how_long = Column(db.Text, nullable=True)
-    have_done = Column(db.Text, nullable=True)
-    scale = Column(db.Integer, nullable=True)
-    reason_for_joining = Column(db.Text, nullable=True)
-    favorite_ship = Column(db.Text, nullable=True)
+    notable_accomplishments = Column(db.Text, nullable=True)
+    corporation_history = Column(db.Text, nullable=True)
+    why_leaving = Column(db.Text, nullable=True)
+    what_know = Column(db.Text, nullable=True)
+    what_expect = Column(db.Text, nullable=True)
+    bought_characters = Column(db.Text, nullable=True)
+    why_interested = Column(db.Text, nullable=True)
+
+    scale = Column(db.Text, nullable=True)
+
+    #reason_for_joining = Column(db.Text, nullable=True)
+    find_out = Column(db.Text, nullable=True)
+
     favorite_role = Column(db.Text, nullable=True)
-    most_fun = Column(db.Text, nullable=True)
 
     last_update_time = Column(db.DateTime(), nullable=True)
 
@@ -58,8 +76,8 @@ class HrApplication(SurrogatePK, Model):
 
     # def __str__(self):
     #     return self.user.auth_info + " - Application"
-    def __repr__(self):
-        return '<Application %r>' % (self.user.auth_info)
+    def __str__(self):
+        return '<Application %r>' % self.user.auth_info
 
 
 
