@@ -30,11 +30,10 @@ def applications(page=1):
 
 
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
-@blueprint.route("/application_queue/<option>/", methods=['GET', 'POST'])
 @blueprint.route("/application_queue/<int:page>/", methods=['GET', 'POST'])
 @login_required
 @roles_accepted('admin', 'recruiter')
-def application_queue(option=None, page=1):
+def application_queue(page=1):
     search_results = []
 
     search_form = SearchForm()
@@ -47,13 +46,56 @@ def application_queue(option=None, page=1):
     if request.method == 'POST':
         if search_form.validate_on_submit():
             search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, 5, False)
+            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
-    if option == "all":
-        recruiter_queue = query.paginate(page, error_out=False)
+    return render_template('recruit/application_queue.html',
+                           recruiter_queue=recruiter_queue,
+                           search_form=search_form,
+                           search_results=search_results)
 
-    elif option == "history":
-        recruiter_queue = HrApplication.query.paginate(page, error_out=False)
+
+@blueprint.route("/application_queue/all/", methods=['GET', 'POST'])
+@login_required
+@roles_accepted('admin', 'recruiter')
+def application_all(page=1):
+    search_results = []
+
+    search_form = SearchForm()
+
+    query = HrApplication.query.filter(HrApplication.hidden == False,
+                                       (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided")).order_by(HrApplication.id)
+
+    recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+
+    if request.method == 'POST':
+        if search_form.validate_on_submit():
+            search_results = query.whoosh_search(search_form.search.data + "*")
+            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+
+    return render_template('recruit/application_queue.html',
+                           recruiter_queue=recruiter_queue,
+                           search_form=search_form,
+                           search_results=search_results)
+
+
+
+@blueprint.route("/application_queue/history/", methods=['GET', 'POST'])
+@blueprint.route("/application_queue/history/<int:page>/", methods=['GET', 'POST'])
+@login_required
+@roles_accepted('admin', 'recruiter')
+def application_history(page=1):
+    search_results = []
+
+    search_form = SearchForm()
+
+    query = HrApplication.query.filter(HrApplication.hidden == False).order_by(HrApplication.id)
+
+    recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+
+    if request.method == 'POST':
+        if search_form.validate_on_submit():
+            search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
+            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
