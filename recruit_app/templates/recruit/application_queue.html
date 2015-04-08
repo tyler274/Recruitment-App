@@ -46,7 +46,7 @@
                                 <tr>
                                     <td class="text-center">{{ queue.id }}</td>
                                     <td class="text-center">{{ queue.user.auth_info[0].main_character }}</td>
-                                    <td class="text-center">{{ queue.last_update_time }}</td>
+                                    <td class="text-center">{{ queue.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
                                     <td class="text-center">
                                         {% if queue.approved_denied == "Pending" %}
                                             <div class="panel panel-warning" role="alert">Pending</div>
