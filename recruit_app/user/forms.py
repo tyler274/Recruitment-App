@@ -36,9 +36,9 @@ class RegisterForm(Form):
         return True
 
 class UpdateKeyForm(Form):
-    api_id = StringField(label=u'Key ID', validators=[DataRequired(), Length(min=1, max=10)])
-    api_key = StringField(label=u'Verification Code', validators=[DataRequired(), Length(min=1, max=254)])
-    submit = SubmitField(label=u'Submit')
+    api_id = StringField(label='Key ID', validators=[DataRequired(), Length(min=1, max=10)])
+    api_key = StringField(label='Verification Code', validators=[DataRequired(), Length(min=1, max=254)])
+    submit = SubmitField(label='Submit')
 
     def validate(self):
         initial_validation = super(UpdateKeyForm, self).validate()
@@ -50,7 +50,7 @@ class UpdateKeyForm(Form):
 
         if not EveApiManager.check_api_is_type_account(self.api_id.data,
                                                        self.api_key.data):
-            self.api_id.errors.append(u'API not of type account')
+            self.api_id.errors.append(u'API Key is not an account wide API. Select \"All\" as the character when creating the API key.')
             return False
 
         if not EveApiManager.check_api_is_full(self.api_id.data,
