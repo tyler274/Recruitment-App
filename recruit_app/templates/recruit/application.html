@@ -218,11 +218,11 @@
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
                                             <button type="button" class="btn btn-lg btn-info">Reject</button>
                                         </a>
-
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="delete") }}">
-                                            <button type="button" class="btn btn-lg btn-danger">Delete</button>
-                                        </a>
-
+                                        {% if current_user.has_role('admin') %}
+                                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">
+                                                <button type="button" class="btn btn-lg btn-danger">Hide</button>
+                                            </a>
+                                        {% endif %}
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
                                             <button type="button" class="btn btn-lg btn-warning">Mark In Progress
                                             </button>
