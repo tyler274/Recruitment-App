@@ -44,6 +44,14 @@ class HrApplicationForm(Form):
                                 validators=[DataRequired(),
                                             Length(min=-1, max=2000, message='Max length %(max)d')])
 
+    goon_interaction = TextAreaField("Have you ever interacted with another member of Goonswarm Federation?",
+                                validators=[DataRequired(),
+                                            Length(min=-1, max=2000, message='Max length %(max)d')])
+
+    friends = TextAreaField("Do you have any friends in KarmaFleet? If so, who?",
+                                validators=[DataRequired(),
+                                            Length(min=-1, max=2000, message='Max length %(max)d')])
+
     scale = SelectField("On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?",
                         choices=[('0 (Not Sure)', '0 (Not Sure)'),
                                  ('1 (Pure PVE)', '1 (Pure PVE)'),

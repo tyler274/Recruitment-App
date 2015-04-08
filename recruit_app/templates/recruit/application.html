@@ -93,7 +93,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="id_about">Please give a maximum 2000 character thesis on the meaning of the word "The" (not required)</label>
-                            <a href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
+                            <a target="_blank" href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
                             <div class=" ">
                                 <textarea class=" form-control" id="id_about" name="about"
                                           disabled>{{ application.thesis }}</textarea>
@@ -161,6 +161,22 @@
                             <div class=" ">
                                 <textarea class=" form-control" id="id_about" name="about"
                                           disabled>{{ application.why_interested }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">Have you ever interacted with another member of Goonswarm Federation?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.goon_interaction }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="id_about">Do you have any friends in KarmaFleet? If so, who?</label>
+
+                            <div class=" ">
+                                <textarea class=" form-control" id="id_about" name="about"
+                                          disabled>{{ application.friends }}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -237,28 +253,28 @@
                                                         {{ character.character_name }}
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <a href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                                                        <a target="_blank" href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
                                                             <button type="button" class="btn btn-default btn-xs">
                                                                 Jack Knife
                                                             </button>
                                                         </a>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <a href="http://eve-search.com/search/{{ character.character_name }}/">
+                                                        <a target="_blank" href="http://eve-search.com/search/{{ character.character_name }}/">
                                                             <button type="button" class="btn btn-default btn-xs">
                                                                 Forum Search
                                                             </button>
                                                         </a>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <a href="http://eve-search.com/search/{{ character.character_name }}/forum/734105">
+                                                        <a target="_blank" href="http://eve-search.com/search/{{ character.character_name }}/forum/734105">
                                                             <button type="button" class="btn btn-default btn-xs">
                                                                 Bazaar Search
                                                             </button>
                                                         </a>
                                                     </div>
                                                     <div class="col-md-9">
-                                                        <a href="https://zkillboard.com/character/{{ character.character_id }}/">
+                                                        <a target="_blank" href="https://zkillboard.com/character/{{ character.character_id }}/">
                                                             <button type="button" class="btn btn-default btn-xs">
                                                                 zKillboard
                                                             </button>
