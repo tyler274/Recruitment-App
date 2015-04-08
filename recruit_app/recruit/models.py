@@ -52,6 +52,10 @@ class HrApplication(SurrogatePK, Model):
     bought_characters = Column(db.Text, nullable=True)
     why_interested = Column(db.Text, nullable=True)
 
+    goon_interaction = Column(db.Text, nullable=True)
+    friends = Column(db.Text, nullable=True)
+
+
     scale = Column(db.Text, nullable=True)
 
     #reason_for_joining = Column(db.Text, nullable=True)

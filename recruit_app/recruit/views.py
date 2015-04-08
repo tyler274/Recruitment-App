@@ -152,7 +152,7 @@ def application_view(application_id):
                                    form_comment=form_comment,
                                    form_app=form_app)
 
-        elif application.id == current_user.get_id():
+        elif int(application.user_id) == int(current_user.get_id()):
 
             return render_template('recruit/application.html',
                                    application=application,

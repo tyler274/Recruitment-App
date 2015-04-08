@@ -57,6 +57,10 @@ class HrManager:
         application.what_expect = form.what_expect.data
         application.bought_characters = form.bought_characters.data
         application.why_interested = form.why_interested.data
+
+        application.goon_interaction = form.goon_interaction.data
+        application.friends = form.friends.data
+
         #application.reason_for_joining = form.reason_for_joining.data
         application.find_out = form.find_out.data
         application.favorite_role = form.favorite_role.data
