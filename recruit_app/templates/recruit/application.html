@@ -206,7 +206,7 @@
                         {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
                             <div class="form-group text-center">
                                 <label class="control-label text-center" for="id_extra">Actions</label>
-                                <label class="control-label text-center" for="id_extra">Last Update Time - {{ application.last_update_time }}</label>
+                                <label class="control-label text-center" for="id_extra">Last Update Time - {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</label>
 
                                 <div class="container-fluid well">
 
@@ -320,7 +320,7 @@
                                             <div class="panel panel-default">
                                                 <div class="panel-heading" role="tab" id="">
                                                     <div class="panel-title">
-                                                        {{ comment.user.auth_info[0].main_character }} - {{ comment.last_update_time }}
+                                                        {{ comment.user.auth_info[0].main_character }} - {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
                                                     </div>
                                                     {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
                                                         <a href="{{ url_for('recruit.application_comment_action', application_id=application.id, comment_id=comment.id, action="delete") }}">
