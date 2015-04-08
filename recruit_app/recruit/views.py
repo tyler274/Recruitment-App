@@ -45,13 +45,12 @@ def application_queue(page=1):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            #search_results = HrApplication.query.whoosh_search(search_form.search.data + '*')
+            recruiter_queue = HrApplication.query.whoosh_search(search_form.search.data + '*').paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
-                           search_form=search_form,
-                           search_results=search_results)
+                           search_form=search_form)
 
 
 @blueprint.route("/application_queue/all/", methods=['GET', 'POST'])
