@@ -11,9 +11,12 @@ from recruit_app.recruit.managers import HrManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
 
 import datetime as dt
+# from sqlalchemy_searchable import search
+
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
                         static_folder="../static")
+
 
 @blueprint.route("/applications/", methods=['GET', 'POST'])
 @blueprint.route("/applications/<int:page>", methods=['GET', 'POST'])
@@ -45,8 +48,11 @@ def application_queue(page=1):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            #search_results = HrApplication.query.whoosh_search(search_form.search.data + '*')
-            recruiter_queue = HrApplication.query.whoosh_search(search_form.search.data + '*').paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            #search_results = HrApplication.query.search(unicode(search_form.search.data))
+            #print search_results
+            #recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            #print recruiter_queue.items
+            recruiter_queue = HrApplication.query.whoosh_search('*' + str(search_form.search.data) + '*').paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,

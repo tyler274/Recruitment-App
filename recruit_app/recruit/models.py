@@ -12,6 +12,12 @@ from recruit_app.database import (
 )
 
 import flask_whooshalchemy as whooshalchemy
+# from sqlalchemy_searchable import make_searchable
+# from sqlalchemy_utils.types import TSVectorType
+#
+# from sqlalchemy_searchable import SearchQueryMixin
+# from flask_sqlalchemy import BaseQuery
+
 
 
 character_apps = db.Table('app_characters',
@@ -19,7 +25,12 @@ character_apps = db.Table('app_characters',
         db.Column('character_id', db.String(), db.ForeignKey('characters.character_id')))
 
 
+# class HrApplicationQuery(BaseQuery, SearchQueryMixin):
+#     pass
+
+
 class HrApplication(SurrogatePK, Model):
+    # query_class = HrApplicationQuery
     __tablename__ = 'hr_applications'
 
     __searchable__ = ['thesis',
@@ -72,6 +83,8 @@ class HrApplication(SurrogatePK, Model):
     approved_denied = Column(db.String(10), default="Pending")
 
     hidden = Column(db.Boolean, nullable=True, default=False)
+
+    # search_vector = Column(TSVectorType('main_character_name', 'thesis'))
 
     user = relationship('User', foreign_keys=[user_id], backref='hr_applications')
     reviewer_user = relationship('User', foreign_keys=[reviewer_user_id], backref='hr_applications_reviewed')
