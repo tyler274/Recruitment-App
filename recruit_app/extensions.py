@@ -12,6 +12,9 @@ bcrypt = Bcrypt()
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
+# from sqlalchemy_searchable import make_searchable
+# make_searchable()
+
 from flask_security import Security, SQLAlchemyUserDatastore
 from recruit_app.user.models import User, Role
 security = Security()
