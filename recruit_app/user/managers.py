@@ -127,10 +127,10 @@ class EveManager:
 
 
     @staticmethod
-    def update_characters_from_list(characters, user_id, api_id):
+    def update_characters_from_list(characters, user, api_id):
         EveManager.create_alliances_from_list(characters)
         EveManager.create_corporations_from_character_list(characters)
-        EveManager.create_characters_from_list(characters, user_id, api_id)
+        EveManager.create_characters_from_list(characters, user, api_id)
 
         for character in characters.result:
             if EveManager.check_if_character_exist(characters.result[character]['id']):
@@ -174,7 +174,7 @@ class EveManager:
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
 
             EveManager.update_characters_from_list(characters=characters,
-                                                   user_id=api_pair.user_id,
+                                                   user=api_pair.user,
                                                    api_id=api_pair.api_id)
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
