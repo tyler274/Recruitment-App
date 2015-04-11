@@ -2,7 +2,9 @@
 recruit
 ===============================
 
-A flasky app.
+A Corporation platform for EvE Online, currently features a recruitment system (tailored to KarmaFleet and Goonswarm) with incoming features including a blacklist and member tracking, among other things.
+
+This is not intended to compete with tools like ECM (https://github.com/evecm/ecm) but will share some features and concepts. 
 
 
 Quickstart
