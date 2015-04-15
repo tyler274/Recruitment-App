@@ -90,7 +90,7 @@ def register_tasks():
 
 
 def register_search(app):
-    # recruit_search.register_search_models(app)
+    recruit_search.register_search_models(app)
 
     return None
 

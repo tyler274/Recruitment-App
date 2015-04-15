@@ -49,13 +49,25 @@
                                     <td class="text-center">{{ queue.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
                                     <td class="text-center">
                                         {% if queue.approved_denied == "New" %}
-                                            <div class="panel panel-warning" role="alert">Pending</div>
+                                            <div class="panel panel-warning" role="alert">New</div>
+
                                         {% elif queue.approved_denied == "Approved" %}
                                             <div class="panel panel-success" role="alert">Approved</div>
+
                                         {% elif queue.approved_denied == "Rejected" %}
                                             <div class="panel panel-danger" role="alert">Rejected</div>
+
                                         {% elif queue.approved_denied == "Undecided" %}
                                             <div class="panel panel-danger" role="alert">In Progress</div>
+
+                                        {% elif queue.approved_denied == "Awaiting Response" %}
+                                            <div class="panel panel-danger" role="alert">Awaiting Response</div>
+
+                                        {% elif queue.approved_denied == "Needs Director Review" %}
+                                            <div class="panel panel-danger" role="alert">Needs Director Review</div>
+
+                                        {% elif queue.approved_denied == "Role Stasis" %}
+                                            <div class="panel panel-danger" role="alert">Role Stasis</div>
                                         {% endif %}
                                     </td>
                                     <td class="text-center">{{ queue.hr_comments|length }}</td>
