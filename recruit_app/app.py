@@ -28,7 +28,7 @@ from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
 from recruit_app.scheduled_tasks import schedule_tasks
 from redis import Redis
 
-from rq_scheduler import Scheduler
+from sqlalchemy_searchable import make_searchable
 
 
 def create_app(config_object=ProdConfig):
@@ -54,6 +54,7 @@ def register_extensions(app):
     bcrypt.init_app(app)
     cache.init_app(app)
     db.init_app(app)
+    make_searchable()
     #login_manager.init_app(app)
     security.init_app(app, user_datastore, register_blueprint=True, confirm_register_form=ConfirmRegisterFormRecaptcha)
     debug_toolbar.init_app(app)
@@ -63,6 +64,7 @@ def register_extensions(app):
     mail.init_app(app)
     rq.init_app(app)
     migrate.init_app(app, db)
+
     return None
 
 
@@ -88,7 +90,7 @@ def register_tasks():
 
 
 def register_search(app):
-    recruit_search.register_search_models(app)
+    # recruit_search.register_search_models(app)
 
     return None
 
