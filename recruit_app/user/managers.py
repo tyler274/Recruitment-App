@@ -45,7 +45,9 @@ class EveManager:
                 eve_char.alliance_id = str(alliance_id)
             eve_char.user_id = user_id
             eve_char.api_id = api_id
-            eve_char.save()
+            if eve_char.save():
+                return True
+        return False
 
 
     @staticmethod
@@ -60,8 +62,8 @@ class EveManager:
 
             eve_char.user_id = user_id
             eve_char.api_id = api_id
-            eve_char.save()
-            return True
+            if eve_char.save():
+                return True
         return False
 
 
@@ -80,7 +82,7 @@ class EveManager:
                     pass
 
                 else:
-                    errors.append("Character Creation on" + chars.result[char]['name'] + "failed")
+                    errors.append("Character Creation on " + chars.result[char]['name'] + " failed")
 
             else:
                 if EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first().user_id is None:
@@ -92,9 +94,9 @@ class EveManager:
                         pass
 
                     else:
-                        errors.append("Character Creation/Update on " + chars.result[char]['name'] + "failed")
+                        errors.append("Character Creation/Update on " + chars.result[char]['name'] + " failed")
                 else:
-                        errors.append("Character " + chars.result[char]['name'] + "in use")
+                        errors.append("Character " + chars.result[char]['name'] + " in use")
         return errors
 
 

@@ -10,8 +10,11 @@ from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
 
+from sqlalchemy import desc, asc
 import datetime as dt
 # from sqlalchemy_searchable import search
+
+from recruit_app.database import db
 
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
@@ -38,21 +41,37 @@ def applications(page=1):
 @roles_accepted('admin', 'recruiter')
 def application_queue(page=1):
     search_results = []
+    from recruit_app.database import Model
+    from recruit_app.extensions import db
+    #current_app.config['SQLALCHEMY_ECHO'] = True
+    db.configure_mappers()
+
+    HrApplication.metadata.create_all(db.session.connection())
+
+    db.session.commit()
 
     search_form = SearchForm()
 
-    query = HrApplication.query.filter(HrApplication.hidden == False,
-                                       (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided")).order_by(HrApplication.id)
+    query = HrApplication\
+        .query\
+        .filter(HrApplication.hidden == False,
+                                       (HrApplication.approved_denied == "New")
+                                       | (HrApplication.approved_denied == "Undecided"))\
+        .order_by(HrApplication.id)
 
     recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
+
             #search_results = HrApplication.query.search(unicode(search_form.search.data))
             #print search_results
             #recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-            #print recruiter_queue.items
-            recruiter_queue = HrApplication.query.whoosh_search('*' + str(search_form.search.data) + '*').paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            # print recruiter_queue.items
+            recruiter_queue = HrApplication\
+                .query\
+                .whoosh_search('*' + str(search_form.search.data) + '*')\
+                .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
@@ -67,15 +86,21 @@ def application_all(page=1):
 
     search_form = SearchForm()
 
-    query = HrApplication.query.filter(HrApplication.hidden == False,
-                                       (HrApplication.approved_denied == "Pending") | (HrApplication.approved_denied == "Undecided")).order_by(HrApplication.id)
+    query = HrApplication.query\
+        .filter(HrApplication.hidden == False,
+                (HrApplication.approved_denied == "New")
+                | (HrApplication.approved_denied == "Undecided")
+                | (HrApplication.approved_denied == "Role Stasis")
+                | (HrApplication.approved_denied == "Awaiting Response")
+                | (HrApplication.approved_denied == "Needs Director Review"))\
+        .order_by(HrApplication.id)
 
     recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
             search_results = query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            recruiter_queue = search_results.paginate(page, None, False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
@@ -149,7 +174,10 @@ def application_view(application_id):
         if current_user.has_role("recruiter") or current_user.has_role("admin"):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
 
-            comments = HrApplicationComment.query.filter_by(application_id=application_id).all()
+            comments = HrApplicationComment.query.filter_by(
+                application_id=application_id)\
+                .order_by(asc(HrApplicationComment.last_update_time))\
+                .all()
 
             return render_template('recruit/application.html',
                                    application=application,
@@ -185,7 +213,7 @@ def application_comment_create(application_id):
 
                 HrManager.create_comment(application, form_comment.comment.data, current_user)
 
-                if application.approved_denied == "Pending":
+                if application.approved_denied == "New":
                     application.approved_denied = "Undecided"
                     application.save()
 
@@ -246,7 +274,7 @@ def application_interact(application_id, action):
                       category='message')
 
         elif application.user_id == current_user.get_id():
-            if action == "delete" and application.approve_deny == "Pending":
+            if action == "delete" and application.approve_deny == "New":
                 application_status = HrManager.alter_application(application, action, current_user)
                 flash("%s's application %s" % (application.main_character,
                                                application_status),

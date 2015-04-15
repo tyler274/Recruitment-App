@@ -17,18 +17,28 @@
                         <div class="form-group">
                             <label class="control-label" for="id_extra">Status</label>
                             <div class=" ">
-                                {% if application.approved_denied == "Pending" %}
-                                    <div class="alert alert-warning" role="alert">Pending</div>
+                                {% if application.approved_denied == "Role Stasis" %}
+                                    <div class="alert alert-warning" role="alert">Role Stasis</div>
+
                                 {% elif application.approved_denied == "Approved" %}
                                     <div class="alert alert-success" role="alert">Approved
                                         <div class="text-left">
                                             Put {{ request.url }} in your in game app and apply
                                         </div>
                                     </div>
+
                                 {% elif application.approved_denied == "Rejected" %}
                                     <div class="alert alert-danger" role="alert">Rejected</div>
+
+                                {% elif application.approved_denied == "Awaiting Response" %}
+                                    <div class="alert alert-danger" role="alert">Awaiting Response</div>
+
+                                {% elif application.approved_denied == "Needs Director Review" %}
+                                    <div class="alert alert-danger" role="alert">Needs Director Review</div>
+
                                 {% elif application.approved_denied == "Undecided" %}
                                     <div class="alert alert-warning" role="alert">In Progress</div>
+
                                 {% endif %}
                             </div>
                         </div>
@@ -217,6 +227,15 @@
 
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
                                             <button type="button" class="btn btn-lg btn-info">Reject</button>
+                                        </a>
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">
+                                            <button type="button" class="btn btn-lg btn-info">Role Stasis</button>
+                                        </a>
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="waiting") }}">
+                                            <button type="button" class="btn btn-lg btn-info">Awaiting Response</button>
+                                        </a>
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
+                                            <button type="button" class="btn btn-lg btn-info">Needs Director Review</button>
                                         </a>
                                         {% if current_user.has_role('admin') %}
                                             <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">

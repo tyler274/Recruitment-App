@@ -132,12 +132,12 @@ class HrManager:
             application.save()
             return "rejected"
 
-        elif action == "pending":
-            application.approved_denied = "Pending"
-            application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
-            application.save()
-            return "pending"
+        # elif action == "pending":
+        #     application.approved_denied = "Pending"
+        #     application.last_user_id = user.id
+        #     application.last_update_time = dt.datetime.utcnow()
+        #     application.save()
+        #     return "pending"
 
         elif action == "undecided":
             application.approved_denied = "Undecided"
@@ -145,6 +145,27 @@ class HrManager:
             application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "undecided"
+
+        elif action == "stasis":
+            application.approved_denied = "Role Stasis"
+            application.last_user_id = user.id
+            application.last_update_time = dt.datetime.utcnow()
+            application.save()
+            return "Role Stasis"
+
+        elif action == "director_review":
+            application.approved_denied = "Needs Director Review"
+            application.last_user_id = user.id
+            application.last_update_time = dt.datetime.utcnow()
+            application.save()
+            return "Needs Director Review"
+
+        elif action == "waiting":
+            application.approved_denied = "Awaiting Response"
+            application.last_user_id = user.id
+            application.last_update_time = dt.datetime.utcnow()
+            application.save()
+            return "Awaiting Response"
 
         elif action == "hide":
             application.hidden = True

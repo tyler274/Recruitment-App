@@ -82,7 +82,7 @@ class HrApplication(SurrogatePK, Model):
     reviewer_user_id = ReferenceCol('users', nullable=True)
     last_user_id = ReferenceCol('users', nullable=True)
 
-    approved_denied = Column(db.String(10), default="Pending")
+    approved_denied = Column(db.Text, default="New")
 
     hidden = Column(db.Boolean, nullable=True, default=False)
 
