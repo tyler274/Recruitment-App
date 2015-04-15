@@ -32,21 +32,21 @@ class HrApplicationQuery(BaseQuery, SearchQueryMixin):
 
 
 class HrApplication(SurrogatePK, Model):
-    query_class = HrApplicationQuery
+    # query_class = HrApplicationQuery
     __tablename__ = 'hr_applications'
 
-    # __searchable__ = ['thesis',
-    #                   'how_long',
-    #                   'notable_accomplishments',
-    #                   'corporation_history',
-    #                   'why_leaving',
-    #                   'what_know',
-    #                   'what_expect',
-    #                   'bought_characters',
-    #                   'why_interested',
-    #                   'find_out',
-    #                   'favorite_role',
-    #                   'main_character_name']
+    __searchable__ = ['thesis',
+                      'how_long',
+                      'notable_accomplishments',
+                      'corporation_history',
+                      'why_leaving',
+                      'what_know',
+                      'what_expect',
+                      'bought_characters',
+                      'why_interested',
+                      'find_out',
+                      'favorite_role',
+                      'main_character_name']
 
     main_character_name = Column(db.Unicode, nullable=True)
 

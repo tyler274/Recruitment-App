@@ -52,11 +52,13 @@ def application_queue(page=1):
 
     search_form = SearchForm()
 
-    query = HrApplication\
-        .query\
+    query = HrApplication.query\
         .filter(HrApplication.hidden == False,
-                                       (HrApplication.approved_denied == "New")
-                                       | (HrApplication.approved_denied == "Undecided"))\
+                (HrApplication.approved_denied == "New")
+                | (HrApplication.approved_denied == "Undecided")
+                | (HrApplication.approved_denied == "Role Stasis")
+                | (HrApplication.approved_denied == "Awaiting Response")
+                | (HrApplication.approved_denied == "Needs Director Review"))\
         .order_by(HrApplication.id)
 
     recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
@@ -95,12 +97,12 @@ def application_all(page=1):
                 | (HrApplication.approved_denied == "Needs Director Review"))\
         .order_by(HrApplication.id)
 
-    recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+    recruiter_queue = query.paginate(page, len(query.all()), False)
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
             search_results = query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, None, False)
+            recruiter_queue = search_results.paginate(page, len(search_results.all()), False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
