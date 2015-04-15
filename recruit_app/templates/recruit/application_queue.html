@@ -49,25 +49,25 @@
                                     <td class="text-center">{{ queue.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
                                     <td class="text-center">
                                         {% if queue.approved_denied == "New" %}
-                                            <div class="alert alert-warning" role="alert">New</div>
+                                            <div class="alert-warning" role="alert">New</div>
 
                                         {% elif queue.approved_denied == "Approved" %}
-                                            <div class="alert alert-success" role="alert">Approved</div>
+                                            <div class="alert-success" role="alert">Approved</div>
 
                                         {% elif queue.approved_denied == "Rejected" %}
-                                            <div class="alert alert-danger" role="alert">Rejected</div>
+                                            <div class="alert-danger" role="alert">Rejected</div>
 
                                         {% elif queue.approved_denied == "Undecided" %}
-                                            <div class="alert alert-info" role="alert">In Progress</div>
+                                            <div class="alert-info" role="alert">In Progress</div>
 
                                         {% elif queue.approved_denied == "Awaiting Response" %}
-                                            <div class="alert alert-info" role="alert">Awaiting Response</div>
+                                            <div class="alert-info" role="alert">Awaiting Response</div>
 
                                         {% elif queue.approved_denied == "Needs Director Review" %}
-                                            <div class="alert alert-info" role="alert">Needs Director Review</div>
+                                            <div class="alert-info" role="alert">Needs Director Review</div>
 
                                         {% elif queue.approved_denied == "Role Stasis" %}
-                                            <div class="alert alert-info" role="alert">Role Stasis</div>
+                                            <div class="alert-info" role="alert">Role Stasis</div>
 
                                         {% endif %}
                                     </td>
