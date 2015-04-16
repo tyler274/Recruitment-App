@@ -27,19 +27,25 @@
                         <td class="text-center">{{ application.user.auth_info[0].main_character }}</td>
                         <td class="text-center">
                             {% if application.approved_denied == "New" %}
-                                <div class="panel panel-warning alert-warning" role="alert">New</div>
+                                <div class="alert-warning" role="alert">New</div>
 
                             {% elif application.approved_denied == "Approved" %}
-                                <div class="panel panel-success alert-success" role="alert">Approved</div>
+                                <div class="alert-success" role="alert">Approved</div>
 
                             {% elif application.approved_denied == "Rejected" %}
-                                <div class="panel panel-danger alert-danger" role="alert">Rejected</div>
+                                <div class="alert-danger" role="alert">Rejected</div>
 
                             {% elif application.approved_denied == "Undecided" %}
-                                <div class="panel panel-danger" role="alert">In Progress</div>
+                                <div class="alert-info" role="alert">In Progress</div>
 
-                            {% else %}
-                                <div class="panel alert-info" role="alert">{{ application.approved_denied }}</div>
+                            {% elif application.approved_denied == "Awaiting Response" %}
+                                <div class="alert-info" role="alert">Awaiting Response</div>
+
+                            {% elif application.approved_denied == "Needs Director Review" %}
+                                <div class="alert-info" role="alert">Needs Director Review</div>
+
+                            {% elif application.approved_denied == "Role Stasis" %}
+                                <div class="alert-info" role="alert">Role Stasis</div>
 
                             {% endif %}
                         </td>
