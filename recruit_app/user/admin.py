@@ -11,7 +11,22 @@ def register_admin_views(admin, db):
     admin.add_view(EveApiKeyPairAdmin(EveApiKeyPair, db.session, category='EvE'))
     admin.add_view(UserAdmin(User, db.session, endpoint="users", category='Users'))
     admin.add_view(RoleAdmin(Role, db.session, category='Users'))
-    admin.add_view(AuthenticatedModelView(AuthInfo, db.session, category='Users'))
+    admin.add_view(AuthInfoAdmin(AuthInfo, db.session, category='Users'))
+
+
+class AuthInfoAdmin(AuthenticatedModelView):
+    searchable = ('user.username',
+                  'user.email',
+                  'main_character.character_name',
+                  'id',
+                  )
+    # show = ('api_id', 'api_key', 'user.auth_info.main_character.character_name', 'user.username', 'user.email')
+    column_list = searchable
+    column_sortable_list = searchable
+    column_auto_select_related = True
+    # column_display_all_relations = True
+    column_searchable_list = searchable
+    column_filters = searchable
 
 
 class EveCharacterAdmin(AuthenticatedModelView):
