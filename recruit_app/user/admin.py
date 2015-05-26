@@ -18,7 +18,6 @@ class AuthInfoAdmin(AuthenticatedModelView):
     searchable = ('user.username',
                   'user.email',
                   'main_character.character_name',
-                  'id',
                   )
     # show = ('api_id', 'api_key', 'user.auth_info.main_character.character_name', 'user.username', 'user.email')
     column_list = searchable
@@ -26,7 +25,7 @@ class AuthInfoAdmin(AuthenticatedModelView):
     column_auto_select_related = True
     # column_display_all_relations = True
     column_searchable_list = searchable
-    column_filters = searchable
+    column_filters = searchable + ('id',)
 
 
 class EveCharacterAdmin(AuthenticatedModelView):
