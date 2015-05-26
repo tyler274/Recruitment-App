@@ -29,7 +29,7 @@ character_apps = db.Table('app_characters',
         db.Column('character_id', db.String(), db.ForeignKey('characters.character_id')))
 
 
-class HrApplicationQuery(BaseQuery, SearchQueryMixin):
+class HrApplicationQuery(BaseQuery):
     pass
 
 
@@ -86,7 +86,7 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
 
     hidden = Column(db.Boolean, nullable=True, default=False)
 
-    search_vector = Column(TSVectorType('main_character_name', 'thesis'))
+    # search_vector = Column(TSVectorType('main_character_name', 'thesis'))
 
     user = relationship('User', foreign_keys=[user_id], backref='hr_applications')
     reviewer_user = relationship('User', foreign_keys=[reviewer_user_id], backref='hr_applications_reviewed')
