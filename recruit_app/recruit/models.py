@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime as dt
 
 from recruit_app.extensions import bcrypt
 from recruit_app.database import (
@@ -9,17 +8,20 @@ from recruit_app.database import (
     ReferenceCol,
     relationship,
     SurrogatePK,
+    TimeMixin,
 )
 
 import flask_whooshalchemy as whooshalchemy
 from sqlalchemy_searchable import make_searchable
-from sqlalchemy_utils.types import TSVectorType
+from sqlalchemy_utils.types import TSVectorType, ScalarListType
 
 from sqlalchemy_searchable import SearchQueryMixin
 from flask_sqlalchemy import BaseQuery
+from sqlalchemy.dialects import postgresql
 
+import datetime
 
-make_searchable()
+# make_searchable()
 
 
 character_apps = db.Table('app_characters',
@@ -31,7 +33,7 @@ class HrApplicationQuery(BaseQuery, SearchQueryMixin):
     pass
 
 
-class HrApplication(SurrogatePK, Model):
+class HrApplication(SurrogatePK, TimeMixin, Model):
     # query_class = HrApplicationQuery
     __tablename__ = 'hr_applications'
 
@@ -76,8 +78,6 @@ class HrApplication(SurrogatePK, Model):
 
     favorite_role = Column(db.Text, nullable=True)
 
-    last_update_time = Column(db.DateTime(), nullable=True)
-
     user_id = ReferenceCol('users', nullable=True)
     reviewer_user_id = ReferenceCol('users', nullable=True)
     last_user_id = ReferenceCol('users', nullable=True)
@@ -99,8 +99,7 @@ class HrApplication(SurrogatePK, Model):
         return '<Application %r>' % self.user.auth_info
 
 
-
-class HrApplicationComment(SurrogatePK, Model):
+class HrApplicationComment(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'hr_comments'
 
     comment = Column(db.Text, nullable=True)
@@ -108,14 +107,27 @@ class HrApplicationComment(SurrogatePK, Model):
     application_id = ReferenceCol('hr_applications', nullable=False)
     user_id = ReferenceCol('users', nullable=False)
 
-    last_update_time = Column(db.DateTime(), nullable=True)
-
     application = relationship('HrApplication', foreign_keys=[application_id], backref=db.backref('hr_comments', cascade="delete"), single_parent=True)
 
     user = relationship('User', backref=db.backref('hr_comments', lazy='dynamic'))
 
     def __repr__(self):
         return str(self.user) + " - Comment"
+
+
+class HrBlacklist(SurrogatePK, TimeMixin, Model):
+    __tablename__ = 'hr_blacklist'
+
+    comment = Column(db.Text, nullable=True)
+
+    user_id = ReferenceCol('users', nullable=False)
+
+    known_characters = Column(ScalarListType())
+
+    creator = relationship('User', backref=db.backref('hr_blacklist', lazy='dynamic'))
+
+    def __repr__(self):
+        return str(self.user) + " - BlackList"
 
 
 
