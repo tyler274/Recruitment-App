@@ -1,17 +1,50 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_security.decorators import login_required
-from flask_security import current_user
+from flask_security import current_user, login_user
 
-from recruit_app.user.managers import EveManager, AuthInfoManager
+from recruit_app.user.managers import EveManager, AuthInfoManager, OAuthSignIn
 from recruit_app.user.eve_api_manager import EveApiManager
 from recruit_app.user.forms import UpdateKeyForm
 
-from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair
+from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, User
 
 import datetime as dt
 
 blueprint = Blueprint("user", __name__, url_prefix='/users',
                         static_folder="../static")
+
+import requests
+
+requests.packages.urllib3.disable_warnings()
+
+
+@blueprint.route('/authorize/<string:provider>')
+def oauth_authorize(provider):
+    if not current_user.is_anonymous():
+        return redirect(url_for('public.home'))
+    oauth = OAuthSignIn.get_provider(provider)
+    return oauth.authorize()
+
+@blueprint.route('/callback/<string:provider>')
+def oauth_callback(provider):
+    if not current_user.is_anonymous():
+        flash('Already logged in.')
+        return redirect(url_for('public.home'))
+    oauth = OAuthSignIn.get_provider(provider)
+    sso_id, username, email,  = oauth.callback()
+    if sso_id is None:
+        flash('Authentication failed.')
+        return redirect(url_for('public.home'))
+    user = User.query.filter_by(sso_id=sso_id).first()
+    if not user:
+        user = User()
+        user.sso_id = sso_id
+        user.username = username
+        user.email = email
+        user.active = True
+        user.save()
+    login_user(user, remember=True)
+    return redirect(url_for('public.home'))
 
 
 @blueprint.route("/")

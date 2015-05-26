@@ -8,12 +8,11 @@ from recruit_app.user.eve_api_manager import EveApiManager
 
 from recruit_app.extensions import bcrypt
 
-from redis import Redis
-redis_conn = Redis()
+from flask import flash, current_app, url_for, redirect, request
 
-from rq.decorators import job
+from rauth import OAuth2Service
 
-from flask import flash
+import json
 
 
 class EveManager:
@@ -381,3 +380,109 @@ class AuthInfoManager:
     @staticmethod
     def check_if_role_leader(user):
         pass
+
+
+class OAuthSignIn(object):
+    providers = None
+
+    def __init__(self, provider_name):
+        self.provider_name = provider_name
+        credentials = current_app.config['OAUTH_CREDENTIALS'][provider_name]
+        self.consumer_id = credentials['id']
+        self.consumer_secret = credentials['secret']
+
+    def authorize(self):
+        pass
+
+    def callback(self):
+        pass
+
+    def get_callback_url(self):
+        return url_for('user.oauth_callback', provider=self.provider_name,
+                       _external=True)
+
+    @classmethod
+    def get_provider(self, provider_name):
+        if self.providers is None:
+            self.providers = {}
+            for provider_class in self.__subclasses__():
+                provider = provider_class()
+                self.providers[provider.provider_name] = provider
+        return self.providers[provider_name]
+
+
+class FacebookSignIn(OAuthSignIn):
+
+    def __init__(self):
+        super(FacebookSignIn, self).__init__('facebook')
+        self.service = OAuth2Service(
+            name='facebook',
+            client_id=self.consumer_id,
+            client_secret=self.consumer_secret,
+            authorize_url='https://graph.facebook.com/oauth/authorize',
+            access_token_url='https://graph.facebook.com/oauth/access_token',
+            base_url='https://graph.facebook.com/'
+        )
+
+    def authorize(self):
+        return redirect(self.service.get_authorize_url(
+            scope='email',
+            response_type='code',
+            redirect_uri=self.get_callback_url())
+        )
+
+    def callback(self):
+        if 'code' not in request.args:
+            return None, None, None
+        oauth_session = self.service.get_auth_session(
+            data={'code': request.args['code'],
+                  'grant_type': 'authorization_code',
+                  'redirect_uri': self.get_callback_url()}
+        )
+        me = oauth_session.get('me').json()
+        return (
+            'facebook$' + me['id'],
+            me.get('email').split('@')[0],  # Facebook does not provide
+                                            # username, so the email's user
+                                            # is used instead
+            me.get('email')
+        )
+
+
+class KarmafleetSignIn(OAuthSignIn):
+
+    def __init__(self):
+        super(KarmafleetSignIn, self).__init__('karmafleet')
+        self.service = OAuth2Service(
+            name='karmafleet',
+            client_id=self.consumer_id,
+            client_secret=self.consumer_secret,
+            authorize_url='https://sso.app/oauth/v2/auth',
+            access_token_url='https://sso.app/oauth/v2/token',
+            base_url='https://sso.app/'
+        )
+
+    def authorize(self):
+        return redirect(self.service.get_authorize_url(
+            scope='full_profile',
+            response_type='code',
+            redirect_uri=self.get_callback_url())
+        )
+
+    def callback(self):
+        print "testt"
+        if 'code' not in request.args:
+            return None, None, None
+        print request.args['code']
+        oauth_session = self.service.get_auth_session(
+            data={'code': request.args['code'],
+                  'grant_type': 'authorization_code',
+                  'redirect_uri': self.get_callback_url()},
+            decoder=json.loads
+        )
+        full_profile = oauth_session.get('api/v1/full-profile').json()
+        return (
+            'karmafleet$' + str(full_profile['id']),
+            full_profile.get('username'),
+            full_profile.get('email')
+        )

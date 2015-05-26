@@ -8,9 +8,21 @@ from recruit_app.extensions import rq
 
 from redis import Redis
 
+from recruit_app.app import create_celery_app
+from celery.signals import task_prerun
+from celery.task import periodic_task
+from celery.schedules import crontab
+
+celery = create_celery_app()
+
+@task_prerun.connect
+def celery_prerun(*args, **kwargs):
+    #print g
+    with celery.app.app_context():
+        print "task test"
+
 # Run Every 2 hours
-# @periodic_task(run_every=crontab(minute=0, hour="*/2"))
-@job('low')
+@periodic_task(run_every=crontab(minute=0, hour="*/3"))
 def run_alliance_corp_update():
     with current_app.app_context():
         # I am not proud of this block of code

@@ -38,25 +38,31 @@
       </li>
     </ul>
     {% if current_user and current_user.is_authenticated() %}
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            <p class="navbar-text"><a class="navbar-link" href="{{ url_for('user.members') }}">Logged in as {{ current_user.email }}</a></p>
-        </li>
-        <li><a class="navbar-link" href="{{ url_for('security.logout') }}"><i class="fa fa-sign-out"></i></a></li>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <p class="navbar-text"><a class="navbar-link" href="{{ url_for('user.members') }}">Logged in as {{ current_user.email }}</a></p>
+            </li>
+            <li><a class="navbar-link" href="{{ url_for('public.logout') }}"><i class="fa fa-sign-out"></i></a></li>
 
-    </ul>
-    {% elif login_user_form %}
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="{{ url_for('security.register') }}">Create account</a></li>
-    </ul>
-    <form id="loginForm" method="POST" class="navbar-form form-inline navbar-right" action="{{ url_for('security.login') }}" name="login_user_form" role="login">
-      {{ login_user_form.hidden_tag() }}
-      <div class="form-group">
-        {{ login_user_form.email(placeholder="Email", class_="form-control") }}
-        {{ login_user_form.password(placeholder="Password", class_="form-control") }}
-      </div>
-      <button type="submit" class="btn btn-default">Log in</button>
-    </form>
+        </ul>
+{#    {% elif login_user_form %}#}
+{#    <ul class="nav navbar-nav navbar-right">#}
+{#      <li><a href="{{ url_for('security.register') }}">Create account</a></li>#}
+{#    </ul>#}
+{#    <form id="loginForm" method="POST" class="navbar-form form-inline navbar-right" action="{{ url_for('security.login') }}" name="login_user_form" role="login">#}
+{#      {{ login_user_form.hidden_tag() }}#}
+{#      <div class="form-group">#}
+{#        {{ login_user_form.email(placeholder="Email", class_="form-control") }}#}
+{#        {{ login_user_form.password(placeholder="Password", class_="form-control") }}#}
+{#      </div>#}
+{#      <button type="submit" class="btn btn-default">Log in</button>#}
+{#    </form>#}
+    {% else %}
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a class="btn btn-default" href="{{ url_for('user.oauth_authorize', provider='karmafleet') }}">Login with KarmaFleet SSO</a>
+            </li>
+        </ul>
     {% endif %}
   </div><!-- /.navbar-collapse -->
   </div><!-- /.container -->

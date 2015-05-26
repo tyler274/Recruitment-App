@@ -25,8 +25,10 @@ from recruit_app.recruit import admin as recruit_admin_view
 from recruit_app.recruit import search as recruit_search
 from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
 
-from recruit_app.scheduled_tasks import schedule_tasks
+# from recruit_app.scheduled_tasks import schedule_tasks
 from redis import Redis
+
+from celery import Celery
 
 from sqlalchemy_searchable import make_searchable
 
@@ -56,7 +58,7 @@ def register_extensions(app):
     db.init_app(app)
     make_searchable()
     #login_manager.init_app(app)
-    security.init_app(app, user_datastore, register_blueprint=True, confirm_register_form=ConfirmRegisterFormRecaptcha)
+    security.init_app(app, user_datastore, register_blueprint=False, confirm_register_form=ConfirmRegisterFormRecaptcha)
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)
     rqDashboard.init_app(app)
@@ -87,6 +89,24 @@ def register_tasks():
     # schedule_tasks()
 
     return None
+
+
+def create_celery_app(app=None):
+    app = app or create_app()
+    celery = Celery(__name__, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+
+    class ContextTask(TaskBase):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+
+    celery.Task = ContextTask
+    celery.app = app
+    return celery
 
 
 def register_search(app):

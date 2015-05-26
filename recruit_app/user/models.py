@@ -3,8 +3,7 @@ import datetime as dt
 
 #from flask_login import UserMixin
 from flask_security import UserMixin, RoleMixin
-
-from flask_security.utils import verify_and_update_password
+from flask_security.utils import verify_and_update_password, md5
 
 from recruit_app.extensions import bcrypt
 from recruit_app.database import (
@@ -51,10 +50,17 @@ class RolePair(SurrogatePK, Model):
 class User(SurrogatePK, Model, UserMixin):
     __tablename__ = 'users'
 
+    sso_id = Column(db.String(64), nullable=True, unique=True)
+
     username = Column(db.String(80), unique=True, nullable=True)
     email = Column(db.String(80), unique=True, nullable=False)
+
+    # forgive me, overriding/rewriting a lot of flask-security methods was not desired
+    @property
+    def password(self):
+        return self.sso_id
     #: The hashed password
-    password = Column(db.String(128), nullable=True)
+    # password = Column(db.String(128), nullable=True)
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
@@ -87,11 +93,15 @@ class User(SurrogatePK, Model, UserMixin):
     def full_name(self):
         return "{0} {1}".format(self.first_name, self.last_name)
 
+    # def get_auth_token(self):
+    #     """Returns the user's authentication token."""
+    #     data = [str(self.id), md5(self.sso_id)]
+    #     return remember_token_serializer.dumps(data)
+
     # def __repr__(self):
     #     return '<User({username!r})>'.format(username=self.username)
     def __repr__(self):
         return '<User({name})>'.format(name=self.email)
-
 
 
 class AuthInfo(SurrogatePK, Model):
@@ -157,7 +167,7 @@ class EveApiKeyPair(Model):
 class EveAllianceInfo(Model):
     __tablename__ = 'alliances'
 
-    alliance_id = Column(db.String(254), unique=True, primary_key=True)
+    alliance_id = Column(db.Integer, unique=True, primary_key=True)
     alliance_name = Column(db.String(254))
     alliance_ticker = Column(db.String(254))
     executor_corp_id = Column(db.String(254))
@@ -174,7 +184,7 @@ class EveAllianceInfo(Model):
 class EveCorporationInfo(Model):
     __tablename__ = 'corporations'
 
-    corporation_id = Column(db.String(254), unique=True, primary_key=True)
+    corporation_id = Column(db.Integer, unique=True, primary_key=True)
     corporation_name = Column(db.String(254))
     corporation_ticker = Column(db.String(254))
     member_count = Column(db.Integer)
