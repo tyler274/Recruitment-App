@@ -36,7 +36,7 @@ class HrManager:
         comment.application_id = application.id
         comment.comment = comment_data
         comment.user_id = user.id
-        comment.last_update_time = dt.datetime.utcnow()
+        # comment.last_update_time = dt.datetime.utcnow()
         comment.save()
 
     @staticmethod
@@ -77,7 +77,7 @@ class HrManager:
                 application.characters.append(eve_character)
 
         application.main_character_name = main_character_name
-        application.last_update_time = dt.datetime.utcnow()
+        # application.last_update_time = dt.datetime.utcnow()
         application.save()
 
         return application
@@ -111,7 +111,7 @@ class HrManager:
             application.characters.append(eve_character)
 
         application.main_character_name = main_character_name
-        application.last_update_time = dt.datetime.utcnow()
+        # application.last_update_time = dt.datetime.utcnow()
         application.save()
 
     @staticmethod
@@ -120,7 +120,7 @@ class HrManager:
             application.approved_denied = "Approved"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
+            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "approved"
 
@@ -128,7 +128,7 @@ class HrManager:
             application.approved_denied = "Rejected"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
+            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "rejected"
 
@@ -142,28 +142,28 @@ class HrManager:
         elif action == "undecided":
             application.approved_denied = "Undecided"
             application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
+            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "undecided"
 
         elif action == "stasis":
             application.approved_denied = "Role Stasis"
             application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
+            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "Role Stasis"
 
         elif action == "director_review":
             application.approved_denied = "Needs Director Review"
             application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
+            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "Needs Director Review"
 
         elif action == "waiting":
             application.approved_denied = "Awaiting Response"
             application.last_user_id = user.id
-            application.last_update_time = dt.datetime.utcnow()
+            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             return "Awaiting Response"
 
@@ -171,6 +171,11 @@ class HrManager:
             application.hidden = True
             application.save()
             return "hidden"
+
+        elif action == "unhide":
+            application.hidden = False
+            application.save()
+            return "unhidden"
 
         elif action == "delete":
             application.delete()

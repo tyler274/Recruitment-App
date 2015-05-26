@@ -9,8 +9,8 @@
     <div class="container-fluid">
         <h1 class="page-header text-center">Personal Applications
             <div class="text-right">
-                <a href="{{ url_for('recruit.application_create')}}">
-                    <button type="button" class="btn btn-success">Create Application</button>
+                <a class="btn btn-success" href="{{ url_for('recruit.application_create')}}">
+                    Create Application
                 </a>
             </div>
         </h1>
@@ -50,15 +50,13 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{{ url_for('recruit.application_view', application_id=application.id) }}">
-                                <button type="button" class="btn btn-primary"><span
-                                        class="glyphicon glyphicon-eye-open"></span></button>
+                            <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=application.id) }}">
+                                <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
                             {% if ( application.approved_denied == "New" and (application.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="delete") }}">
-                                    <button type="button" class="btn btn-danger"><span
-                                            class="glyphicon glyphicon-remove"></span></button>
+                                <a class="btn btn-danger" href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">
+                                    <span class="glyphicon glyphicon-remove"></span>
                                 </a>
                             {% endif %}
                         </td>

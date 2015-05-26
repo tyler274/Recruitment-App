@@ -18,15 +18,11 @@
                 <div class="container-fluid">
                     <div class="container-fluid">
                         <div class="col-sm-5">
-                        <a href="{{ url_for('recruit.application_all') }}">
-                            <button type="button" class="btn btn-danger">
+                        <a class="btn btn-danger" href="{{ url_for('recruit.application_all') }}">
                                 List All In Queue
-                            </button>
                         </a>
-                        <a href="{{ url_for('recruit.application_history') }}">
-                            <button type="button" class="btn btn-danger">
+                        <a class="btn btn-danger" href="{{ url_for('recruit.application_history') }}">
                                 All apps ever
-                            </button>
                         </a>
                         </div>
                         <div class="col-sm-5">
@@ -77,17 +73,15 @@
                                     </td>
                                     <td data-title="# Comments" class="text-center">{{ queue.hr_comments|length }}</td>
                                     <td data-title="Actions" class="text-center">
-                                        <a href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
-                                            <button type="button" class="btn btn-primary"><span
-                                                    class="glyphicon glyphicon-eye-open"></span></button>
+                                        <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
                                         </a>
 
                                         {% if ( queue.approved_denied == "New" and (queue.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                            <a href="{{ url_for('recruit.application_interact', application_id=queue.id, action="hide") }}">
-                                                <button type="button" class="btn btn-danger">
-                                                    <span class="glyphicon glyphicon-remove"></span>
-                                                </button>
+                                            <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action="hide") }}">
+                                                <span class="glyphicon glyphicon-remove"></span>
                                             </a>
+
                                         {% endif %}
                                     </td>
                                 </tr>

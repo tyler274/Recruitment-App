@@ -2,6 +2,7 @@
 utilities.
 """
 from sqlalchemy.orm import relationship
+import datetime
 
 from .extensions import db
 from .compat import basestring
@@ -39,9 +40,11 @@ class CRUDMixin(object):
         db.session.delete(self)
         return commit and db.session.commit()
 
+
 class Model(CRUDMixin, db.Model):
     """Base model class that includes CRUD convenience methods."""
     __abstract__ = True
+
 
 # From Mike Bayer's "Building the app" talk
 # https://speakerdeck.com/zzzeek/building-the-app
@@ -61,6 +64,16 @@ class SurrogatePK(object):
         ):
             return cls.query.get(int(id))
         return None
+
+
+class TimeMixin(object):
+    """A mixin that adds a creation and update time columns named
+    ``created_time`` and ``last_update_time`` to any declarative-mapped class.
+    """
+    __table_args__ = {'extend_existing': True}
+
+    created_time = Column(db.DateTime(), default=datetime.datetime.utcnow())
+    last_update_time = Column(db.DateTime(), default=datetime.datetime.utcnow(), onupdate=datetime.datetime.utcnow())
 
 
 def ReferenceCol(tablename, nullable=False, pk_name='id', **kwargs):
