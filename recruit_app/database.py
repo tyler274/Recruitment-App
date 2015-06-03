@@ -72,8 +72,8 @@ class TimeMixin(object):
     """
     __table_args__ = {'extend_existing': True}
 
-    created_time = Column(db.DateTime(), default=datetime.datetime.utcnow())
-    last_update_time = Column(db.DateTime(), default=datetime.datetime.utcnow(), onupdate=datetime.datetime.utcnow())
+    created_time = Column(db.DateTime(), default=datetime.datetime.utcnow)
+    last_update_time = Column(db.DateTime(), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
 
 def ReferenceCol(tablename, nullable=False, pk_name='id', **kwargs):
