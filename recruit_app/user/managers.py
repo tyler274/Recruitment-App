@@ -470,7 +470,6 @@ class KarmafleetSignIn(OAuthSignIn):
         )
 
     def callback(self):
-        print "testt"
         if 'code' not in request.args:
             return None, None, None
         print request.args['code']
