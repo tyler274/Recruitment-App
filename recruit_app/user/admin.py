@@ -20,7 +20,7 @@ class AuthInfoAdmin(AuthenticatedModelView):
                   'main_character.character_name',
                   )
     # show = ('api_id', 'api_key', 'user.auth_info.main_character.character_name', 'user.username', 'user.email')
-    column_list = searchable
+    column_list = searchable + ('id',)
     column_sortable_list = searchable
     column_auto_select_related = True
     # column_display_all_relations = True
@@ -31,14 +31,14 @@ class AuthInfoAdmin(AuthenticatedModelView):
 class EveCharacterAdmin(AuthenticatedModelView):
     column_auto_select_related = True
     # column_display_all_relations = True
-    searchable = (EveCharacter.character_name,
-                  EveCharacter.character_id,
+    searchable = ('character_name',
+                  'character_id',
                   'alliance.alliance_name',
                   'corporation.corporation_name',
                   'corporation.corporation_id',
                   'user.email',
                   'user.username',
-                  'api.api_id')
+                  'api.api_id',)
     column_searchable_list = searchable
     column_filters = searchable
 
