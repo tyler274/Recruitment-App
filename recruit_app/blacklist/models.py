@@ -24,7 +24,7 @@ make_searchable()
 
 class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'blacklist_character'
-    __searchable__ = ['name', 'main_name', 'corporation', 'alliance', 'notes']
+    __searchable__ = ['name', 'main_name', 'creator', 'corporation', 'alliance', 'notes']
 
     name = Column(db.Unicode, nullable=False)
     main_name = Column(db.Unicode, nullable=True)
