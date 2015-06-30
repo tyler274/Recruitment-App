@@ -19,11 +19,14 @@ from recruit_app.extensions import (
     mail,
     rq,
 )
-from recruit_app import public, user, recruit
+from recruit_app import public, user, recruit, blacklist
 from recruit_app.user import admin as user_admin_view
 from recruit_app.recruit import admin as recruit_admin_view
-from recruit_app.recruit import search as recruit_search
+
 from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
+
+from recruit_app import recruit
+from recruit_app import blacklist
 
 from recruit_app.scheduled_tasks import schedule_tasks
 from redis import Redis
@@ -72,6 +75,7 @@ def register_blueprints(app):
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(user.views.blueprint)
     app.register_blueprint(recruit.views.blueprint)
+    app.register_blueprint(blacklist.views.blueprint)
 
     return None
 
@@ -79,6 +83,7 @@ def register_blueprints(app):
 def register_admin(admin, db):
     user_admin_view.register_admin_views(admin, db)
     recruit_admin_view.register_admin_views(admin, db)
+    blacklist.admin.register_admin_views(admin, db)
 
     return None
 
@@ -90,7 +95,8 @@ def register_tasks():
 
 
 def register_search(app):
-    recruit_search.register_search_models(app)
+    recruit.search.register_search_models(app)
+    blacklist.search.register_search_models(app)
 
     return None
 

@@ -4,7 +4,7 @@ import os
 import sys
 from recruit_app.app import create_app
 from recruit_app.settings import DevConfig, ProdConfig
-from recruit_app.recruit.models import HrApplication as Model
+from recruit_app.blacklist.models import BlacklistCharacter as Model
 from flask.ext.whooshalchemy import whoosh_index
 
 sys.stdout  = os.fdopen(sys.stdout.fileno(), 'w', 0)

@@ -41,14 +41,14 @@ def applications(page=1):
 @roles_accepted('admin', 'recruiter')
 def application_queue(page=1):
     search_results = []
-    from recruit_app.database import Model
-    from recruit_app.extensions import db
-    #current_app.config['SQLALCHEMY_ECHO'] = True
-    db.configure_mappers()
-
-    HrApplication.metadata.create_all(db.session.connection())
-
-    db.session.commit()
+    # from recruit_app.database import Model
+    # from recruit_app.extensions import db
+    # #current_app.config['SQLALCHEMY_ECHO'] = True
+    # db.configure_mappers()
+    #
+    # HrApplication.metadata.create_all(db.session.connection())
+    #
+    # db.session.commit()
 
     search_form = SearchForm()
 

@@ -70,7 +70,6 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
     goon_interaction = Column(db.Text, nullable=True)
     friends = Column(db.Text, nullable=True)
 
-
     scale = Column(db.Text, nullable=True)
 
     #reason_for_joining = Column(db.Text, nullable=True)
@@ -91,7 +90,6 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
     user = relationship('User', foreign_keys=[user_id], backref='hr_applications')
     reviewer_user = relationship('User', foreign_keys=[reviewer_user_id], backref='hr_applications_reviewed')
     last_action_user = relationship('User', foreign_keys=[last_user_id], backref='hr_applications_touched')
-
 
     # def __str__(self):
     #     return self.user.auth_info + " - Application"
@@ -115,19 +113,19 @@ class HrApplicationComment(SurrogatePK, TimeMixin, Model):
         return str(self.user) + " - Comment"
 
 
-class HrBlacklist(SurrogatePK, TimeMixin, Model):
-    __tablename__ = 'hr_blacklist'
-
-    comment = Column(db.Text, nullable=True)
-
-    user_id = ReferenceCol('users', nullable=False)
-
-    known_characters = Column(ScalarListType())
-
-    creator = relationship('User', backref=db.backref('hr_blacklist', lazy='dynamic'))
-
-    def __repr__(self):
-        return str(self.user) + " - BlackList"
+# class HrBlacklist(SurrogatePK, TimeMixin, Model):
+#     __tablename__ = 'hr_blacklist'
+#
+#     comment = Column(db.Text, nullable=True)
+#
+#     user_id = ReferenceCol('users', nullable=False)
+#
+#     known_characters = Column(ScalarListType())
+#
+#     creator = relationship('User', backref=db.backref('hr_blacklist', lazy='dynamic'))
+#
+#     def __repr__(self):
+#         return str(self.user) + " - BlackList"
 
 
 

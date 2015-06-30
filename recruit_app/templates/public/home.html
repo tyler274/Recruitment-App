@@ -11,21 +11,21 @@
       <ol>
           <li>
               <p>
-{#                  <a class="btn btn-info" href="{{ url_for('security.register') }}">#}
-{#                      Register an account#}
-{#                  </a>#}
-{#                  and#}
-{#                  <a class="btn btn-info" href="{{ url_for('security.login') }}">#}
-{#                      Login#}
-{#                  </a>#}
-                  <a class="btn btn-info" href="https://sso.app/">
-                      Register an account on our SSO
+                  <a class="btn btn-info" href="{{ url_for('security.register') }}">
+                      Register an account
                   </a>
                   and
-                  <a class="btn btn-info" href="{{ url_for('user.oauth_authorize', provider='karmafleet') }}">
+                  <a class="btn btn-info" href="{{ url_for('security.login') }}">
                       Login
                   </a>
-                  if you have not already done so
+{#                  <a class="btn btn-info" href="https://sso.app/">#}
+{#                      Register an account on our SSO#}
+{#                  </a>#}
+{#                  and#}
+{#                  <a class="btn btn-info" href="{{ url_for('user.oauth_authorize', provider='karmafleet') }}">#}
+{#                      Login#}
+{#                  </a>#}
+{#                  if you have not already done so#}
               </p>
           </li>
           <li>

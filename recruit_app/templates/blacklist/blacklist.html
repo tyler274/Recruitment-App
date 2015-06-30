@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="page-header text-center">Blacklist</h1>
+        <div class="col-sm-6">
+            {{ search_form.hidden_tag() }}
+            {{ wtf.quick_form(search_form) }}
+        </div>
+        <div class="container-fluid">
+            {{ render_pagination(blacklist) }}
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Main Name</th>
+                    <th class="text-center">Corp</th>
+                    <th class="text-center">Alliance</th>
+                    <th class="text-center">Notes</th>
+                </tr>
+                {% for entry in blacklist.items %}
+                    <tr>
+                        <td class="text-center">{{ entry.name }}</td>
+                        <td class="text-center">{{ entry.main_name }}</td>
+                        <td class="text-center">{{ entry.corporation }}</td>
+                        <td class="text-center">{{ entry.alliance }}</td>
+                        <td class="text-center">{{ entry.notes }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="container-fluid">
+            {{ wtf.quick_form(blacklist_form) }}
+        </div>
+
+    </div>
+
+{% endblock %}
