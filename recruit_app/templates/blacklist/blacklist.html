@@ -30,9 +30,11 @@
                 {% endfor %}
             </table>
         </div>
-        <div class="container-fluid">
-            {{ wtf.quick_form(blacklist_form) }}
-        </div>
+        {% if current_user.has_role('admin') or current_user.has_role('recruiter') %}
+            <div class="container-fluid">
+                {{ wtf.quick_form(blacklist_form) }}
+            </div>
+        {% endif %}
 
     </div>
 
