@@ -22,10 +22,6 @@ from sqlalchemy.dialects import postgresql
 
 make_searchable()
 
-blacklist_characters = db.Table('blacklist_characters',
-                       db.Column('character_id', db.Integer(), db.ForeignKey('blacklist_character.id')),
-                       db.Column('entry_id', db.Integer(), db.ForeignKey('hr_blacklist.id')))
-
 class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'blacklist_character'
     __searchable__ = ['name', 'main_name', 'corporation', 'alliance', 'notes']
