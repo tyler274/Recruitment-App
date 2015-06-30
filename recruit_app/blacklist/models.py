@@ -24,7 +24,7 @@ make_searchable()
 
 class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'blacklist_character'
-    __searchable__ = ['name', 'main_name', 'creator', 'corporation', 'alliance', 'notes']
+    __searchable__ = ['name', 'main_name', 'corporation', 'alliance', 'notes']
 
     name = Column(db.Unicode, nullable=False)
     main_name = Column(db.Unicode, nullable=True)
@@ -34,3 +34,7 @@ class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
 
     creator_id = ReferenceCol('users', nullable=True)
     creator = relationship('User', foreign_keys=[creator_id], backref='blacklist_character_entries')
+
+    # @property
+    # def creator_name(self):
+    #     return self.creator.auth_info[0].main_character.character_name
