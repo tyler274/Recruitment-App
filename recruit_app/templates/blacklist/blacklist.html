@@ -17,6 +17,7 @@
                     <th class="text-center">Main Name</th>
                     <th class="text-center">Corp</th>
                     <th class="text-center">Alliance</th>
+                    <th class="text-center">Date</th>
                     <th class="text-center">Notes</th>
                 </tr>
                 {% for entry in blacklist.items %}
@@ -25,6 +26,7 @@
                         <td class="text-center">{{ entry.main_name }}</td>
                         <td class="text-center">{{ entry.corporation }}</td>
                         <td class="text-center">{{ entry.alliance }}</td>
+                        <td class="text-center">{{ entry.created_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
                         <td class="text-center">{{ entry.notes }}</td>
                     </tr>
                 {% endfor %}
