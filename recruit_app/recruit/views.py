@@ -9,6 +9,7 @@ from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
+from recruit_app.blacklist.models import BlacklistCharacter
 
 from sqlalchemy import desc, asc
 import datetime as dt
@@ -180,6 +181,13 @@ def application_view(application_id):
                 application_id=application_id)\
                 .order_by(asc(HrApplicationComment.last_update_time))\
                 .all()
+
+            blacklist_query = BlacklistCharacter\
+                .query\
+                .whoosh_search(characters, or_=True)\
+                .all()
+            if blacklist_query:
+                flash('Double check blacklist, one of the applicant\'s characters matched')
 
             return render_template('recruit/application.html',
                                    application=application,
