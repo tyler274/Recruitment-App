@@ -185,7 +185,7 @@ def application_view(application_id):
             blacklist_string = ''
             try:
                 for character in characters:
-                    blacklist_string = blacklist_string + ' ' + character
+                    blacklist_string = blacklist_string + ' ' + str(character.character_name)
 
                 blacklist_query = BlacklistCharacter\
                     .query\
