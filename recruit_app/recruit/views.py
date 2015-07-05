@@ -188,6 +188,8 @@ def application_view(application_id):
                 .all()
             if blacklist_query:
                 flash('Double check blacklist, one of the applicant\'s characters matched')
+            else:
+                flash('No blacklist entries found')
 
             return render_template('recruit/application.html',
                                    application=application,
