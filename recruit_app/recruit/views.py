@@ -182,21 +182,20 @@ def application_view(application_id):
                 .order_by(asc(HrApplicationComment.last_update_time))\
                 .all()
 
-            # blacklist_string = None
-            # try:
-            #     for character in characters:
-            #         blacklist_string = blacklist_string + ' ' + character
-            #
-            #     blacklist_query = BlacklistCharacter\
-            #         .query\
-            #         .whoosh_search(blacklist_string, or_=True)\
-            #         .all()
-            #     if blacklist_query:
-            #         flash('Double check blacklist, one of the applicant\'s characters matched')
-            #     else:
-            #         flash('No blacklist entries found')
-            # finally:
-            #     pass
+            blacklist_string = ''
+            try:
+                for character in characters:
+                    blacklist_string = blacklist_string + ' ' + character
+
+                blacklist_query = BlacklistCharacter\
+                    .query\
+                    .whoosh_search(blacklist_string, or_=True)
+                if blacklist_query:
+                    flash('Double check blacklist, one of the applicant\'s characters matched')
+                else:
+                    flash('No blacklist entries found')
+            finally:
+                pass
 
             return render_template('recruit/application.html',
                                    application=application,
