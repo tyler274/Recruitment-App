@@ -35,7 +35,7 @@ class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     creator_id = ReferenceCol('users', nullable=True)
     creator = relationship('User', foreign_keys=[creator_id], backref='blacklist_character_entries')
 
-    def __str__(self):
+    def __repr__(self):
         return '<' + self.name + '>'
 
     # @property
