@@ -191,7 +191,7 @@ def application_view(application_id):
                     .query\
                     .whoosh_search(blacklist_string, or_=True)
                 if blacklist_query:
-                    flash('Double check blacklist, one of the applicant\'s characters matched')
+                    flash('Double check blacklist, ' + blacklist_query + 'matched')
                 else:
                     flash('No blacklist entries found')
             finally:
