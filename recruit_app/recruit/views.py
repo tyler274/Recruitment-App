@@ -184,7 +184,7 @@ def application_view(application_id):
 
             blacklist_string = None
             for character in characters:
-                blacklist_string += character
+                blacklist_string = blacklist_string + ' ' + character
 
             blacklist_query = BlacklistCharacter\
                 .query\
