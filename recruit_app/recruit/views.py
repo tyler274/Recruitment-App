@@ -182,9 +182,13 @@ def application_view(application_id):
                 .order_by(asc(HrApplicationComment.last_update_time))\
                 .all()
 
+            blacklist_string = None
+            for character in characters:
+                blacklist_string += character
+
             blacklist_query = BlacklistCharacter\
                 .query\
-                .whoosh_search(characters, or_=True)\
+                .whoosh_search(blacklist_string, or_=True)\
                 .all()
             if blacklist_query:
                 flash('Double check blacklist, one of the applicant\'s characters matched')
