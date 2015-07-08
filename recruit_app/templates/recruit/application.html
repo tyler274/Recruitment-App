@@ -8,6 +8,14 @@
         {% if current_user.auth_info %}
         {% if current_user.auth_info[0].main_character_id %}
             {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+                {% for api_key in current_user.api_keys %}
+                <div class="col-md-9">
+                    Key ID: {{ api_key.api_id }}
+                    <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
+                            Jack Knife
+                    </a>
+                </div>
+                {% endfor %}
             <div class="col-sm-4">
             {% else %}
             <div class="">
