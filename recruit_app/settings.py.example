@@ -44,8 +44,10 @@ class Config(object):
     RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
-    MAX_NUMBER_PER_PAGE = 5
+    MAX_NUMBER_PER_PAGE = 50
     # MAX_LENGTH_FIELDS = 2000
+    GSF_USERNAME = os.getenv('GSF_USERNAME', '')
+    GSF_PASSWORD = os.getenv('GSF_PASSWORD', '')
 
 class ProdConfig(Config):
     """Production configuration."""

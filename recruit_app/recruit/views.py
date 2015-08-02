@@ -17,6 +17,8 @@ import datetime as dt
 
 from recruit_app.database import db
 
+import requests
+from bs4 import BeautifulSoup
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
                         static_folder="../static")
@@ -34,6 +36,43 @@ def applications(page=1):
 
     return render_template('recruit/applications.html',
                            personal_applications=personal_applications)
+
+@blueprint.route("/compliance/", methods=['GET'])
+@login_required
+@roles_accepted('admin', 'recruiter')
+def compliance():
+    url = 'https://goonfleet.com'
+
+    s = requests.session()
+    r = s.get(url, verify=True)
+
+    soup = BeautifulSoup(r.text, 'html.parser')
+    token = soup.find('input', {'name':'auth_key'})['value']
+
+    payload = {
+    'ips_username' : current_app.config['GSF_USERNAME'],
+    'ips_password' : current_app.config['GSF_PASSWORD'],
+    'auth_key' : token,
+    'referer' : 'https://goonfleet.com/',
+    'rememberMe' : 1,
+    }
+
+    url = 'https://goonfleet.com/index.php?app=core&module=global&section=login&do=process'
+    r = s.post(url, data=payload, verify=True)
+
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    url = 'https://goonfleet.com/corps/checkMembers.php'
+    r = s.get(url, verify=True)
+
+    payload = {
+    'corpID' : '98370861'
+    }
+    r = s.post(url, data=payload, verify=True)
+
+    d = r.text.split('<div class="row-fluid">')[2].split('</div>')[2]
+    return render_template('recruit/compliance.html', data=d)
+
 
 
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
@@ -71,10 +110,11 @@ def application_queue(page=1):
             #print search_results
             #recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
             # print recruiter_queue.items
-            recruiter_queue = HrApplication\
-                .query\
-                .whoosh_search('*' + str(search_form.search.data) + '*')\
-                .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            # recruiter_queue = HrApplication\
+            #     .query\
+            #     .whoosh_search('*' + str(search_form.search.data) + '*')\
+            #     .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
@@ -102,8 +142,9 @@ def application_all(page=1):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            search_results = query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, len(search_results.all()), False)
+            # search_results = query.whoosh_search(search_form.search.data + "*")
+            search_results = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
+            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
@@ -127,7 +168,8 @@ def application_history(page=1):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
+            # search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
+            search_results = recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
             recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
