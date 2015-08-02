@@ -12,6 +12,7 @@ from recruit_app.extensions import (
     security,
     user_datastore,
     migrate,
+    sentry,
     debug_toolbar,
     bootstrap,
     rqDashboard,
@@ -63,6 +64,7 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)
     rqDashboard.init_app(app)
+    sentry.init_app(app)
     admin.init_app(app)
     mail.init_app(app)
     rq.init_app(app)

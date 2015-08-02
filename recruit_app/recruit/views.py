@@ -115,7 +115,6 @@ def application_queue(page=1):
             #     .whoosh_search('*' + str(search_form.search.data) + '*')\
             #     .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
             recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
                            search_form=search_form)
@@ -169,8 +168,8 @@ def application_history(page=1):
     if request.method == 'POST':
         if search_form.validate_on_submit():
             # search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
-            search_results = recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
-            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            # recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)>>>>>>> 79eaac12eb7e689913c11199e2e990cae26afad8
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
