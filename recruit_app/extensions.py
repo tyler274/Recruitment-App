@@ -28,7 +28,7 @@ from raven.contrib.flask import Sentry
 sentry = Sentry(dsn='https://051d7913bead4e208c3c08c67df428da:25d0c01034ef48aab9e0c8fb3abeb4cb@app.getsentry.com/47978')
 
 from flask_cache import Cache
-cache = Cache()
+cache = Cache(config={'CACHE_TYPE': 'redis'})
 
 from flask_debugtoolbar import DebugToolbarExtension
 debug_toolbar = DebugToolbarExtension()
