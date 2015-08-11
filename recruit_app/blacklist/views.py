@@ -13,7 +13,7 @@ blueprint = Blueprint("blacklist", __name__, url_prefix='/blacklist',
 @blueprint.route("/", methods=['GET', 'POST'])
 @blueprint.route("/<int:page>/", methods=['GET', 'POST'])
 @login_required
-@roles_accepted('admin', 'recruiter')
+@roles_accepted('admin', 'recruiter', 'reviewer')
 def blacklist_view(page=1):
     search_form = SearchForm()
     blacklist_form = BlacklistCharacterForm()
