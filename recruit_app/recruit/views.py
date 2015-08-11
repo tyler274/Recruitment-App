@@ -169,7 +169,7 @@ def application_create():
                            form=form)
 
 
-@blueprint.route("/application/<int:application_id>/", methods=['GET', 'POST'])
+@blueprint.route("/applications/<int:application_id>/", methods=['GET', 'POST'])
 @login_required
 def application_view(application_id):
     comments = []
@@ -288,7 +288,7 @@ def application_interact(application_id, action):
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
         if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
-            if current_user.has_role("admin") or action != 'delete':
+            if current_user.has_role("admin") or (action not in ['delete', 'hide', 'unhide']):
                 if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close']):
                     application_status = HrManager.alter_application(application, action, current_user)
 

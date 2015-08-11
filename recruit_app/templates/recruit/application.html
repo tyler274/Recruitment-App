@@ -261,11 +261,11 @@
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
                                             <button type="button" class="btn btn-lg btn-info">Needs Director Review</button>
                                         </a>
-                                        {% if current_user.has_role('admin') %}
-                                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">
-                                                <button type="button" class="btn btn-lg btn-danger">Hide</button>
-                                            </a>
-                                        {% endif %}
+{#                                        {% if current_user.has_role('admin') %}#}
+{#                                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">#}
+{#                                                <button type="button" class="btn btn-lg btn-danger">Hide</button>#}
+{#                                            </a>#}
+{#                                        {% endif %}#}
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
                                             <button type="button" class="btn btn-lg btn-warning">Mark In Progress</button>
                                         </a>
