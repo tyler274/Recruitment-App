@@ -63,6 +63,7 @@ def application_queue(page=1):
                 | (HrApplication.approved_denied == "Undecided")
                 | (HrApplication.approved_denied == "Role Stasis")
                 | (HrApplication.approved_denied == "Awaiting Response")
+                | (HrApplication.approved_denied == "Needs Processing")
                 | (HrApplication.approved_denied == "Needs Director Review"))\
         .order_by(HrApplication.id)
 
