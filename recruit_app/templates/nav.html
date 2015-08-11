@@ -37,6 +37,9 @@
                     {% if current_user.has_role('admin') or current_user.has_role('recruiter') %}
                       <li><a href="{{ url_for('blacklist.blacklist_view', page=1) }}">Blacklist</a></li>
                     {% endif %}
+		    {% if current_user.has_role('admin') or current_user.has_role('compliance') %}
+                      <li><a href="{{ url_for('recruit.compliance') }}">Compliance</a></li>
+                    {% endif %}
                 </ul>
       </li>
     </ul>
