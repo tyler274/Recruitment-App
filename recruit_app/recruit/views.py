@@ -2,20 +2,15 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_security.decorators import login_required
 from flask_security import current_user, roles_accepted
 
-from recruit_app.user.managers import EveManager, AuthInfoManager
-from recruit_app.user.eve_api_manager import EveApiManager
+from recruit_app.user.managers import AuthInfoManager
 
-from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, User
+from recruit_app.user.models import EveCharacter
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
 from recruit_app.blacklist.models import BlacklistCharacter
 
 from sqlalchemy import desc, asc
-import datetime as dt
-# from sqlalchemy_searchable import search
-
-from recruit_app.database import db
 
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
@@ -232,9 +227,9 @@ def application_comment_create(application_id):
 
                 HrManager.create_comment(application, form_comment.comment.data, current_user)
 
-                if application.approved_denied == "New":
-                    application.approved_denied = "Undecided"
-                    application.save()
+                # if application.approved_denied == "New":
+                #     application.approved_denied = "Undecided"
+                #     application.save()
 
         return redirect(url_for('recruit.application_view', application_id=application_id))
 
@@ -260,11 +255,9 @@ def application_comment_action(application_id, comment_id, action):
                                 HrManager.edit_comment(comment, form_comment.comment.data)
 
                         elif action == "delete":
-                            print "wat"
                             comment.delete()
 
                     elif action == "delete":
-                        print "wat"
                         comment.delete()
             return redirect(url_for('recruit.application_view', application_id=application_id))
 
@@ -284,13 +277,14 @@ def application_interact(application_id, action):
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
         # alter_application takes one of 4 actions
-        if current_user.has_role("admin") or current_user.has_role("recruiter"):
-            if current_user.has_role("admin") or action != "delete":
-                application_status = HrManager.alter_application(application, action, current_user)
+        if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
+            if current_user.has_role("admin") or action != 'delete':
+                if current_user.has_role('recruiter') or (action not in ['approve', 'reject', 'close']):
+                    application_status = HrManager.alter_application(application, action, current_user)
 
-                flash("%s's application %s" % (application.main_character_name,
-                                               application_status),
-                      category='message')
+                    flash("%s's application %s" % (application.main_character_name,
+                                                   application_status),
+                          category='message')
 
         elif application.user_id == current_user.get_id():
             if action == "delete" and application.approve_deny == "New":

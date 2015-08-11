@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
-from recruit_app.user.models import EveCharacter, EveApiKeyPair, EveAllianceInfo, EveCorporationInfo, AuthInfo, User
+from recruit_app.user.models import EveCharacter
 
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 
 import datetime as dt
-
-from recruit_app.user.eve_api_manager import EveApiManager
-
-from recruit_app.extensions import bcrypt
-
-from redis import Redis
-redis_conn = Redis()
-
-from rq.decorators import job
-
-from flask import flash
 
 
 class HrManager:
@@ -180,3 +169,7 @@ class HrManager:
         elif action == "delete":
             application.delete()
             return "deleted"
+
+        elif action == 'close':
+            application.approved_denied = 'Closed'
+            return 'Closed'
