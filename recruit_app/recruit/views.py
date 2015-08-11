@@ -43,7 +43,7 @@ def compliance():
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
 @blueprint.route("/application_queue/<int:page>/", methods=['GET', 'POST'])
 @login_required
-@roles_accepted('admin', 'recruiter')
+@roles_accepted('admin', 'recruiter', 'reviewer')
 def application_queue(page=1):
     search_results = []
     # from recruit_app.database import Model
@@ -87,7 +87,7 @@ def application_queue(page=1):
 
 @blueprint.route("/application_queue/all/", methods=['GET', 'POST'])
 @login_required
-@roles_accepted('admin', 'recruiter')
+@roles_accepted('admin', 'recruiter', 'reviewer')
 def application_all(page=1):
     search_results = []
 
@@ -120,7 +120,7 @@ def application_all(page=1):
 @blueprint.route("/application_queue/history/", methods=['GET', 'POST'])
 @blueprint.route("/application_queue/history/<int:page>/", methods=['GET', 'POST'])
 @login_required
-@roles_accepted('admin', 'recruiter')
+@roles_accepted('admin', 'recruiter', 'reviewer')
 def application_history(page=1):
     search_results = []
 
@@ -225,7 +225,7 @@ def application_view(application_id):
 
 @blueprint.route("/applications/<application_id>/comment/", methods=['POST'])
 @login_required
-@roles_accepted('admin', 'recruiter')
+@roles_accepted('admin', 'recruiter', 'reviewer')
 def application_comment_create(application_id):
     form_comment = HrApplicationCommentForm()
 
