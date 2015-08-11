@@ -47,6 +47,12 @@
                                 {% elif application.approved_denied == "Undecided" %}
                                     <div class="alert alert-warning" role="alert">In Progress</div>
 
+                                {% elif application.approved_denied == "Closed" %}
+                                    <div class="alert alert-danger" role="alert">Closed</div>
+
+                                {% elif application.approved_denied is None %}
+                                    <div class="alert alert-info" role="alert">New</div>
+
                                 {% endif %}
                             </div>
                         </div>

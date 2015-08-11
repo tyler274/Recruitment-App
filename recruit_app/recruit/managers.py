@@ -163,12 +163,11 @@ class HrManager:
             application.save()
             return "rejected"
 
-        # elif action == "pending":
-        #     application.approved_denied = "Pending"
-        #     application.last_user_id = user.id
-        #     application.last_update_time = dt.datetime.utcnow()
-        #     application.save()
-        #     return "pending"
+        elif action == "new":
+            application.approved_denied = "new"
+            application.last_user_id = user.id
+            application.save()
+            return "new"
 
         elif action == "undecided":
             application.approved_denied = "Undecided"
