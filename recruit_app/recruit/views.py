@@ -287,7 +287,6 @@ def application_interact(application_id, action):
 
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
-        # alter_application takes one of 4 actions
         if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
             if current_user.has_role("admin") or action != 'delete':
                 if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close']):
