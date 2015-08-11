@@ -69,3 +69,5 @@ local_settings.py
 *.db
 migrations/
 .idea/
+.DS_Store
+recruit_app/.DS_Store
