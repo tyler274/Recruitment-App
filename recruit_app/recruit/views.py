@@ -290,7 +290,7 @@ def application_interact(application_id, action):
         # alter_application takes one of 4 actions
         if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
             if current_user.has_role("admin") or action != 'delete':
-                if current_user.has_role('recruiter') or (action not in ['approve', 'reject', 'close']):
+                if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close']):
                     application_status = HrManager.alter_application(application, action, current_user)
 
                     flash("%s's application %s" % (application.main_character_name,

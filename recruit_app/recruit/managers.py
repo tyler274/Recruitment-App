@@ -214,4 +214,5 @@ class HrManager:
 
         elif action == 'close':
             application.approved_denied = 'Closed'
+            application.save()
             return 'Closed'
