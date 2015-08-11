@@ -26,6 +26,7 @@ blueprint = Blueprint('public', __name__, static_folder="../static")
 
 @blueprint.route("/", methods=["GET", "POST"])
 def home():
+    flash('Please disable adblock if you would like to support the guy who has to foot the server bill')
     form = LoginForm(request.form)
 
     if current_user.is_authenticated():

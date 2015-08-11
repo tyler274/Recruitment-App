@@ -5,6 +5,13 @@ from recruit_app.recruit.models import HrApplication, HrApplicationComment
 
 import datetime as dt
 
+from recruit_app.user.eve_api_manager import EveApiManager
+
+from recruit_app.extensions import bcrypt, cache
+
+from flask import flash, current_app
+import requests
+from bs4 import BeautifulSoup
 
 class HrManager:
     def __init__(self):
@@ -18,6 +25,41 @@ class HrManager:
                 return True
 
         return False
+
+    @staticmethod
+    @cache.cached(timeout=3600, key_prefix='get_compliance')
+    def get_compliance():
+        url = 'https://goonfleet.com'
+
+        s = requests.session()
+        r = s.get(url, verify=True)
+
+        soup = BeautifulSoup(r.text, 'html.parser')
+        token = soup.find('input', {'name':'auth_key'})['value']
+        
+        payload = {
+        'ips_username' : current_app.config['GSF_USERNAME'],
+        'ips_password' : current_app.config['GSF_PASSWORD'],
+        'auth_key' : token,
+        'referer' : 'https://goonfleet.com/',
+        'rememberMe' : 1,
+        }
+
+        url = 'https://goonfleet.com/index.php?app=core&module=global&section=login&do=process'
+        r = s.post(url, data=payload, verify=True)
+        
+        soup = BeautifulSoup(r.text, 'html.parser')
+        
+        url = 'https://goonfleet.com/corps/checkMembers.php'
+        r = s.get(url, verify=True)
+        
+        payload = {
+        'corpID' : '98370861'
+        }
+        r = s.post(url, data=payload, verify=True)
+        
+        d = r.text.split('<div class="row-fluid">')[2].split('</div>')[2]
+        return d
 
     @staticmethod
     def create_comment(application, comment_data, user):

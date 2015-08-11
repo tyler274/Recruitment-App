@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_security.decorators import login_required
 from flask_security import current_user, roles_accepted
+from recruit_app.extensions import cache
 
 from recruit_app.user.managers import AuthInfoManager
 
@@ -12,6 +13,8 @@ from recruit_app.blacklist.models import BlacklistCharacter
 
 from sqlalchemy import desc, asc
 
+import requests
+from bs4 import BeautifulSoup
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
                         static_folder="../static")
@@ -29,6 +32,12 @@ def applications(page=1):
 
     return render_template('recruit/applications.html',
                            personal_applications=personal_applications)
+
+@blueprint.route("/compliance/", methods=['GET'])
+@login_required
+@roles_accepted('admin', 'compliance')
+def compliance():
+    return render_template('recruit/compliance.html', data=HrManager.get_compliance())
 
 
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
@@ -66,11 +75,11 @@ def application_queue(page=1):
             #print search_results
             #recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
             # print recruiter_queue.items
-            recruiter_queue = HrApplication\
-                .query\
-                .whoosh_search('*' + str(search_form.search.data) + '*')\
-                .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-
+            # recruiter_queue = HrApplication\
+            #     .query\
+            #     .whoosh_search('*' + str(search_form.search.data) + '*')\
+            #     .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
                            search_form=search_form)
@@ -97,8 +106,9 @@ def application_all(page=1):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            search_results = query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, len(search_results.all()), False)
+            # search_results = query.whoosh_search(search_form.search.data + "*")
+            search_results = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
+            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,
@@ -122,8 +132,9 @@ def application_history(page=1):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
-            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            # search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
+            # recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html',
                            recruiter_queue=recruiter_queue,

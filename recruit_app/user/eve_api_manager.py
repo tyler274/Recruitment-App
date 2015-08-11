@@ -78,7 +78,7 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            return info[0]['access_mask'] == 268435455
+            return info[0]['access_mask'] == 536870911
 
         except evelink.api.APIError as error:
             print error
