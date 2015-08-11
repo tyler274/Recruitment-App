@@ -47,6 +47,9 @@
                             {% elif application.approved_denied == "Role Stasis" %}
                                 <div class="alert-info" role="alert">Role Stasis</div>
 
+                            {% elif application.approved_denied == "Closed" %}
+                                <div class="alert-danger" role="alert">Closed</div>
+
                             {% endif %}
                         </td>
                         <td class="text-center">

@@ -7,7 +7,7 @@
     <h1 class="page-header text-center">Personal Application</h1>
         {% if current_user.auth_info %}
         {% if current_user.auth_info[0].main_character_id %}
-            {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+            {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
                 {% for api_key in application.user.api_keys %}
                 <div class="col-md-9">
                     Key ID: {{ api_key.api_id }}
@@ -221,7 +221,7 @@
                                           disabled>{{ application.find_out }}</textarea>
                             </div>
                         </div>
-                        {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+                        {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
                             <div class="form-group text-center">
                                 <label class="control-label text-center" for="id_extra">Actions</label>
                                 <label class="control-label text-center" for="id_extra">Last Update Time - {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</label>
@@ -229,6 +229,13 @@
                                 <div class="container-fluid well">
 
                                     <div class="row text-center">
+                                        {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="close") }}">
+                                            <button type="button" class="btn btn-lg btn-info">Close</button>
+                                        </a>
+                                        {% endif %}
+
+                                        {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="approve") }}">
                                             <button type="button" class="btn btn-lg btn-success">Approve</button>
                                         </a>
@@ -236,6 +243,7 @@
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
                                             <button type="button" class="btn btn-lg btn-info">Reject</button>
                                         </a>
+
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">
                                             <button type="button" class="btn btn-lg btn-info">Role Stasis</button>
                                         </a>
@@ -251,9 +259,9 @@
                                             </a>
                                         {% endif %}
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
-                                            <button type="button" class="btn btn-lg btn-warning">Mark In Progress
-                                            </button>
+                                            <button type="button" class="btn btn-lg btn-warning">Mark In Progress</button>
                                         </a>
+                                        {% endif %}
                                     </div>
                                     <br/>
                                 </div>
