@@ -181,7 +181,7 @@ def application_view(application_id):
 
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
-        if current_user.has_role("recruiter") or current_user.has_role("admin"):
+        if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
 
             comments = HrApplicationComment.query.filter_by(
@@ -252,7 +252,7 @@ def application_comment_create(application_id):
 def application_comment_action(application_id, comment_id, action):
     form_comment = HrApplicationCommentForm()
 
-    if current_user.has_role("recruiter") or current_user.has_role("admin"):
+    if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
         if HrApplication.query.filter_by(id=int(application_id)).first():
             if HrApplicationComment.query.filter_by(id=comment_id).first():
 

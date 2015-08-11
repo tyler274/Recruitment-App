@@ -7,7 +7,7 @@
 
 <div class="container-fluid">
     {% if current_user.auth_info[0].main_character %}
-        {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+        {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
             <div class="container-fluid">
                 <h1 class="page-header text-center">Application Queue
                 </h1>
