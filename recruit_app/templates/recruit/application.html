@@ -50,6 +50,9 @@
                                 {% elif application.approved_denied == "Closed" %}
                                     <div class="alert alert-danger" role="alert">Closed</div>
 
+                                {% elif application.approved_denied == "Needs Processing" %}
+                                    <div class="alert alert-warning" role="alert">Needs Processing</div>
+
                                 {% elif application.approved_denied is not defined %}
                                     <div class="alert alert-info" role="alert">New</div>
 
@@ -243,6 +246,10 @@
 
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
                                             <button type="button" class="btn btn-lg btn-info">Reject</button>
+                                        </a>
+
+                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="needs_processing") }}">
+                                            <button type="button" class="btn btn-lg btn-warning">Needs Processing</button>
                                         </a>
 
                                         <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">

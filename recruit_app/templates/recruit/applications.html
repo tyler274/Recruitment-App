@@ -50,6 +50,9 @@
                             {% elif application.approved_denied == "Closed" %}
                                 <div class="alert-danger" role="alert">Closed</div>
 
+                            {% elif application.approved_denied == "Needs Processing" %}
+                                    <div class="alert alert-warning" role="alert">Needs Processing</div>
+
                             {% endif %}
                         </td>
                         <td class="text-center">
