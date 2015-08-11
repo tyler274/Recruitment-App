@@ -31,10 +31,10 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Recruitment <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="{{ url_for('recruit.applications') }}">Applications</a></li>
-                    {% if current_user.has_role('admin') or current_user.has_role('recruiter') %}
+                    {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') %}
                       <li><a href="{{ url_for('recruit.application_queue', page=1) }}">Application Queue</a></li>
                     {% endif %}
-                    {% if current_user.has_role('admin') or current_user.has_role('recruiter') %}
+                    {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') %}
                       <li><a href="{{ url_for('blacklist.blacklist_view', page=1) }}">Blacklist</a></li>
                     {% endif %}
                 </ul>
