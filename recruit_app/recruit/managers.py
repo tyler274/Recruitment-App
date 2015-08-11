@@ -164,7 +164,7 @@ class HrManager:
             return "rejected"
 
         elif action == "new":
-            application.approved_denied = "new"
+            application.approved_denied = None
             application.last_user_id = user.id
             application.save()
             return "new"
