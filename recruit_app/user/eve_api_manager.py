@@ -1,7 +1,7 @@
 import evelink.api
 import evelink.char
 import evelink.eve
-from flask import config
+from flask import current_app
 
 class EveApiManager():
     def __init__(self):
@@ -78,7 +78,7 @@ class EveApiManager():
             api = evelink.api.API(api_key=(api_id, api_key))
             account = evelink.account.Account(api=api)
             info = account.key_info()
-            return info[0]['access_mask'] == config.API_MASK
+            return info[0]['access_mask'] == current_app.config['API_MASK']
 
         except evelink.api.APIError as error:
             print error
