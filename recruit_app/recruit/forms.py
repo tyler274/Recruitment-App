@@ -38,7 +38,7 @@ class HrApplicationForm(Form):
                                 validators=[DataRequired(),
                                             Length(min=-1, max=2000, message='Max length %(max)d')])
 
-    bought_characters = TextAreaField("Are any of your characters bought, and if so, which ones?", validators=[DataRequired(), Length(min=-1, max=2000, message='Max length %(max)d')])
+    bought_characters = TextAreaField("Do you have any alts or other characters? Are any of your characters bought, and if so, which ones?", validators=[DataRequired(), Length(min=-1, max=2000, message='Max length %(max)d')])
 
     why_interested = TextAreaField("Why are you interested in joining KarmaFleet?",
                                 validators=[DataRequired(),
