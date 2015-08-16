@@ -49,6 +49,8 @@ class Config(object):
     GSF_USERNAME = os.getenv('GSF_USERNAME', '')
     GSF_PASSWORD = os.getenv('GSF_PASSWORD', '')
 
+    API_MASK = 1073741823
+
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'

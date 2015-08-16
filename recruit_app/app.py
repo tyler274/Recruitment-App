@@ -19,6 +19,7 @@ from recruit_app.extensions import (
     admin,
     mail,
     rq,
+    misaka,
 )
 from recruit_app import public, user, recruit, blacklist
 from recruit_app.user import admin as user_admin_view
@@ -69,6 +70,7 @@ def register_extensions(app):
     mail.init_app(app)
     rq.init_app(app)
     migrate.init_app(app, db)
+    misaka.init_app(app)
 
     return None
 

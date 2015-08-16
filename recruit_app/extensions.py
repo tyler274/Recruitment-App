@@ -50,3 +50,5 @@ from flask_rq import RQ
 rq = RQ()
 
 
+from flask_misaka import Misaka
+misaka = Misaka()
