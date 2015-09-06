@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from recruit_app.extensions import bcrypt
+# from recruit_app.extensions import bcrypt
 from recruit_app.database import (
     Column,
     db,
@@ -11,16 +11,16 @@ from recruit_app.database import (
     TimeMixin,
 )
 
-import flask_whooshalchemy as whooshalchemy
-from sqlalchemy_searchable import make_searchable
-from sqlalchemy_utils.types import TSVectorType, ScalarListType
+# import flask_whooshalchemy as whooshalchemy
+# from sqlalchemy_searchable import make_searchable
+# from sqlalchemy_utils.types import TSVectorType, ScalarListType
 
-from sqlalchemy_searchable import SearchQueryMixin
-from flask_sqlalchemy import BaseQuery
-from sqlalchemy.dialects import postgresql
+# from sqlalchemy_searchable import SearchQueryMixin
+# from flask_sqlalchemy import BaseQuery
+# from sqlalchemy.dialects import postgresql
 
 
-make_searchable()
+# make_searchable()
 
 class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'blacklist_character'

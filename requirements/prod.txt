@@ -67,3 +67,4 @@ Flask-Whooshalchemy
 # python-rq
 Flask-rq
 
+flask-misaka

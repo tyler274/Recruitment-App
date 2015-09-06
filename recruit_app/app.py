@@ -30,11 +30,6 @@ from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
 from recruit_app import recruit
 from recruit_app import blacklist
 
-from recruit_app.scheduled_tasks import schedule_tasks
-from redis import Redis
-
-from sqlalchemy_searchable import make_searchable
-
 
 def create_app(config_object=ProdConfig):
     '''An application factory, as explained here:
@@ -59,7 +54,6 @@ def register_extensions(app):
     bcrypt.init_app(app)
     cache.init_app(app)
     db.init_app(app)
-    make_searchable()
     #login_manager.init_app(app)
     security.init_app(app, user_datastore, register_blueprint=True, confirm_register_form=ConfirmRegisterFormRecaptcha)
     debug_toolbar.init_app(app)
@@ -113,3 +107,5 @@ def register_errorhandlers(app):
     for errcode in [401, 404, 500]:
         app.errorhandler(errcode)(render_error)
     return None
+
+app = create_app()
