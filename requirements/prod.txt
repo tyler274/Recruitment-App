@@ -50,7 +50,7 @@ rq-dashboard
 rq-scheduler
 
 # EveLink
-Evelink==0.6.1
+Evelink
 
 # Management scripts
 Flask-Script
@@ -68,3 +68,7 @@ Flask-Whooshalchemy
 Flask-rq
 
 flask-misaka
+
+raven
+
+requests[security]
