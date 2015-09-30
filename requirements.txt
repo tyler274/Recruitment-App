@@ -1,3 +1,4 @@
 # Included because many Paas's require a requirements.txt file in the project root
 # Just installs the production requirements.
+cffi
 -r requirements/prod.txt
