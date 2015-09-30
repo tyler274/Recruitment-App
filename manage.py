@@ -6,7 +6,8 @@ import subprocess
 from flask_script import Manager, Shell, Server
 from flask_migrate import MigrateCommand
 
-from recruit_app.app import create_app, app
+from recruit_app.app import create_app
+from recruit_app.wsgi import app
 from recruit_app.user.models import User, Role
 from recruit_app.settings import DevConfig, ProdConfig
 from recruit_app.database import db
