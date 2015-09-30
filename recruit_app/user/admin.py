@@ -1,5 +1,5 @@
-from recruit_app.user.models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo
-from recruit_app.user.models import User, Role, roles_users, AuthInfo
+from models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo
+from models import User, Role, roles_users, AuthInfo
 from flask_security import current_user
 from recruit_app.admin import AuthenticatedModelView
 

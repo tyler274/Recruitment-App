@@ -87,6 +87,9 @@ class User(SurrogatePK, Model, UserMixin):
     def full_name(self):
         return "{0} {1}".format(self.first_name, self.last_name)
 
+    def get_ips(self):
+        return self.last_login_ip.split(', ') + self.current_login_ip.split(', ')
+
     # def __repr__(self):
     #     return '<User({username!r})>'.format(username=self.username)
     def __repr__(self):

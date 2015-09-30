@@ -182,6 +182,13 @@ def application_view(application_id):
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
+            blacklist_ips = list(set([x.ip_address for x in BlacklistCharacter.query.all() if x.ip_address is not None and x.ip_address is not u'']))
+            ips = [i for e in blacklist_ips for i in application.user.get_ips() if e in i]
+            if len(ips) > 0:
+                flash("Heads up this person's IP is on the blacklist:" + unicode(ips))
+            else:
+                flash("No IP's found on blacklist")
+
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
 
             comments = HrApplicationComment.query.filter_by(
@@ -197,9 +204,10 @@ def application_view(application_id):
                 blacklist_query = BlacklistCharacter\
                     .query\
                     .whoosh_search(blacklist_string, or_=True).all()
+                query = BlacklistCharacter.query.filter(BlacklistCharacter.name.in_([x.character_name for x in characters])).all()
 
-                if blacklist_query:
-                    flash('Double check blacklist, ' + str(blacklist_query) + ' matched')
+                if query:
+                    flash('Double check blacklist, ' + str(query) + ' matched')
                 else:
                     flash('No blacklist entries found')
             finally:

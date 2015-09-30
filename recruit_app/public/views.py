@@ -14,6 +14,7 @@ from recruit_app.utils import flash_errors
 from recruit_app.database import db
 
 from recruit_app.user.managers import AuthInfoManager
+from recruit_app.blacklist.models import BlacklistCharacter
 
 from recruit_app.user.tasks import run_alliance_corp_update
 
@@ -26,21 +27,15 @@ blueprint = Blueprint('public', __name__, static_folder="../static")
 
 @blueprint.route("/", methods=["GET", "POST"])
 def home():
-    flash('Please disable adblock if you would like to support the guy who has to foot the server bill')
     form = LoginForm(request.form)
 
     if current_user.is_authenticated():
         AuthInfoManager.get_or_create(current_user)
 
-    # Handle logging in
-    # if request.method == 'POST':
-    #     if form.validate_on_submit():
-    #         login_user(form.user)
-    #         flash("You are logged in.", 'success')
-    #         redirect_url = request.args.get("next") or url_for("user.members")
-    #         return redirect(redirect_url)
-    #     else:
-    #         flash_errors(form)
+    # u = User.query.filter_by(email="tyler274port@gmail.com").first()
+    # flash(u.get_ips)
+    #flash(BlacklistCharacter.query.all())
+    # flash([x.ip_address for x in BlacklistCharacter.query.all() if x.ip_address is not None])
 
     return render_template("public/home.html", login_user_form=form)
 

@@ -80,8 +80,8 @@ def register_blueprints(app):
 
 def register_admin(admin, db):
     user_admin_view.register_admin_views(admin, db)
-    recruit_admin_view.register_admin_views(admin, db)
     blacklist.admin.register_admin_views(admin, db)
+    recruit_admin_view.register_admin_views(admin, db)
 
     return None
 
@@ -109,3 +109,6 @@ def register_errorhandlers(app):
     return None
 
 app = create_app()
+
+
+

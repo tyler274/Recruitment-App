@@ -11,13 +11,13 @@ from recruit_app.database import (
     TimeMixin,
 )
 
-import flask_whooshalchemy as whooshalchemy
-from sqlalchemy_searchable import make_searchable
-from sqlalchemy_utils.types import TSVectorType, ScalarListType
-
-from sqlalchemy_searchable import SearchQueryMixin
+# import flask_whooshalchemy as whooshalchemy
+# from sqlalchemy_searchable import make_searchable
+# from sqlalchemy_utils.types import TSVectorType, ScalarListType
+#
+# from sqlalchemy_searchable import SearchQueryMixin
 from flask_sqlalchemy import BaseQuery
-from sqlalchemy.dialects import postgresql
+# from sqlalchemy.dialects import postgresql
 
 import datetime
 

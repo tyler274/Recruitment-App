@@ -1,7 +1,7 @@
 from flask_wtf import Form, RecaptchaField
 from wtforms import TextField, PasswordField,\
     SubmitField, SelectField, TextAreaField, StringField, SelectMultipleField, widgets, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length, IPAddress, Optional
 
 
 class SearchForm(Form):
@@ -17,14 +17,16 @@ class BlacklistCharacterForm(Form):
                                 validators=[Length(min=-1, max=2000, message='Max length %(max)d')])
 
     corporation = TextAreaField("Corporation",
-                             validators=[DataRequired(), Length(min=-1,
+                             validators=[Length(min=-1,
                                                                 max=2000,
                                                                 message='Max length %(max)d')])
 
-    alliance = TextAreaField("Alliance", validators=[DataRequired(), Length(min=-1,
+    alliance = TextAreaField("Alliance", validators=[Length(min=-1,
                                                                             max=2000,
                                                                             message='Max length %(max)d')])
-    notes = TextAreaField("Notes", validators=[DataRequired(), Length(min=-1,
+    ip_address = TextAreaField("IP Address", validators=[IPAddress(), Optional()])
+
+    notes = TextAreaField("Notes", validators=[Length(min=-1,
                                                                       max=2000,
                                                                       message='Max length %(max)d')])
 

@@ -25,10 +25,10 @@ migrate = Migrate()
 
 # import logging
 from raven.contrib.flask import Sentry
-sentry = Sentry(dsn='https://051d7913bead4e208c3c08c67df428da:25d0c01034ef48aab9e0c8fb3abeb4cb@app.getsentry.com/47978')
+sentry = Sentry()
 
 from flask_cache import Cache
-cache = Cache(config={'CACHE_TYPE': 'redis'})
+cache = Cache()
 
 from flask_debugtoolbar import DebugToolbarExtension
 debug_toolbar = DebugToolbarExtension()
@@ -48,7 +48,6 @@ mail = Mail()
 
 from flask_rq import RQ
 rq = RQ()
-
 
 from flask_misaka import Misaka
 misaka = Misaka()

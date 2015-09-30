@@ -13,9 +13,9 @@ class Config(object):
     ASSETS_DEBUG = False
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
     DEBUG_TB_INTERCEPT_REDIRECTS = False
-    CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
-    SECURITY_PASSWORD_HASH = 'bcrypt'
-    SECURITY_PASSWORD_SALT = "fasc89erek"
+    CACHE_TYPE = os.getenv('CACHE_TYPE', 'null')  # Can be "memcached", "redis", etc.
+    SECURITY_PASSWORD_HASH = os.getenv('SECURITY_PASSWORD_HASH', 'bcrypt')
+    SECURITY_PASSWORD_SALT = os.getenv('SECURITY_PASSWORD_SALT', 'fasc89erek')
     SECURITY_CONFIRMABLE = True
     SECURITY_REGISTERABLE = True
     SECURITY_RECOVERABLE = True
@@ -36,6 +36,8 @@ class Config(object):
 
     JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
 
+    SENTRY_DSN = os.getenv('SENTRY_DSN')
+
     RECAPTCHA_PARAMETERS = {'hl': 'zh', 'render': 'explicit'}
     RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
@@ -54,8 +56,8 @@ class Config(object):
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
-    DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL')  # TODO: Change me
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
@@ -67,7 +69,7 @@ class DevConfig(Config):
     #DB_NAME = 'dev.db'
     # Put the db file in project root
     #DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
-    SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL')  # TODO: Change me
+    SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
     DEBUG_TB_ENABLED = True

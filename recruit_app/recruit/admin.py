@@ -1,5 +1,4 @@
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
-from recruit_app.user.models import EveCharacter
 
 from recruit_app.admin import AuthenticatedModelView
 
@@ -7,11 +6,6 @@ from recruit_app.admin import AuthenticatedModelView
 def register_admin_views(admin, db):
     admin.add_view(HrApplicationAdmin(HrApplication, db.session, category='Recruitment'))
     admin.add_view(AuthenticatedModelView(HrApplicationComment, db.session, category='Recruitment'))
-    # admin.add_view(AuthenticatedModelView(EveCorporationInfo, db.session, category='EvE'))
-    # admin.add_view(AuthenticatedModelView(EveAllianceInfo, db.session, category='EvE'))
-    # admin.add_view(AuthenticatedModelView(EveApiKeyPair, db.session, category='EvE'))
-    # admin.add_view(AuthenticatedModelView(User, db.session, endpoint="users", category='Users'))
-    # admin.add_view(AuthenticatedModelView(Role, db.session, category='Users'))
 
 
 class HrApplicationAdmin(AuthenticatedModelView):

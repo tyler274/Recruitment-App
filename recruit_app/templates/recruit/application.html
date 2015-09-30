@@ -11,6 +11,7 @@
                 {% for api_key in application.user.api_keys %}
                 <div class="col-md-9">
                     Key ID: {{ api_key.api_id }}
+                    Key Date: {{ api_key.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
                     <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
                             Jack Knife
                     </a>

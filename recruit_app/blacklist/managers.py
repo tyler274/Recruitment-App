@@ -13,6 +13,7 @@ class BlacklistManager:
             entry.main_name = entry_data.main_name.data
             entry.corporation = entry_data.corporation.data
             entry.alliance = entry_data.alliance.data
+            entry.ip_address = entry_data.ip_address.data
             entry.notes = entry_data.notes.data
             entry.creator = user
             entry.save()
