@@ -59,7 +59,7 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)
     rqDashboard.init_app(app)
-    sentry.init_app(app)
+    sentry.init_app(app, dsn=app.config['SENTRY_DSN'])
     admin.init_app(app)
     mail.init_app(app)
     rq.init_app(app)
