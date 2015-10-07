@@ -12,7 +12,7 @@ from recruit_app.database import (
 
 class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'blacklist_character'
-    __searchable__ = ['name', 'main_name', 'corporation', 'alliance', 'notes', 'ip_address']
+    # __searchable__ = ['name', 'main_name', 'corporation', 'alliance', 'notes', 'ip_address']
 
     name = Column(db.Unicode, nullable=True)
     main_name = Column(db.Unicode, nullable=True)

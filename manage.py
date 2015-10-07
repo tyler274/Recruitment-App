@@ -7,21 +7,21 @@ from flask_script import Manager, Shell, Server
 from flask_migrate import MigrateCommand
 
 from recruit_app.app import create_app
-from recruit_app.wsgi import app
+# from recruit_app.wsgi import app
 from recruit_app.user.models import User, Role
 from recruit_app.settings import DevConfig, ProdConfig
 from recruit_app.database import db
 
-# if os.environ.get("RECRUIT_APP_ENV") == 'prod':
-#     app = create_app(ProdConfig)
-# else:
-#     app = create_app(DevConfig)
+if os.environ.get("RECRUIT_APP_ENV") == 'prod':
+    app = create_app(ProdConfig)
+else:
+    app = create_app(DevConfig)
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 TEST_PATH = os.path.join(HERE, 'tests')
 
 manager = Manager(app)
-app.debug = True
+# app.debug = True
 
 
 def _make_context():

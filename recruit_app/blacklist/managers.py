@@ -17,6 +17,7 @@ class BlacklistManager:
             entry.notes = entry_data.notes.data
             entry.creator = user
             entry.save()
+
             return True
         except:
             return False

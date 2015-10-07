@@ -17,9 +17,8 @@ blueprint = Blueprint("blacklist", __name__, url_prefix='/blacklist',
 def blacklist_view(page=1):
     search_form = SearchForm()
     blacklist_form = BlacklistCharacterForm()
-    query = BlacklistCharacter.query
 
-    blacklist = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+    blacklist = BlacklistCharacter.query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     if request.method == 'POST':
         if current_user.has_role('admin'):
@@ -29,10 +28,11 @@ def blacklist_view(page=1):
         else:
             flash('Not an Admin')
         if search_form.validate_on_submit():
-            blacklist = BlacklistCharacter\
-                .query\
-                .whoosh_search('*' + str(search_form.search.data) + '*')\
-                .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            # blacklist = BlacklistCharacter\
+            #     .query\
+            #     .whoosh_search('*' + str(search_form.search.data) + '*')\
+            #     .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            pass
 
     return render_template('blacklist/blacklist.html',
                            blacklist=blacklist,

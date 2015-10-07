@@ -201,9 +201,9 @@ def application_view(application_id):
                 for character in characters:
                     blacklist_string = blacklist_string + ' ' + str(character.character_name)
 
-                blacklist_query = BlacklistCharacter\
-                    .query\
-                    .whoosh_search(blacklist_string, or_=True).all()
+                # blacklist_query = BlacklistCharacter\
+                #     .query\
+                #     .whoosh_search(blacklist_string, or_=True).all()
                 query = BlacklistCharacter.query.filter(BlacklistCharacter.name.in_([x.character_name for x in characters])).all()
 
                 if query:
