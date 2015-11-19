@@ -52,11 +52,12 @@ class Config(object):
     GSF_PASSWORD = os.getenv('GSF_PASSWORD', '')
 
     API_MASK = 1073741823
+    SLACK_WEBHOOK = os.getenv('SLACK_WEBHOOK')
 
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
-    DEBUG = True
+    DEBUG = False
     SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
