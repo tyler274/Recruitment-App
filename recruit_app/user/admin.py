@@ -2,7 +2,8 @@ from models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationI
 from models import User, Role, roles_users, AuthInfo
 from flask_security import current_user
 from recruit_app.admin import AuthenticatedModelView
-
+from recruit_app.recruit.models import HrApplication, HrApplicationComment
+from recruit_app.blacklist.models import BlacklistCharacter
 
 def register_admin_views(admin, db):
     admin.add_view(EveCharacterAdmin(EveCharacter, db.session, category='EvE'))
@@ -89,7 +90,17 @@ class UserAdmin(AuthenticatedModelView):
                                    'login_count',
                                    'last_login_ip',
                                    'current_login_ip',)
+    form_ajax_refs = {
+        'hr_applications':             { 'fields': (HrApplication.user,) },
+        'hr_applications_reviewed':    { 'fields': (HrApplication.reviewer_user,) },
+        'hr_applications_touched':     { 'fields': (HrApplication.last_action_user,) },
+        'hr_comments':                 { 'fields': (HrApplicationComment.user,) },
+        'api_keys':                    { 'fields': (EveApiKeyPair.user,) },
+        'blacklist_character_entries': { 'fields': (BlacklistCharacter.creator,) },
+        'characters':                  { 'fields': (EveCharacter.user,) },
+        'auth_info':                   { 'fields': (AuthInfo.user,) },
 
+    }
 
 class RoleAdmin(AuthenticatedModelView):
     column_auto_select_related = True
