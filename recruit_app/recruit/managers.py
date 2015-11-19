@@ -9,8 +9,9 @@ from recruit_app.user.eve_api_manager import EveApiManager
 
 from recruit_app.extensions import bcrypt, cache
 
-from flask import flash, current_app
+from flask import flash, current_app, url_for
 import requests
+import json
 from bs4 import BeautifulSoup
 
 class HrManager:
@@ -109,8 +110,10 @@ class HrManager:
 
         application.main_character_name = main_character_name
         # application.last_update_time = dt.datetime.utcnow()
+        
         application.save()
-
+        HrManager.notify(application, 'new')
+       
         return application
 
 
@@ -145,15 +148,17 @@ class HrManager:
         # application.last_update_time = dt.datetime.utcnow()
         application.save()
 
+
     @staticmethod
     def alter_application(application, action, user):
+        retval = 'unknown application action'
         if action == "approve":
             application.approved_denied = "Approved"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
             # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            return "approved"
+            retval = "approved"
 
         elif action == "reject":
             application.approved_denied = "Rejected"
@@ -161,62 +166,83 @@ class HrManager:
             application.last_user_id = user.id
             # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            return "rejected"
+            retval = "rejected"
 
         elif action == 'new':
             application.approved_denied = 'New'
             application.last_user_id = user.id
             application.save()
-            return 'New'
+            retval = 'New'
 
         elif action == "undecided":
             application.approved_denied = "Undecided"
             application.last_user_id = user.id
             # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            return "undecided"
+            retval = "undecided"
 
         elif action == "stasis":
             application.approved_denied = "Role Stasis"
             application.last_user_id = user.id
             # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            return "Role Stasis"
+            retval = "Role Stasis"
 
         elif action == "director_review":
             application.approved_denied = "Needs Director Review"
             application.last_user_id = user.id
             # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            return "Needs Director Review"
+            retval = "Needs Director Review"
 
         elif action == "waiting":
             application.approved_denied = "Awaiting Response"
             application.last_user_id = user.id
             # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            return "Awaiting Response"
+            retval = "Awaiting Response"
 
         elif action == "hide":
             application.hidden = True
             application.save()
-            return "hidden"
+            retval = "hidden"
 
         elif action == "unhide":
             application.hidden = False
             application.save()
-            return "unhidden"
+            retval = "unhidden"
 
         elif action == "delete":
             application.delete()
-            return "deleted"
+            retval = "deleted"
 
         elif action == 'close':
             application.approved_denied = 'Closed'
             application.save()
-            return 'Closed'
+            retval = 'Closed'
 
         elif action == 'needs_processing':
             application.approved_denied = 'Needs Processing'
             application.save()
-            return 'Needs Processing'
+            retval = 'Needs Processing'
+            
+        HrManager.notify(application, action)
+        return retval
+
+    @staticmethod
+    def notify(application, action):
+        try:
+            # Send a request to slack
+#            if action == 'new':
+#                message_text = "New application from {0}: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
+            if action == 'needs_processing':
+                message_text = "Application from {0} needs processing: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
+            elif action == 'director_review':
+                message_text = "Application from {0} needs director review: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
+                
+            # Send the message
+            data = {'text': message_text }
+            headers = {'Content-Type': 'application/json'}
+            requests.post(current_app.config['SLACK_WEBHOOK'], data=json.dumps(data), headers=headers)
+        except:
+            pass
