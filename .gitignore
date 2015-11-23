@@ -72,3 +72,8 @@ migrations/
 .DS_Store
 recruit_app/.DS_Store
 venv/
+
+# Cache / Flask-Assets
+recruit_app/static/.webassets-cache
+recruit_app/static/css/common.css
+recruit_app/static/js/common.js
