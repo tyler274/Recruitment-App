@@ -366,7 +366,7 @@
                                                         {{ comment.user.auth_info[0].main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
                                                     </div>
                                                     <div class="row"><div class="col-md-8">
-                                                        {% if comment.last_update_time != comment.created_time %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}){% endif %}
+                                                        {% if (comment.last_update_time - comment.created_time).total_seconds() > 1 %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}){% endif %}
                                                     </div></div>
                                                     {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
                                                         <a href="{{ url_for('recruit.application_comment_action', application_id=application.id, comment_id=comment.id, action="delete") }}">
