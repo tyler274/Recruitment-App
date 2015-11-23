@@ -80,6 +80,10 @@ class HrApplicationForm(Form):
 class HrApplicationCommentForm(Form):
     comment = TextAreaField(label="Comment", validators=[DataRequired()])
     submit = SubmitField(label='Add Comment')
+    
+class HrApplicationCommentEdit(Form):
+    comment = TextAreaField(label="Comment", validators=[DataRequired()])
+    submit = SubmitField(label='Save')
 
 class SearchForm(Form):
     search = StringField('Search')

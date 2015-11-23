@@ -8,7 +8,7 @@ from recruit_app.user.managers import AuthInfoManager
 from recruit_app.user.models import EveCharacter
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
-from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, SearchForm
+from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, HrApplicationCommentEdit, SearchForm
 from recruit_app.blacklist.models import BlacklistCharacter
 
 from sqlalchemy import desc, asc
@@ -178,6 +178,7 @@ def application_view(application_id):
 
     form_app = HrApplicationForm()
     form_comment = HrApplicationCommentForm()
+    form_edit = HrApplicationCommentEdit()
 
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
@@ -193,7 +194,7 @@ def application_view(application_id):
 
             comments = HrApplicationComment.query.filter_by(
                 application_id=application_id)\
-                .order_by(asc(HrApplicationComment.last_update_time))\
+                .order_by(asc(HrApplicationComment.created_time))\
                 .all()
 
             blacklist_string = ''
@@ -218,6 +219,7 @@ def application_view(application_id):
                                    characters=characters,
                                    comments=comments,
                                    form_comment=form_comment,
+                                   form_edit=form_edit,
                                    form_app=form_app)
 
         elif int(application.user_id) == int(current_user.get_id()):
@@ -227,6 +229,7 @@ def application_view(application_id):
                                    characters=characters,
                                    comments=comments,
                                    form_comment=form_comment,
+                                   form_edit=form_edit,
                                    form_app=form_app)
 
     return redirect(url_for('recruit.applications'))
@@ -242,14 +245,8 @@ def application_comment_create(application_id):
 
     if application:
         if request.method == 'POST':
-
             if form_comment.validate_on_submit():
-
                 HrManager.create_comment(application, form_comment.comment.data, current_user)
-
-                # if application.approved_denied == "New":
-                #     application.approved_denied = "Undecided"
-                #     application.save()
 
         return redirect(url_for('recruit.application_view', application_id=application_id))
 
@@ -258,21 +255,19 @@ def application_comment_create(application_id):
 @blueprint.route("/applications/<int:application_id>/comment/<int:comment_id>/<action>/", methods=['GET', 'POST'])
 @login_required
 def application_comment_action(application_id, comment_id, action):
-    form_comment = HrApplicationCommentForm()
-
+    form_edit = HrApplicationCommentForm()
+    
     if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
         if HrApplication.query.filter_by(id=int(application_id)).first():
             if HrApplicationComment.query.filter_by(id=comment_id).first():
 
                 comment = HrApplicationComment.query.filter_by(id=comment_id).first()
 
-                if comment.user_id == current_user.get_id() or current_user.has_role("admin"):
-
+                if int(comment.user_id) == int(current_user.get_id()) or current_user.has_role("admin"):
                     if request.method == 'POST':
                         if action == "edit":
-                            if form_comment.validate_on_submit():
-                                flash("comment valid", category="message")
-                                HrManager.edit_comment(comment, form_comment.comment.data)
+                            if form_edit.validate_on_submit():
+                                HrManager.edit_comment(comment, form_edit.comment.data)
 
                         elif action == "delete":
                             comment.delete()

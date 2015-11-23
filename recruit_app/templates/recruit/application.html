@@ -363,14 +363,38 @@
                                             <div class="panel panel-default">
                                                 <div class="panel-heading" role="tab" id="">
                                                     <div class="panel-title">
-                                                        {{ comment.user.auth_info[0].main_character }} - {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
+                                                        {{ comment.user.auth_info[0].main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
                                                     </div>
+                                                    <div class="row"><div class="col-md-8">
+                                                        {% if comment.last_update_time != comment.created_time %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}){% endif %}
+                                                    </div></div>
                                                     {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
                                                         <a href="{{ url_for('recruit.application_comment_action', application_id=application.id, comment_id=comment.id, action="delete") }}">
                                                             <button type="button" class="btn-xs btn-danger">
                                                                 Delete
                                                             </button>
                                                         </a>
+                                                        <button type="button" class="btn-xs btn-danger" data-toggle="modal" data-target="#editComment" data-comment_text="{{ comment.comment }}"
+                                                            data-comment_id="{{ comment.id }}" data-application_id="{{ application.id }}">Edit</button>
+                                                            
+                                                        {% block scripts %}
+                                                            {{super()}}
+                                                            <script>
+                                                            $('#editComment').on('show.bs.modal', function (event) {
+                                                                var button = $(event.relatedTarget)
+                                                                var comment_text = button.data('comment_text')
+                                                                var comment_id = button.data('comment_id')
+                                                                var application_id = button.data('application_id')
+                                                                var modal = $(this)
+                                                                modal.find('.modal-body textarea').val(comment_text)
+                                                                // Consider replacing this replace hack with Flask-JSGlue
+                                                                var action = $("#editform").attr('action')
+                                                                action = action.replace('-1', application_id)
+                                                                action = action.replace('-2', comment_id)
+                                                                $("#editform").attr('action', action)
+                                                            })
+                                                            </script>
+                                                        {% endblock %}
                                                     {% endif %}
                                                 </div>
                                                 <div class="panel-body">
@@ -380,6 +404,22 @@
                                                 </div>
                                             </div>
                                         {% endfor %}
+                                    </div>
+                                    <div id="editComment" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button> <!-- X / dismiss button-->
+                                                    <h4 class="modal-title">Edit Comment</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form class="form-signin" id="editform" role="form" action="{{ url_for('recruit.application_comment_action', application_id=-1, comment_id=-2, action='edit') }}" method="POST">
+                                                        {{ form_edit.hidden_tag() }}
+                                                        {{ wtf.quick_form(form_edit) }}
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-body">
                                         <form class="form-signin" role="form" action="{{ url_for('recruit.application_comment_create', application_id=application.id) }}" method="POST">
