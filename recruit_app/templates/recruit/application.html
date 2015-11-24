@@ -376,25 +376,6 @@
                                                         </a>
                                                         <button type="button" class="btn-xs btn-danger" data-toggle="modal" data-target="#editComment" data-comment_text="{{ comment.comment }}"
                                                             data-comment_id="{{ comment.id }}" data-application_id="{{ application.id }}">Edit</button>
-                                                            
-                                                        {% block scripts %}
-                                                            {{super()}}
-                                                            <script>
-                                                            $('#editComment').on('show.bs.modal', function (event) {
-                                                                var button = $(event.relatedTarget)
-                                                                var comment_text = button.data('comment_text')
-                                                                var comment_id = button.data('comment_id')
-                                                                var application_id = button.data('application_id')
-                                                                var modal = $(this)
-                                                                modal.find('.modal-body textarea').val(comment_text)
-                                                                // Consider replacing this replace hack with Flask-JSGlue
-                                                                var action = $("#editform").attr('action')
-                                                                action = action.replace('-1', application_id)
-                                                                action = action.replace('-2', comment_id)
-                                                                $("#editform").attr('action', action)
-                                                            })
-                                                            </script>
-                                                        {% endblock %}
                                                     {% endif %}
                                                 </div>
                                                 <div class="panel-body">
@@ -432,7 +413,7 @@
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            {% endif %} <!-- end if user has roles-->
 
         {% else %}
             <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
@@ -443,3 +424,23 @@
 </div>
 
 {% endblock %}
+{% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+    {% block scripts %}
+    {{super()}}
+    <script>
+    $('#editComment').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var comment_text = button.data('comment_text')
+        var comment_id = button.data('comment_id')
+        var application_id = button.data('application_id')
+        var modal = $(this)
+        modal.find('.modal-body textarea').val(comment_text)
+        // Consider replacing this replace hack with Flask-JSGlue
+        var action = $("#editform").attr('action')
+        action = action.replace('-1', application_id)
+        action = action.replace('-2', comment_id)
+        $("#editform").attr('action', action)
+    })
+    </script>
+    {% endblock %}
+{% endif %}
