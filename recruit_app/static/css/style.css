@@ -85,4 +85,9 @@ footer .footer-nav {
   list-style: none;
 }
 
-
+/* anchor link with navbar fix http://stackoverflow.com/a/13881860 */
+a[id] {
+  padding-top: 80px;
+  margin-top: -80px;
+  display: inline-block; /* required for webkit browsers */
+}
