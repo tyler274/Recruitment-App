@@ -67,6 +67,8 @@ Flask-Whooshalchemy
 # python-rq
 Flask-rq
 
+# Flask-misaka is currently broken with latest misaka
+misaka<2.0
 flask-misaka
 
 raven
