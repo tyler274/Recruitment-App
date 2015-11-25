@@ -112,21 +112,12 @@ class HrApplicationComment(SurrogatePK, TimeMixin, Model):
     def __repr__(self):
         return str(self.user) + " - Comment"
 
-
-# class HrBlacklist(SurrogatePK, TimeMixin, Model):
-#     __tablename__ = 'hr_blacklist'
-#
-#     comment = Column(db.Text, nullable=True)
-#
-#     user_id = ReferenceCol('users', nullable=False)
-#
-#     known_characters = Column(ScalarListType())
-#
-#     creator = relationship('User', backref=db.backref('hr_blacklist', lazy='dynamic'))
-#
-#     def __repr__(self):
-#         return str(self.user) + " - BlackList"
-
-
-
-
+class HrApplicationCommentHistory(SurrogatePK, TimeMixin, Model):
+    __tablename__ = 'hr_comment_history'
+    
+    old_comment = Column(db.Text, nullable=True)
+    comment_id = ReferenceCol('hr_comments', nullable=False)
+    editor = ReferenceCol('users', nullable=False)
+    
+    def __repr__(self):
+        return str(self.editor) + " - Edited comment"

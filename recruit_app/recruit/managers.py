@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from recruit_app.user.models import EveCharacter
 
-from recruit_app.recruit.models import HrApplication, HrApplicationComment
+from recruit_app.recruit.models import HrApplication, HrApplicationComment, HrApplicationCommentHistory
 
 import datetime as dt
 
@@ -72,7 +72,15 @@ class HrManager:
         comment.save()
 
     @staticmethod
-    def edit_comment(comment, comment_data):
+    def edit_comment(comment, comment_data, user):
+        # Save the previous version of the comment for possible future use / auditing
+        comment_history = HrApplicationCommentHistory()
+        comment_history.old_comment = comment.comment
+        comment_history.comment_id = comment.id
+        comment_history.editor = user
+        comment_history.save()
+        
+        # Save the edit
         comment.comment = comment_data
         comment.last_update_time = dt.datetime.utcnow()
         comment.save()

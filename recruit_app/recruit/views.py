@@ -267,7 +267,7 @@ def application_comment_action(application_id, comment_id, action):
                     if request.method == 'POST':
                         if action == "edit":
                             if form_edit.validate_on_submit():
-                                HrManager.edit_comment(comment, form_edit.comment.data)
+                                HrManager.edit_comment(comment, form_edit.comment.data, current_user.get_id())
 
                         elif action == "delete":
                             comment.delete()
