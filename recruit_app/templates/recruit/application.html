@@ -303,6 +303,9 @@
                                                         {{ character.character_name }}
                                                     </div>
                                                     <div class="col-md-9">
+                                                        GSF BL Status: {{ gsf_blacklist[character.character_name] }}
+                                                    </div>                                                    
+                                                    <div class="col-md-9">
                                                         <a target="_blank" href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
                                                             <button type="button" class="btn btn-default btn-xs">
                                                                 Jack Knife

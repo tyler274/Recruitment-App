@@ -11,7 +11,6 @@ from recruit_app.extensions import bcrypt, cache
 
 from flask import flash, current_app, url_for
 import requests
-import json
 from bs4 import BeautifulSoup
 
 class HrManager:
@@ -251,6 +250,6 @@ class HrManager:
             # Send the message
             data = {'text': message_text }
             headers = {'Content-Type': 'application/json'}
-            requests.post(current_app.config['SLACK_WEBHOOK'], data=json.dumps(data), headers=headers)
+            requests.post(current_app.config['SLACK_WEBHOOK'], json=data, headers=headers)
         except:
             pass

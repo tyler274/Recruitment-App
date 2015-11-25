@@ -196,6 +196,26 @@ def application_view(application_id):
                 application_id=application_id)\
                 .order_by(asc(HrApplicationComment.created_time))\
                 .all()
+                
+            gsf_blacklist = {}
+            for character in characters:
+                gsf_blacklist[character.character_name] = "UNKNOWN"
+                
+            gsf_blacklist_str = ''
+            try:
+            
+                for character in characters:
+                    url = current_app.config['GSF_BLACKLIST_URL'] + character.character_name
+                    r   = requests.post(url)
+                    result = str(r.json()[0]['output'])
+                    gsf_blacklist[character.character_name] = result
+                    if (result == 'BLACKLISTED'):
+                        gsf_blacklist_str += character.character_name + ' '
+            except:
+                pass
+                
+            if len(gsf_blacklist_str) > 0:
+                flash("WARNING - Character(s) " + unicode(gsf_blacklist_str) + "are on the GSF blacklist!")
 
             blacklist_string = ''
             try:
@@ -220,16 +240,13 @@ def application_view(application_id):
                                    comments=comments,
                                    form_comment=form_comment,
                                    form_edit=form_edit,
-                                   form_app=form_app)
+                                   form_app=form_app,
+                                   gsf_blacklist=gsf_blacklist)
 
         elif int(application.user_id) == int(current_user.get_id()):
 
             return render_template('recruit/application.html',
                                    application=application,
-                                   characters=characters,
-                                   comments=comments,
-                                   form_comment=form_comment,
-                                   form_edit=form_edit,
                                    form_app=form_app)
 
     return redirect(url_for('recruit.applications'))

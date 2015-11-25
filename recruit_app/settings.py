@@ -50,6 +50,7 @@ class Config(object):
     # MAX_LENGTH_FIELDS = 2000
     GSF_USERNAME = os.getenv('GSF_USERNAME', '')
     GSF_PASSWORD = os.getenv('GSF_PASSWORD', '')
+    GSF_BLACKLIST_URL = os.getenv('GSF_BLACKLIST_URL')
 
     API_MASK = 1073741823
     SLACK_WEBHOOK = os.getenv('SLACK_WEBHOOK')
