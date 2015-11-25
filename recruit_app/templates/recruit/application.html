@@ -428,9 +428,9 @@
 </div>
 
 {% endblock %}
+{% block scripts %}
+{{super()}}
 {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
-    {% block scripts %}
-    {{super()}}
     <script>
     $('#editComment').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
@@ -438,7 +438,9 @@
         var comment_id = button.data('comment_id')
         var application_id = button.data('application_id')
         var modal = $(this)
-        modal.find('.modal-body textarea').val(comment_text)
+        var textarea = modal.find('.modal-body textarea')
+        textarea.val(comment_text)
+        textarea.height(400)
         // Consider replacing this replace hack with Flask-JSGlue
         var action = $("#editform").attr('action')
         action = action.replace('-1', application_id)
@@ -446,5 +448,5 @@
         $("#editform").attr('action', action)
     })
     </script>
-    {% endblock %}
 {% endif %}
+{% endblock %}
