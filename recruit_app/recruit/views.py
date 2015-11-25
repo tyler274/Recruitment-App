@@ -183,27 +183,28 @@ def application_view(application_id):
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
-            blacklist_ips = list(set([x.ip_address for x in BlacklistCharacter.query.all() if x.ip_address is not None and x.ip_address is not u'']))
-            ips = [i for e in blacklist_ips for i in application.user.get_ips() if e in i]
-            if len(ips) > 0:
-                flash("Heads up this person's IP is on the blacklist:" + unicode(ips))
-            else:
-                flash("No IP's found on blacklist")
-
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
-
             comments = HrApplicationComment.query.filter_by(
                 application_id=application_id)\
                 .order_by(asc(HrApplicationComment.created_time))\
                 .all()
-                
+            
+            blacklist_clean = True
+            
+            # Check for IPs on the blacklist
+            blacklist_ips = list(set([x.ip_address for x in BlacklistCharacter.query.all() if x.ip_address is not None and x.ip_address is not u'']))
+            ips = [i for e in blacklist_ips for i in application.user.get_ips() if e in i]
+            if len(ips) > 0:
+                flash("Heads up this person's IP is on the blacklist:" + unicode(ips), 'error')
+                blacklist_clean = False
+            
+            # Check for character names on the GSF RC Blacklist
             gsf_blacklist = {}
             for character in characters:
                 gsf_blacklist[character.character_name] = "UNKNOWN"
                 
             gsf_blacklist_str = ''
             try:
-            
                 for character in characters:
                     url = current_app.config['GSF_BLACKLIST_URL'] + character.character_name
                     r   = requests.post(url)
@@ -215,25 +216,24 @@ def application_view(application_id):
                 pass
                 
             if len(gsf_blacklist_str) > 0:
-                flash("WARNING - Character(s) " + unicode(gsf_blacklist_str) + "are on the GSF blacklist!")
+                flash("Character(s) " + unicode(gsf_blacklist_str) + "are on the GSF blacklist!", 'error')
+                blacklist_clean = False
 
+            # Check for character names on the internal blacklist
             blacklist_string = ''
-            try:
-                for character in characters:
-                    blacklist_string = blacklist_string + ' ' + str(character.character_name)
+            for character in characters:
+                blacklist_string = blacklist_string + ' ' + str(character.character_name)
 
-                # blacklist_query = BlacklistCharacter\
-                #     .query\
-                #     .whoosh_search(blacklist_string, or_=True).all()
-                query = BlacklistCharacter.query.filter(BlacklistCharacter.name.in_([x.character_name for x in characters])).all()
+            # blacklist_query = BlacklistCharacter.query.whoosh_search(blacklist_string, or_=True).all()
+            query = BlacklistCharacter.query.filter(BlacklistCharacter.name.in_([x.character_name for x in characters])).all()
 
-                if query:
-                    flash('Double check blacklist, ' + str(query) + ' matched')
-                else:
-                    flash('No blacklist entries found')
-            finally:
-                pass
-
+            if query:
+                flash('Double check blacklist, ' + str(query) + ' matched', 'error')
+                blacklist_clean = False
+            
+            if blacklist_clean:
+                flash('All blacklists are clean.')
+            
             return render_template('recruit/application.html',
                                    application=application,
                                    characters=characters,
