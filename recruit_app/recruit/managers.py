@@ -11,6 +11,7 @@ from recruit_app.extensions import bcrypt, cache
 
 from flask import flash, current_app, url_for
 import requests
+import re
 from bs4 import BeautifulSoup
 
 class HrManager:
@@ -69,6 +70,7 @@ class HrManager:
         comment.user_id = user.id
         # comment.last_update_time = dt.datetime.utcnow()
         comment.save()
+        HrManager.comment_notify(comment)
 
     @staticmethod
     def edit_comment(comment, comment_data, user):
@@ -83,6 +85,7 @@ class HrManager:
         comment.comment = comment_data
         comment.last_update_time = dt.datetime.utcnow()
         comment.save()
+        HrManager.comment_notify(comment)
 
     @staticmethod
     def create_application(form, main_character_name, user):
@@ -119,7 +122,7 @@ class HrManager:
         # application.last_update_time = dt.datetime.utcnow()
         
         application.save()
-        HrManager.notify(application, 'new')
+        HrManager.application_action_notify(application, 'new')
        
         return application
 
@@ -233,22 +236,35 @@ class HrManager:
             application.save()
             retval = 'Needs Processing'
             
-        HrManager.notify(application, action)
+        HrManager.application_action_notify(application, action)
         return retval
 
     @staticmethod
-    def notify(application, action):
-        try:
-            # Send a request to slack
+    def application_action_notify(application, action):
+        # Send a request to slack
 #            if action == 'new':
 #                message_text = "New application from {0}: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
-            if action == 'needs_processing':
-                message_text = "Application from {0} needs processing: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
-            elif action == 'director_review':
-                message_text = "Application from {0} needs director review: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
-                
-            # Send the message
-            data = {'text': message_text }
+        if action == 'needs_processing':
+            message_text = "Application from {0} needs processing: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
+        elif action == 'director_review':
+            message_text = "Application from {0} needs director review: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
+            
+        # Send the message
+        HrManager.send_slack_notification(message=message_text)
+
+    @staticmethod
+    def comment_notify(comment):
+        # Find all instances of @xxxx text and send slack notifications to those users.  If the user doesn't exist slack will just ignore.
+        for ping in re.findall('@\w+', comment.comment):
+            message = "You were mentioned in an application comment: {0}".format(url_for('recruit.application_view', _external=True, application_id=comment.application_id, _anchor="comment{0}".format(comment.id)))
+            HrManager.send_slack_notification(message, ping)
+
+    @staticmethod
+    def send_slack_notification(message, channel=None):
+        try:
+            data = { 'text': message }
+            if channel is not None:
+                data['channel'] = channel
             headers = {'Content-Type': 'application/json'}
             requests.post(current_app.config['SLACK_WEBHOOK'], json=data, headers=headers)
         except:

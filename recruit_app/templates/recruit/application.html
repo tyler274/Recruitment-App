@@ -367,7 +367,7 @@
                                                 <div class="panel-heading" role="tab" id="">
                                                     <div class="panel-title">
                                                         {{ comment.user.auth_info[0].main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
-                                                        <a id="comment{{loop.index0}}"></a>
+                                                        <a id="comment{{comment.id}}"></a>
                                                     </div>
                                                     <div class="row"><div class="col-md-8">
                                                         {% if (comment.last_update_time - comment.created_time).total_seconds() > 1 %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}){% endif %}
