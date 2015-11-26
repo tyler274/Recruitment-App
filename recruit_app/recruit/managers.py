@@ -250,7 +250,10 @@ class HrManager:
             message_text = "Application from {0} needs director review: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
             
         # Send the message
-        HrManager.send_slack_notification(message=message_text)
+        try:
+            HrManager.send_slack_notification(message_text)
+        except:
+            pass
 
     @staticmethod
     def comment_notify(comment):
