@@ -117,6 +117,7 @@ class HrApplicationCommentHistory(SurrogatePK, TimeMixin, Model):
     
     old_comment = Column(db.Text, nullable=True)
     comment_id = ReferenceCol('hr_comments', nullable=False)
+    comment = relationship('HrApplicationComment', foreign_keys=[comment_id], backref=db.backref('hr_comment_history', cascade="delete"), single_parent=True)
     editor = ReferenceCol('users', nullable=False)
     
     def __repr__(self):
