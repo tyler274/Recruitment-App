@@ -258,7 +258,7 @@ class HrManager:
     @staticmethod
     def comment_notify(comment):
         # Find all instances of @xxxx text and send slack notifications to those users.  If the user doesn't exist slack will just ignore.
-        for ping in re.findall('@\w+', comment.comment):
+        for ping in re.findall('(?:^|\s)(@\w+)', comment.comment):
             message = "You were mentioned in an application comment: {0}".format(url_for('recruit.application_view', _external=True, application_id=comment.application_id, _anchor="comment{0}".format(comment.id)))
             HrManager.send_slack_notification(message, ping)
 
