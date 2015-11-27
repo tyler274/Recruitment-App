@@ -184,6 +184,10 @@ def application_view(application_id):
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
+            evewho = {}
+            for character in characters:
+                evewho[character.character_name] = character.character_name.replace(' ','+')
+            
             comments = HrApplicationComment.query.filter_by(
                 application_id=application_id)\
                 .order_by(asc(HrApplicationComment.created_time))\
@@ -241,7 +245,8 @@ def application_view(application_id):
                                    form_comment=form_comment,
                                    form_edit=form_edit,
                                    form_app=form_app,
-                                   gsf_blacklist=gsf_blacklist)
+                                   gsf_blacklist=gsf_blacklist,
+                                   evewho=evewho)
 
         elif int(application.user_id) == int(current_user.get_id()):
 
