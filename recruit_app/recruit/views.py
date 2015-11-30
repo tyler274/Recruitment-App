@@ -9,7 +9,7 @@ from recruit_app.user.models import EveCharacter
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, HrApplicationCommentEdit, SearchForm
-from recruit_app.blacklist.models import BlacklistCharacter
+from recruit_app.blacklist.models import BlacklistCharacter, BlacklistGSF
 
 from sqlalchemy import desc, asc
 
@@ -208,16 +208,11 @@ def application_view(application_id):
                 gsf_blacklist[character.character_name] = "UNKNOWN"
                 
             gsf_blacklist_str = ''
-            try:
-                for character in characters:
-                    url = current_app.config['GSF_BLACKLIST_URL'] + character.character_name
-                    r   = requests.post(url)
-                    result = str(r.json()[0]['output'])
-                    gsf_blacklist[character.character_name] = result
-                    if (result == 'BLACKLISTED'):
-                        gsf_blacklist_str += character.character_name + ' '
-            except:
-                pass
+            for character in characters:
+                result = BlacklistGSF.getStatus(character)
+                gsf_blacklist[character.character_name] = result
+                if (result == 'BLACKLISTED'):
+                    gsf_blacklist_str += character.character_name + ' '
                 
             if len(gsf_blacklist_str) > 0:
                 flash("Character(s) " + unicode(gsf_blacklist_str) + "are on the GSF blacklist!", 'error')
