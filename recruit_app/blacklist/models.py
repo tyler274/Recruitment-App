@@ -58,3 +58,6 @@ class BlacklistGSF(TimeMixin, Model):
             entry.save()
 
         return entry.status
+
+    def __repr__(self):
+        return '<BlacklistCacheEntry' + ': ' + self.character_id + '>'
