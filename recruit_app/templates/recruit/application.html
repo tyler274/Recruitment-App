@@ -8,6 +8,13 @@
         {% if current_user.auth_info %}
         {% if current_user.auth_info[0].main_character_id %}
             {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+                {% for related_app in related %}
+                <div class="col-md-9">
+                    <a target="_blank" class="btn btn-default btn-xs" href="{{ url_for('recruit.application_view', application_id=related_app.id) }}">
+                        Related application for {% for rel_char in related_app.characters %}{{ rel_char.character_name }}{% endfor %}
+                    </a>
+                </div>
+                {% endfor %}
                 {% for api_key in application.user.api_keys %}
                 <div class="col-md-9">
                     Key ID: {{ api_key.api_id }}

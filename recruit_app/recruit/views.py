@@ -175,6 +175,7 @@ def application_create():
 def application_view(application_id):
     comments = []
     characters = []
+    related = []
 
     form_app = HrApplicationForm()
     form_comment = HrApplicationCommentForm()
@@ -187,6 +188,9 @@ def application_view(application_id):
             evewho = {}
             for character in characters:
                 evewho[character.character_name] = character.character_name.replace(' ','+')
+            
+            # Get related applications
+            related = HrApplication.query.filter(HrApplication.user_id == application.user_id, HrApplication.id != application.id)
             
             comments = HrApplicationComment.query.filter_by(
                 application_id=application_id)\
@@ -236,6 +240,7 @@ def application_view(application_id):
             return render_template('recruit/application.html',
                                    application=application,
                                    characters=characters,
+                                   related=related,
                                    comments=comments,
                                    form_comment=form_comment,
                                    form_edit=form_edit,
