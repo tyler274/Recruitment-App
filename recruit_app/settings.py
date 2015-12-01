@@ -35,6 +35,7 @@ class Config(object):
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
     JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
+    JACK_KNIFE_ALT_URL = 'http://whinis.com/jackKnife/index.php'
 
     SENTRY_DSN = os.getenv('SENTRY_DSN')
 
@@ -74,7 +75,7 @@ class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
     WHOOSH_BASE = os.path.join(basedir, 'search.db')
-    DEBUG_TB_ENABLED = True
+    #DEBUG_TB_ENABLED = True
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
 

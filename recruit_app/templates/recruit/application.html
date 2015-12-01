@@ -13,7 +13,10 @@
                     Key ID: {{ api_key.api_id }}
                     Key Date: {{ api_key.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
                     <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
-                            Jack Knife
+                        Jack Knife
+                    </a>
+                    <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
+                        Alt Jack Knife
                     </a>
                 </div>
                 {% endfor %}
@@ -302,12 +305,15 @@
                                                     <div class="text-left col-md-8">
                                                         {{ character.character_name }}
                                                     </div>
-                                                    <div class="col-md-9">
+                                                    <div class="col-md-9"><small>
                                                         GSF BL Status: {{ gsf_blacklist[character.character_name] }}
-                                                    </div>                                                    
+                                                    </small></div>                                                    
                                                     <div class="col-md-9">
                                                         <a target="_blank" href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
                                                             <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
+                                                        </a>
+                                                        <a target="_blank" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                                                            <button type="button" class="btn btn-default btn-xs">Alt Jack Knife</button>
                                                         </a>
                                                     </div>
                                                     <div class="col-md-9">
