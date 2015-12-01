@@ -10,7 +10,6 @@ from flask_security.forms import ConfirmRegisterForm, PasswordConfirmFormMixin
 
 
 class LoginForm(Form):
-    # username = TextField('Username', validators=[DataRequired()])
     email = TextField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField(label='Log In')
@@ -24,10 +23,9 @@ class LoginForm(Form):
         if not initial_validation:
             return False
 
-        # self.user = User.query.filter_by(username=self.username.data).first()
         self.user = user_datastore.get_user(self.email.data)
         if not self.user:
-            self.email.errors.append('Unknown username')
+            self.email.errors.append('Unknown email address')
             return False
 
         if not self.user.check_password(self.password.data):
@@ -35,7 +33,7 @@ class LoginForm(Form):
             return False
 
         if not self.user.active:
-            self.username.errors.append('User not activated')
+            self.email.errors.append('User not activated')
             return False
         return True
 

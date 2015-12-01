@@ -9,7 +9,6 @@ from flask_security import current_user
 from recruit_app.extensions import security, user_datastore
 from recruit_app.user.models import User
 from recruit_app.public.forms import LoginForm
-from recruit_app.user.forms import RegisterForm
 from recruit_app.utils import flash_errors
 from recruit_app.database import db
 
@@ -61,22 +60,6 @@ def logout():
     flash('You are logged out.', 'info')
     return redirect(url_for('public.home'))
 
-# @blueprint.route("/register/", methods=['GET', 'POST'])
-# def register():
-#     form = RegisterForm(request.form, csrf_enabled=False)
-#     if form.validate_on_submit():
-#         new_user = User.create(username=form.username.data,
-#                         email=form.email.data,
-#                         password=form.password.data,
-#                         active=True)
-#         # user_datastore.create_user(email=form.email.data, username=form.username.data, password=form.password.data, active=True)
-#         AuthInfoManager.get_or_create(current_user.get_id())
-
-#         flash("Thank you for registering. You can now log in.", 'success')
-#         return redirect(url_for('public.home'))
-#     else:
-#         flash_errors(form)
-#     return render_template('public/register.html', form=form)
 
 @blueprint.route("/about/")
 def about():

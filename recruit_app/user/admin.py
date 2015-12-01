@@ -2,6 +2,7 @@ from models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationI
 from models import User, Role, roles_users, AuthInfo
 from flask_security import current_user
 from recruit_app.admin import AuthenticatedModelView
+from wtforms import PasswordField
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.blacklist.models import BlacklistCharacter
 
@@ -14,120 +15,155 @@ def register_admin_views(admin, db):
     admin.add_view(RoleAdmin(Role, db.session, category='Users'))
     admin.add_view(AuthInfoAdmin(AuthInfo, db.session, category='Users'))
 
+# Useful things: column_list, column_labels, column_searchable_list, column_filters, form_columns, form_ajax_refs
 
 class AuthInfoAdmin(AuthenticatedModelView):
-    searchable = ('user.username',
-                  'user.email',
-                  'main_character.character_name',
-                  )
-    # show = ('api_id', 'api_key', 'user.auth_info.main_character.character_name', 'user.username', 'user.email')
-    column_list = searchable + ('id',)
-    column_sortable_list = searchable
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    column_searchable_list = searchable
-    column_filters = searchable + ('id',)
-
+    column_list = (
+        'user.email',
+        'main_character.character_name', )
+    column_labels = {
+        'user.email':                    'User',
+        'main_character.character_name': 'Main Character', }
+    column_searchable_list = column_list
+    column_filters = column_list
+    form_ajax_refs = {
+        'user':           { 'fields': (User.email,) },
+        'main_character': { 'fields': (EveCharacter.character_name,) }, }
 
 class EveCharacterAdmin(AuthenticatedModelView):
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    searchable = ('character_name',
-                  'character_id',
-                  'alliance.alliance_name',
-                  'corporation.corporation_name',
-                  'corporation.corporation_id',
-                  'user.email',
-                  'user.username',
-                  'api.api_id',)
-    column_searchable_list = searchable
-    column_filters = searchable
-
+    column_list = (
+        'character_id',
+        'character_name',
+        'corporation.corporation_name',
+        'alliance.alliance_name',
+        'user.email',
+        'api.api_id', )
+    column_labels = {
+        'corporation.corporation_name': 'Corp',
+        'alliance.alliance_name':       'Alliance',
+        'user.email':                   'User Email',
+        'api.api_id':                   'API', }
+    column_searchable_list = column_list
+    column_filters = column_list
+    form_columns = ('character_id',
+        'character_name',
+        'corporation',
+        'alliance',
+        'user',
+        'api' )
+    form_ajax_refs = {
+        'corporation': { 'fields': ('corporation_name',) },
+        'alliance':    { 'fields': ('alliance_name',) },
+        'user':        { 'fields': (User.email,) },
+        'api':         { 'fields': (EveApiKeyPair.api_id,) } }
 
 class EveCorporationInfoAdmin(AuthenticatedModelView):
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    searchable = (EveCorporationInfo.corporation_name,
-                  EveCorporationInfo.corporation_id,
-                  EveCorporationInfo.corporation_ticker,
-                  'alliance.alliance_id',
-                  'alliance.alliance_name',)
-    column_searchable_list = searchable
-    column_filters = searchable + ('member_count',)
-
+    column_list = (
+        'corporation_id',
+        'corporation_name',
+        'corporation_ticker',
+        'alliance.alliance_name',
+        'member_count',
+        'is_blue', )
+    column_labels = {
+        'corporation_id': 'ID',
+        'corporation_name': 'Name',
+        'corporation_ticker': 'Ticker',
+        'alliance.alliance_name' : 'Alliance', }
+    column_searchable_list = (
+        'corporation_name',
+        'corporation_ticker',
+        'alliance.alliance_name', )
+    column_filters = column_list
+    form_columns = (
+        'corporation_id',
+        'corporation_name',
+        'corporation_ticker',
+        'alliance',
+        'member_count',
+        'is_blue', )
+    form_ajax_refs = {
+        'alliance': { 'fields': ('alliance_name', ) }, }
 
 class EveAllianceInfoAdmin(AuthenticatedModelView):
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    searchable = (EveAllianceInfo.alliance_id,
-                  EveAllianceInfo.alliance_name,
-                  EveAllianceInfo.alliance_ticker,
-                  )
-    column_searchable_list = searchable
-    column_filters = searchable + ('member_count',)
-
+    column_list = (
+        'alliance_id',
+        'alliance_name',
+        'alliance_ticker',
+        'executor_corp_id',
+        'member_count',
+        'is_blue', )
+    column_searchable_list = (
+        'alliance_name',
+        'alliance_ticker', )
+    column_filters = column_list
+    form_columns = column_list
 
 class UserAdmin(AuthenticatedModelView):
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    searchable = ('username',
-                  'email',
-                  'characters.character_name',
-                  )
-    column_list = searchable + ('created_at',
-                                'last_login_at',
-                                'confirmed_at',
-                                'active',
-                                'login_count',
-                                'last_login_ip',
-                                'current_login_ip',)
-    # column_sortable_list = searchable
-    column_searchable_list = searchable
-    column_filters = searchable + ('created_at',
-                                   'last_login_at',
-                                   'confirmed_at',
-                                   'active',
-                                   'login_count',
-                                   'last_login_ip',
-                                   'current_login_ip',)
+    column_searchable_list = (
+        'email',
+        'last_login_ip',
+        'current_login_ip', )
+    # TODO Main would be nice here, but it's setup with a many-to-many sub table...
+    column_list = (
+        'email',
+        'created_at',
+        'last_login_at',
+        'confirmed_at',
+        'active',
+        'login_count',
+        'last_login_ip',
+        'current_login_ip', )
+    column_filters = column_list
+    form_columns = (
+        'email',
+        'password',
+        'active',
+        'is_admin',
+        'created_at',
+        'confirmed_at',
+        'last_login_at',
+        'current_login_at',
+        'last_login_ip',
+        'current_login_ip',
+        'login_count',
+        'roles',
+        'characters',
+        'api_keys',
+        'blacklist_character_entries', )
+    form_extra_fields = { 'password': PasswordField('Password') }    
     form_ajax_refs = {
-        'hr_applications':             { 'fields': (HrApplication.user,) },
-        'hr_applications_reviewed':    { 'fields': (HrApplication.reviewer_user,) },
-        'hr_applications_touched':     { 'fields': (HrApplication.last_action_user,) },
-        'hr_comments':                 { 'fields': (HrApplicationComment.user,) },
-        'api_keys':                    { 'fields': (EveApiKeyPair.user,) },
-        'blacklist_character_entries': { 'fields': (BlacklistCharacter.creator,) },
-        'characters':                  { 'fields': (EveCharacter.user,) },
-        'auth_info':                   { 'fields': (AuthInfo.user,) },
-
-    }
+        'characters':                  { 'fields': (EveCharacter.character_name, ) },
+        'api_keys':                    { 'fields': (EveApiKeyPair.api_id, ) },
+        'blacklist_character_entries': { 'fields': (BlacklistCharacter.name, BlacklistCharacter.notes, ) }, }
 
 class RoleAdmin(AuthenticatedModelView):
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    searchable = (Role.name,
-                  Role.description,
-                  )
-    column_searchable_list = searchable
-    column_filters = searchable
-
+    column_searchable_list = ('name', 'description')
+    column_filters = column_searchable_list
+    form_columns = ('id', ) + column_searchable_list + ('users', )
+    form_ajax_refs = { 'users': { 'fields': ( User.email, ) } }
 
 class EveApiKeyPairAdmin(AuthenticatedModelView):
-    searchable = ('api_id',
-                  'api_key',
-                  'user.username',
-                  'user.email',
-                  'user.auth_info.main_character.character_name',
-                  )
-    # show = ('api_id', 'api_key', 'user.auth_info.main_character.character_name', 'user.username', 'user.email')
-    column_list = searchable
-    column_sortable_list = searchable
-    column_auto_select_related = True
-    # column_display_all_relations = True
-    column_searchable_list = searchable
-    column_filters = searchable + ('last_update_time',
-                                   'valid')
-
+    # TODO Would be nice to have main in here once it's one-to-one
+    column_searchable_list = (
+        'api_id',
+        'api_key',
+        'user.email', )
+    column_list = column_searchable_list + (
+        'last_update_time',
+        'valid')
+    column_labels = { 'user.email': 'User', }
+    column_filters = column_list
+    form_columns = (
+        'api_id',
+        'api_key',
+        'last_update_time',
+        'valid',
+        'user',
+        'characters', )
+    form_ajax_refs = {
+        'user':       { 'fields': ( User.email, ) },
+        'characters': { 'fields': ( EveCharacter.character_name, ) }, }
 
 def check_if_admin():
     if current_user:
