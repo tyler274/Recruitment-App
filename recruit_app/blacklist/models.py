@@ -50,7 +50,7 @@ class BlacklistGSF(TimeMixin, Model):
             try:
                 url = current_app.config['GSF_BLACKLIST_URL'] + character.character_name
                 r   = requests.post(url)
-                result = str(r.json()[0]['output'])
+                entry.status = str(r.json()[0]['output'])
                 entry.last_update_time = dt.datetime.utcnow()
             except: # Will except on NONE for URL or connection issues.  Just keep status as UNKNOWN
                 pass

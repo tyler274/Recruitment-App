@@ -190,7 +190,7 @@ def application_view(application_id):
                 evewho[character.character_name] = character.character_name.replace(' ','+')
             
             # Get related applications
-            related = HrApplication.query.filter(HrApplication.user_id == application.user_id, HrApplication.id != application.id)
+            related = HrApplication.query.filter(HrApplication.user_id == application.user_id, HrApplication.id != application.id).all()
             
             comments = HrApplicationComment.query.filter_by(
                 application_id=application_id)\
