@@ -8,6 +8,44 @@
     {% if current_user.main_character_id %}
         {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
             <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Actions (Last Update {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }})</div>
+                        <div class="panel-body text-center">
+                            {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="approve") }}">
+                                    <button type="button" class="btn btn-success">Approve</button>
+                                </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
+                                    <button type="button" class="btn btn-info">Reject</button>
+                                </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="close") }}">
+                                    <button type="button" class="btn btn-danger">Close</button>
+                                </a>
+                            {% endif %}
+
+                            {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="needs_processing") }}">
+                                    <button type="button" class="btn btn-warning">Needs Processing</button>
+                                </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">
+                                    <button type="button" class="btn btn-info">Role Stasis</button>
+                                </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="waiting") }}">
+                                    <button type="button" class="btn btn-info">Awaiting Response</button>
+                                </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
+                                    <button type="button" class="btn btn-info">Needs Director Review</button>
+                                </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
+                                    <button type="button" class="btn btn-warning">Mark In Progress</button>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 {% if related|length > 0 %}
                     <div class="col-md-7">
                 {% else %}
@@ -18,13 +56,14 @@
                         <div id="apikeys" class="collapse in">
                             <div class="panel-body">
                                 {% for api_key in application.user.api_keys %}
-                                    <p>Key ID: {{ api_key.api_id }} Key Date: {{ api_key.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
+                                    Key ID: {{ api_key.api_id }} Key Date: {{ api_key.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
                                     <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
                                         Jack Knife
                                     </a>
                                     <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
                                         Alt Jack Knife
-                                    </a></p>
+                                    </a>
+                                    <br>
                                 {% endfor %}
                             </div>
                         </div>
@@ -37,9 +76,10 @@
                             <div id="related" class="collapse in">
                                 <div class="panel-body">
                                     {% for related_app in related %}
-                                            <p><a target="_blank" class="btn btn-default btn-xs" href="{{ url_for('recruit.application_view', application_id=related_app.id) }}">
+                                            <a target="_blank" class="btn btn-default btn-xs" href="{{ url_for('recruit.application_view', application_id=related_app.id) }}">
                                                 {% for rel_char in related_app.characters %}{% if loop.index0 > 0 %}, {% endif %}{{ rel_char.character_name }}{% endfor %}
-                                            </a></p>
+                                            </a>
+                                            <br>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -47,393 +87,233 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="col-sm-4">
-        {% else %}
-            <div class="">
         {% endif %}
-            <div class="row">
-                    <div class="form-group">
-                        <label class="control-label" for="id_extra">Status</label>
-                        <div class=" ">
-                            {% if application.approved_denied == "Role Stasis" %}
-                                <div class="alert alert-warning" role="alert">Role Stasis</div>
+        <div class="row">
+    {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+        <div class="col-sm-4"> {# indent to match row #}
+    {% endif %}
+            <div class="form-group">
+                <label class="control-label">Status</label>
+                {% if application.approved_denied == "Role Stasis" %}
+                    <div class="alert alert-warning" role="alert">Role Stasis</div>
 
-                            {% elif application.approved_denied == "Approved" %}
-                                <div class="alert alert-success" role="alert">Approved
-                                    <div class="text-left" style="word-break: break-all;">
-                                        Put {{ request.url }} in your in game app and apply
-                                    </div>
-                                </div>
-
-                            {% elif application.approved_denied == "Rejected" %}
-                                <div class="alert alert-danger" role="alert">Rejected</div>
-
-                            {% elif application.approved_denied == "Awaiting Response" %}
-                                <div class="alert alert-danger" role="alert">Awaiting Response</div>
-
-                            {% elif application.approved_denied == "Needs Director Review" %}
-                                <div class="alert alert-danger" role="alert">Needs Director Review</div>
-
-                            {% elif application.approved_denied == "Undecided" %}
-                                <div class="alert alert-warning" role="alert">In Progress</div>
-
-                            {% elif application.approved_denied == "Closed" %}
-                                <div class="alert alert-danger" role="alert">Closed</div>
-
-                            {% elif application.approved_denied == "Needs Processing" %}
-                                <div class="alert alert-warning" role="alert">Needs Processing</div>
-
-                            {% elif application.approved_denied is not defined %}
-                                <div class="alert alert-info" role="alert">New</div>
-
-                            {% endif %}
+                {% elif application.approved_denied == "Approved" %}
+                    <div class="alert alert-success" role="alert">Approved
+                        <div class="text-left" style="word-break: break-all;">
+                            Put {{ request.url }} in your in game app and apply
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label" for="id_extra">Reviewer</label>
+                {% elif application.approved_denied == "Rejected" %}
+                    <div class="alert alert-danger" role="alert">Rejected</div>
 
-                        <div class=" ">
-                            {% if not application.reviewer_user or not application.reviewer_user.main_character %}
-                                <div class="alert alert-info" role="alert">Pending</div>
-                            {% else %}
-                                <div class="alert alert-info" role="alert">{{ application.reviewer_user.main_character }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_extra">Last Action</label>
+                {% elif application.approved_denied == "Awaiting Response" %}
+                    <div class="alert alert-danger" role="alert">Awaiting Response</div>
 
-                        <div class=" ">
-                            {% if not application.last_action_user or not application.last_action_user.main_character %}
-                                <div class="alert alert-info" role="alert">Pending</div>
-                            {% else %}
-                                <div class="alert alert-info" role="alert">{{ application.last_action_user.main_character.character_name }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_character_name">Is this an application for an alt?</label>
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about"
-                                      disabled>{{ application.alt_application }}</textarea>
-                        </div>
-                    </div>
+                {% elif application.approved_denied == "Needs Director Review" %}
+                    <div class="alert alert-danger" role="alert">Needs Director Review</div>
 
-                    <div class="form-group">
-                        <label class="control-label" for="id_character_name">User Account</label>
+                {% elif application.approved_denied == "Undecided" %}
+                    <div class="alert alert-warning" role="alert">In Progress</div>
 
-                        <div class=" ">
-                            <input class=" form-control" value="{{ application.user.email }}" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_character_name">Characters Applying</label>
-                        <div class=" ">
-                            {% for character in application.characters %}
-                                <input class="form-control" value="{{ character.character_name }}" disabled>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_character_name">Main Character Name</label>
+                {% elif application.approved_denied == "Closed" %}
+                    <div class="alert alert-danger" role="alert">Closed</div>
 
-                        <div class=" ">
-                            <input class="form-control" value="{{ application.main_character_name }}" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Please give a maximum 2000 character thesis on the meaning of the word "The" (not required)</label>
-                        <a target="_blank" href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.thesis }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">How long have you been playing EVE?</label>
+                {% elif application.approved_denied == "Needs Processing" %}
+                    <div class="alert alert-warning" role="alert">Needs Processing</div>
 
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.how_long }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Any notable accomplishments in that time?</label>
+                {% elif application.approved_denied is not defined %}
+                    <div class="alert alert-info" role="alert">New</div>
 
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.notable_accomplishments }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Walk us through your Corporation history:</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.corporation_history }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Why are you leaving your current Corporation?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.why_leaving }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">What do you know about KarmaFleet?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.what_know }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">How do you expect daily life in KarmaFleet to be?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.what_expect }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Do you have any alts or other characters? Are any of your characters bought, and if so, which ones?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.bought_characters }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Why are you interested in joining KarmaFleet?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.why_interested }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Have you ever interacted with another member of Goonswarm Federation?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.goon_interaction }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_about">Do you have any friends in KarmaFleet? If so, who?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_about" name="about" rows="10"
-                                      disabled>{{ application.friends }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_extra">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" id="id_extra" name="extra" rows="10"
-                                      disabled>{{ application.scale }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_extra">What's your favorite role to play, why?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" rows="3" id="id_extra" name="extra" rows="10"
-                                      disabled>{{ application.favorite_role }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="id_extra">How did you find out about KarmaFleet?</label>
-
-                        <div class=" ">
-                            <textarea class=" form-control" rows="3" id="id_extra" name="extra" rows="10"
-                                      disabled>{{ application.find_out }}</textarea>
-                        </div>
-                    </div>
-                    {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
-                        <div class="form-group text-center">
-                            <label class="control-label text-center" for="id_extra">Actions</label>
-                            <label class="control-label text-center" for="id_extra">Last Update Time - {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</label>
-
-                            <div class="container-fluid well">
-
-                                <div class="row text-center">
-
-                                    {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="approve") }}">
-                                            <button type="button" class="btn btn-lg btn-success">Approve</button>
-                                        </a>
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="reject") }}">
-                                            <button type="button" class="btn btn-lg btn-info">Reject</button>
-                                        </a>
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="close") }}">
-                                            <button type="button" class="btn btn-lg btn-danger">Close</button>
-                                        </a>
-                                    {% endif %}
-
-                                    {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="needs_processing") }}">
-                                            <button type="button" class="btn btn-lg btn-warning">Needs Processing</button>
-                                        </a>
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">
-                                            <button type="button" class="btn btn-lg btn-info">Role Stasis</button>
-                                        </a>
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="waiting") }}">
-                                            <button type="button" class="btn btn-lg btn-info">Awaiting Response</button>
-                                        </a>
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
-                                            <button type="button" class="btn btn-lg btn-info">Needs Director Review</button>
-                                        </a>
-                                        <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
-                                            <button type="button" class="btn btn-lg btn-warning">Mark In Progress</button>
-                                        </a>
-                                    {% endif %}
-                                </div>
-                                <br/>
-                            </div>
-                        </div>
-                    {% endif %}
-
-
+                {% endif %}
             </div>
 
-        </div>
+            <div class="form-group">
+                <label class="control-label">Reviewer</label>
+                {% if not application.reviewer_user or not application.reviewer_user.main_character %}
+                    <div class="alert alert-info" role="alert">Pending</div>
+                {% else %}
+                    <div class="alert alert-info" role="alert">{{ application.reviewer_user.main_character }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="control-label">Last Action</label>
+                {% if not application.last_action_user or not application.last_action_user.main_character %}
+                    <div class="alert alert-info" role="alert">Pending</div>
+                {% else %}
+                    <div class="alert alert-info" role="alert">{{ application.last_action_user.main_character.character_name }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="control-label">Is this an application for an alt?</label>
+                <input class="form-control" value="{{ application.alt_application }}" disabled>
+            </div>
+            <div class="form-group">
+                <label class="control-label">User Account</label>
+                <input class=" form-control" value="{{ application.user.email }}" disabled>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Characters Applying</label>
+                {% for character in application.characters %}
+                    <input class="form-control" value="{{ character.character_name }}" disabled>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label class="control-label">Main Character Name</label>
+                <input class="form-control" value="{{ application.main_character_name }}" disabled>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Please give a maximum 2000 character thesis on the meaning of the word "The" (not required)</label>
+                <a target="_blank" href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
+                <textarea class=" form-control" rows="10" disabled>{{ application.thesis }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">How long have you been playing EVE?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.how_long }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Any notable accomplishments in that time?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.notable_accomplishments }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Walk us through your Corporation history:</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.corporation_history }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Why are you leaving your current Corporation?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.why_leaving }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">What do you know about KarmaFleet?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.what_know }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">How do you expect daily life in KarmaFleet to be?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.what_expect }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Do you have any alts or other characters? Are any of your characters bought, and if so, which ones?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.bought_characters }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Why are you interested in joining KarmaFleet?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.why_interested }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Have you ever interacted with another member of Goonswarm Federation?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.goon_interaction }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Do you have any friends in KarmaFleet? If so, who?</label>
+                <textarea class=" form-control" rows="10" disabled>{{ application.friends }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
+                <input class="form-control" value="{{ application.scale }}" disabled>
+            </div>
+            <div class="form-group">
+                <label class="control-label">What's your favorite role to play, why?</label>
+                <textarea class=" form-control" rows="3" rows="10" disabled>{{ application.favorite_role }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">How did you find out about KarmaFleet?</label>
+                <textarea class=" form-control" rows="3" rows="10" disabled>{{ application.find_out }}</textarea>
+            </div>
         {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
-            <div class="col-sm-4">
-                <div class="row">
-                    <label class="control-label  " for="id_extra">Characters</label>
-                    {% for character in characters %}
-                        <div class="container-fluid">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title">
-                                        <div class="row">
-                                            <div class="">
-                                                <div class="text-left col-md-8">
-                                                    {{ character.character_name }}
-                                                </div>
-                                                <div class="col-md-9"><small>
-                                                    GSF BL Status: {{ gsf_blacklist[character.character_name] }}
-                                                </small></div>                                                    
-                                                <div class="col-md-9">
-                                                    <a target="_blank" href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
-                                                        <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
-                                                    </a>
-                                                    <a target="_blank" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
-                                                        <button type="button" class="btn btn-default btn-xs">Alt Jack Knife</button>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    <a target="_blank" href="https://forums.eveonline.com/default.aspx?g=search&postedby={{ character.character_name }}">
-                                                        <button type="button" class="btn btn-default btn-xs">Forum Search</button>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    <a target="_blank" href="https://zkillboard.com/character/{{ character.character_id }}/">
-                                                        <button type="button" class="btn btn-default btn-xs">zKillboard</button>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    <a target="_blank" href="http://evewho.com/pilot/{{ evewho[character.character_name] }}">
-                                                        <button type="button" class="btn btn-default btn-xs">Eve Who</button>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel-body">
-                                    <div class="col-lg-5 col-sm-4"><img class=
-                                      "ra-avatar img-responsive" src=
-                                      "https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
-                                    </div>
-
-                                    <div class="col-lg-7">
-                                        <p><strong>Alliance: </strong> {{ character.corporation.alliance.alliance_name }} </p>
-
-                                        <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>
-
-                                        <p><strong>Corporation Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
-                                    </div>
-                                </div>
-                            </div>
+        </div> {# ends column that only exists in recruiter mode #}
+        <div class="col-sm-4">
+            <label class="control-label">Characters ({{ characters|length }})</label>
+            {% for character in characters %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            {{ character.character_name }}
                         </div>
-                    {% endfor %}
+                        GSF BL Status: {{ gsf_blacklist[character.character_name] }}
+                        <br>
+                        <a target="_blank" href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                            <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
+                        </a>
+                        <a target="_blank" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                            <button type="button" class="btn btn-default btn-xs">Alt Jack Knife</button>
+                        </a>
+                        <br>
+                        <a target="_blank" href="https://forums.eveonline.com/default.aspx?g=search&postedby={{ character.character_name }}">
+                            <button type="button" class="btn btn-default btn-xs">Forum Search</button>
+                        </a>
+                        <br>
+                        <a target="_blank" href="https://zkillboard.com/character/{{ character.character_id }}/">
+                            <button type="button" class="btn btn-default btn-xs">zKillboard</button>
+                        </a>
+                        <br>
+                        <a target="_blank" href="http://evewho.com/pilot/{{ evewho[character.character_name] }}">
+                            <button type="button" class="btn btn-default btn-xs">Eve Who</button>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-5 col-sm-4">
+                            <img class="ra-avatar img-responsive" src="https://image.eveonline.com/Character/{{ character.character_id }}_128.jpg">
+                        </div>
+                        <div class="col-lg-7">
+                            <p><strong>Alliance: </strong> {{ character.corporation.alliance.alliance_name }} </p>
+                            <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>
+                            <p><strong>Corporation Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="row">
-                    <label class="control-label  " for="id_extra">Comments</label>
-                    <div >
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                                <h4 class="panel-title">
-                                    Comments - {{ comments|length }}
-                                </h4>
-                            </div>
-                            <div aria-labelledby="headingThree">
-                                <div class="panel-body">
-                                    {% for comment in comments %}
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading" role="tab" id="">
-                                                <div class="panel-title">
-                                                    {{ comment.user.main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
-                                                    <a id="comment{{comment.id}}"></a>
-                                                </div>
-                                                <div class="row"><div class="col-md-8">
-                                                    {% if (comment.last_update_time - comment.created_time).total_seconds() > 1 %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}){% endif %}
-                                                </div></div>
-                                                {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
-                                                    <a href="{{ url_for('recruit.application_comment_action', application_id=application.id, comment_id=comment.id, action="delete") }}">
-                                                        <button type="button" class="btn-xs btn-danger">
-                                                            Delete
-                                                        </button>
-                                                    </a>
-                                                    <button type="button" class="btn-xs btn-danger" data-toggle="modal" data-target="#editComment" data-comment_text="{{ comment.comment }}"
-                                                        data-comment_id="{{ comment.id }}" data-application_id="{{ application.id }}">Edit</button>
-                                                {% endif %}
-                                            </div>
-                                            <div class="panel-body">
-                                                <p style="word-wrap: break-word;">
-                                                    {{ comment.comment|markdown }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                <div id="editComment" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button> <!-- X / dismiss button-->
-                                                <h4 class="modal-title">Edit Comment</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form class="form-signin" id="editform" role="form" action="{{ url_for('recruit.application_comment_action', application_id=-1, comment_id=-2, action='edit') }}" method="POST">
-                                                    {{ form_edit.hidden_tag() }}
-                                                    {{ wtf.quick_form(form_edit) }}
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-signin" role="form" action="{{ url_for('recruit.application_comment_create', application_id=application.id) }}" method="POST">
-                                        {{ form_comment.hidden_tag() }}
-                                        {{ wtf.quick_form(form_comment) }}
-                                    </form>
-                                </div>
-                            </div>
+            {% endfor %}
+        </div> {# end column #}
+        <div class="col-sm-4">
+            <label class="control-label">Comments ({{ comments|length }})</label>
+            {% for comment in comments %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            {{ comment.user.main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
+                            <a id="comment{{comment.id}}"></a>
+                        </div>
+                        {% if (comment.last_update_time - comment.created_time).total_seconds() > 1 %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }})<br>{% endif %}
+                        {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
+                            <a href="{{ url_for('recruit.application_comment_action', application_id=application.id, comment_id=comment.id, action="delete") }}">
+                                <button type="button" class="btn-xs btn-danger">Delete</button>
+                            </a>
+                            <button type="button" class="btn-xs btn-danger" data-toggle="modal" data-target="#editComment" data-comment_text="{{ comment.comment }}"
+                                data-comment_id="{{ comment.id }}" data-application_id="{{ application.id }}">Edit</button>
+                        {% endif %}
+                    </div>
+                    <div class="panel-body">
+                        <p style="word-wrap: break-word;">
+                            {{ comment.comment|markdown }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+            {# Modal edit dialog definition #}
+            <div id="editComment" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button> <!-- X / dismiss button-->
+                            <h4 class="modal-title">Edit Comment</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-signin" id="editform" role="form" action="{{ url_for('recruit.application_comment_action', application_id=-1, comment_id=-2, action='edit') }}" method="POST">
+                                {{ form_edit.hidden_tag() }}
+                                {{ wtf.quick_form(form_edit) }}
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {# Add comment form #}
+            <form role="form" action="{{ url_for('recruit.application_comment_create', application_id=application.id) }}" method="POST">
+                {{ form_comment.hidden_tag() }}
+                {{ wtf.quick_form(form_comment) }}
+            </form>
+        </div>
         {% endif %} <!-- end if user has roles-->
+        </div> {# end of row #}
 
     {% else %}
         <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
