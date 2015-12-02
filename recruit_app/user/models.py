@@ -66,9 +66,6 @@ class EveCharacter(Model):
     corporation_id = ReferenceCol('corporations', pk_name='corporation_id', nullable=True)
     corporation = relationship('EveCorporationInfo', backref='characters', foreign_keys=[corporation_id])
 
-    alliance_id = ReferenceCol('alliances', pk_name='alliance_id', nullable=True)
-    alliance = relationship('EveAllianceInfo', backref='characters', foreign_keys=[alliance_id])
-
     api_id = ReferenceCol('api_key_pairs', pk_name='api_id', nullable=True)
     api = relationship('EveApiKeyPair', backref='characters', foreign_keys=[api_id])
 

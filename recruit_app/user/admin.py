@@ -21,25 +21,23 @@ class EveCharacterAdmin(AuthenticatedModelView):
         'character_id',
         'character_name',
         'corporation.corporation_name',
-        'alliance.alliance_name',
+        'corporation.alliance.alliance_name',
         'user.email',
         'api.api_id', )
     column_labels = {
-        'corporation.corporation_name': 'Corp',
-        'alliance.alliance_name':       'Alliance',
-        'user.email':                   'User Email',
-        'api.api_id':                   'API', }
+        'corporation.corporation_name':       'Corp',
+        'corporation.alliance.alliance_name': 'Alliance',
+        'user.email':                         'User Email',
+        'api.api_id':                         'API', }
     column_searchable_list = column_list
     column_filters = column_list
     form_columns = ('character_id',
         'character_name',
         'corporation',
-        'alliance',
         'user',
         'api' )
     form_ajax_refs = {
         'corporation': { 'fields': ('corporation_name',) },
-        'alliance':    { 'fields': ('alliance_name',) },
         'user':        { 'fields': (User.email,) },
         'api':         { 'fields': (EveApiKeyPair.api_id,) } }
 

@@ -33,11 +33,11 @@ def run_alliance_corp_update():
                         EveManager.update_corporation_info(corporation_id=corp_info['id'],
                                                            corp_member_count=corp_info['members']['current'],
                                                            alliance_id=corp_info['alliance']['id'])
-                if character.alliance_id:
-                    if character.alliance_id != "0":
-                        alliance_info = EveApiManager.get_alliance_information(character.alliance_id)
+                if character.corporation.alliance_id:
+                    if character.corporation.alliance_id != "0":
+                        alliance_info = EveApiManager.get_alliance_information(character.corporation.alliance_id)
                         if alliance_info:
-                            if not EveAllianceInfo.query.filter_by(alliance_id=character.alliance_id).first():
+                            if not EveAllianceInfo.query.filter_by(alliance_id=character.corporation.alliance_id).first():
                                 # print alliance_info
                                 # print "creating alliance: " + alliance_info
                                 EveManager.create_alliance_info(alliance_id=alliance_info['id'],
@@ -48,7 +48,7 @@ def run_alliance_corp_update():
                             else:
                                 # print alliance_info
                                 # print "updating alliance: " + alliance_info
-                                EveManager.create_alliance_info(alliance_id=alliance_info['id'],
+                                EveManager.update_alliance_info(alliance_id=alliance_info['id'],
                                                                 alliance_name=alliance_info['name'],
                                                                 alliance_ticker=alliance_info['ticker'],
                                                                 alliance_executor_corp_id=alliance_info['executor_id'],

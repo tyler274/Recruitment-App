@@ -35,14 +35,12 @@ class EveManager:
             return "Wrong User"
 
     @staticmethod
-    def create_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
+    def create_character(character_id, character_name, corporation_id, user_id, api_id):
         if not EveCharacter.query.filter_by(character_id=str(character_id)).first():
             eve_char = EveCharacter()
             eve_char.character_id = character_id
             eve_char.character_name = character_name
             eve_char.corporation_id = str(corporation_id)
-            if alliance_id != 0:
-                eve_char.alliance_id = str(alliance_id)
             eve_char.user_id = user_id
             eve_char.api_id = api_id
             if eve_char.save():
@@ -51,15 +49,12 @@ class EveManager:
 
 
     @staticmethod
-    def update_character(character_id, character_name, corporation_id, alliance_id, user_id, api_id):
+    def update_character(character_id, character_name, corporation_id, user_id, api_id):
         if EveCharacter.query.filter_by(character_id=str(character_id)).first():
             eve_char = EveCharacter.query.filter_by(character_id=str(character_id)).first()
             eve_char.character_id = str(character_id)
             eve_char.character_name = character_name
             eve_char.corporation_id = str(corporation_id)
-            if alliance_id != 0:
-                eve_char.alliance_id = str(alliance_id)
-
             eve_char.user_id = user_id
             eve_char.api_id = api_id
             if eve_char.save():
@@ -77,7 +72,6 @@ class EveManager:
                 if EveManager.create_character(chars.result[char]['id'],
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
-                                            chars.result[char]['alliance']['id'],
                                             user.id, api_id):
                     pass
 
@@ -89,7 +83,6 @@ class EveManager:
                     if EveManager.update_character(chars.result[char]['id'],
                                                 chars.result[char]['name'],
                                                 chars.result[char]['corp']['id'],
-                                                chars.result[char]['alliance']['id'],
                                                 user.id, api_id):
                         pass
 
