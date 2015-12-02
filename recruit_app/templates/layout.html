@@ -33,16 +33,12 @@
 <div class="{% block content_class %}container{% endblock content_class %}">
 
   <div role="main">
-    {% if current_user.is_authenticated() %}
-      {% if not current_user.auth_info[0].main_character_id %}
-                  <div class="alert alert-danger" role="alert">
-                    No primary character set,
-                    <a href="{{ url_for('user.eve_characters') }}">Set one here</a>
-                  </div>
-      {% endif %}
+    {% if current_user.is_authenticated() and not current_user.main_character_id %}
+      <div class="alert alert-danger" role="alert">
+        No primary character set, <a href="{{ url_for('user.eve_characters') }}">Set one here</a>
+      </div>
     {% endif %}
     {% include 'flash.html' %}
-
     {% block content %}{% endblock %}
   </div>
 

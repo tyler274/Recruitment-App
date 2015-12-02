@@ -30,7 +30,7 @@
                         <td class="text-center">{{ entry.alliance }}</td>
                         <td class="text-center">{{ entry.ip_address }}</td>
                         <td class="text-center">{{ entry.created_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
-                        <td class="text-center">{{ entry.creator.auth_info[0].main_character }}</td>
+                        <td class="text-center">{{ entry.creator.main_character }}</td>
                         <td class="text-center">{{ entry.notes }}</td>
                     </tr>
                 {% endfor %}

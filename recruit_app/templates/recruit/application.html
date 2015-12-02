@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="page-header text-center">Personal Application</h1>
-    {% if current_user.auth_info and current_user.auth_info[0].main_character_id %}
+    {% if current_user.main_character_id %}
         {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
             <div class="row">
                 {% if related|length > 0 %}
@@ -94,14 +94,10 @@
                         <label class="control-label" for="id_extra">Reviewer</label>
 
                         <div class=" ">
-                            {% if not application.reviewer_user.auth_info %}
-                                <div class="alert alert-info" role="alert">
-                                    Pending
-                                </div>
-                            {% elif application.reviewer_user.auth_info %}
-                                <div class="alert alert-info" role="alert">
-                                    {{ application.reviewer_user.auth_info[0].main_character }}
-                                </div>
+                            {% if not application.reviewer_user or not application.reviewer_user.main_character %}
+                                <div class="alert alert-info" role="alert">Pending</div>
+                            {% else %}
+                                <div class="alert alert-info" role="alert">{{ application.reviewer_user.main_character }}</div>
                             {% endif %}
                         </div>
                     </div>
@@ -109,12 +105,10 @@
                         <label class="control-label" for="id_extra">Last Action</label>
 
                         <div class=" ">
-                            {% if not application.last_action_user.auth_info %}
+                            {% if not application.last_action_user or not application.last_action_user.main_character %}
                                 <div class="alert alert-info" role="alert">Pending</div>
-                            {% elif application.last_action_user.auth_info %}
-                                <div class="alert alert-info" role="alert">
-                                    {{ application.last_action_user.auth_info[0].main_character.character_name }}
-                                </div>
+                            {% else %}
+                                <div class="alert alert-info" role="alert">{{ application.last_action_user.main_character.character_name }}</div>
                             {% endif %}
                         </div>
                     </div>
@@ -388,7 +382,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading" role="tab" id="">
                                                 <div class="panel-title">
-                                                    {{ comment.user.auth_info[0].main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
+                                                    {{ comment.user.main_character }} - {{ comment.created_time.strftime('%Y/%m/%d %H:%M:%S') }}
                                                     <a id="comment{{comment.id}}"></a>
                                                 </div>
                                                 <div class="row"><div class="col-md-8">

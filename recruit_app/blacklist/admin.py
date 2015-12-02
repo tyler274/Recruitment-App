@@ -13,14 +13,20 @@ class BlacklistCharacterAdmin(AuthenticatedModelView):
         'corporation',
         'alliance',
         'notes',
-        'ip_address', )
-    
-    column_list = column_searchable_list + ('creator', )
+        'ip_address',
+        'creator.email', )
+    column_labels = {
+        'creator.email': 'Creator', }
+    column_list = column_searchable_list
     column_filters = column_list
     form_ajax_refs = {
         'creator': { 'fields': ('email', ) }, }
 
 
 class BlacklistGSFAdmin(AuthenticatedModelView):
+    column_searchable_list = (
+        'character.character_name',
+        'status', )
+    column_filters = column_searchable_list + ('created_time', 'last_update_time', )
     form_ajax_refs = {
         'character': { 'fields': ('character_name', ) }, }

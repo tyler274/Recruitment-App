@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from recruit_app.user.models import EveCharacter,\
-    EveApiKeyPair, EveAllianceInfo, EveCorporationInfo, AuthInfo, User
+    EveApiKeyPair, EveAllianceInfo, EveCorporationInfo, User
 
 import datetime as dt
 
@@ -257,11 +257,9 @@ class EveManager:
             # Check that its owned by our user_id
 
             for character in characters:
-                if unicode(character.user.id) == unicode(user.id):
-                    auth_info = AuthInfo.query.filter_by(main_character_id=character.character_id).first()
-                    if auth_info:
-                        auth_info.main_character_id = None
-                        auth_info.save()
+                if unicode(character.user.id) == unicode(user.id) and unicode(character.character_id) == unicode(user.main_character_id):
+                    main.main_character_id = None
+                    main.save()
 
                     character.user_id = None
                     character.save()
@@ -273,10 +271,10 @@ class EveManager:
         if characters:
             # Check that its owned by our user_id
             for character in characters:
-                auth_info = AuthInfo.query.filter_by(main_character_id=character.character_id).first()
-                if auth_info:
-                    auth_info.main_character_id = None
-                    auth_info.save()
+                main = User.query.filter_by(main_character_id=character.character_id).first()
+                if main:
+                    main.main_character_id = None
+                    main.save()
 
                 character.user_id = None
                 character.save()
@@ -351,33 +349,3 @@ class EveManager:
     @staticmethod
     def get_all_alliance_info():
         return EveAllianceInfo.query.order_by(EveAllianceInfo.alliance_id)
-
-class AuthInfoManager:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def get_or_create(user):
-        auth_info = AuthInfo.query.filter_by(user_id=user.id).first()
-        if auth_info:
-            return auth_info
-        else:
-            # We have to create
-            auth_info = AuthInfo()
-            auth_info.user_id = user.id
-            auth_info.save()
-            return auth_info
-
-    @staticmethod
-    def update_main_character_id(char_id, user):
-        auth_info = AuthInfoManager.get_or_create(user)
-        auth_info.main_character_id = char_id
-        auth_info.save()
-
-    @staticmethod
-    def create_role_pair(role_name):
-        pass
-
-    @staticmethod
-    def check_if_role_leader(user):
-        pass

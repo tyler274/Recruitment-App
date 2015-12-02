@@ -88,7 +88,7 @@ class HrManager:
         HrManager.comment_notify(comment)
 
     @staticmethod
-    def create_application(form, main_character_name, user):
+    def create_application(form, user):
         application = HrApplication()
         application.alt_application = form.alt_application.data
         application.how_long = form.how_long.data
@@ -103,7 +103,6 @@ class HrManager:
         application.goon_interaction = form.goon_interaction.data
         application.friends = form.friends.data
 
-        #application.reason_for_joining = form.reason_for_joining.data
         application.find_out = form.find_out.data
         application.favorite_role = form.favorite_role.data
         application.thesis = form.thesis.data
@@ -118,45 +117,13 @@ class HrManager:
                 eve_character = EveCharacter.query.filter_by(character_id=character).first()
                 application.characters.append(eve_character)
 
-        application.main_character_name = main_character_name
+        application.main_character_name = user.main_character.character_name
         # application.last_update_time = dt.datetime.utcnow()
         
         application.save()
         HrManager.application_action_notify(application, 'new')
        
         return application
-
-
-    @staticmethod
-    def update_application(how_long,
-                           have_done,
-                           scale,
-                           reason_for_joining,
-                           favorite_ship,
-                           favorite_role,
-                           most_fun,
-                           application,
-                           main_character_name,
-                           user,
-                           characters):
-
-        application = HrApplication.query.filter_by(id=application.id).first()
-        application.how_long = how_long
-        application.have_done = have_done
-        application.scale = scale
-        application.reason_for_joining = reason_for_joining
-        application.favorite_ship = favorite_ship
-        application.favorite_role = favorite_role
-        application.most_fun = most_fun
-        application.user_id = user.id
-
-        for character in characters:
-            eve_character = EveCharacter.query.filter_by(character_id=character).first()
-            application.characters.append(eve_character)
-
-        application.main_character_name = main_character_name
-        # application.last_update_time = dt.datetime.utcnow()
-        application.save()
 
 
     @staticmethod

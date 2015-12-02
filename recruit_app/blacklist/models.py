@@ -23,10 +23,6 @@ class BlacklistCharacter(SurrogatePK, TimeMixin, Model):
     def __repr__(self):
         return '<' + self.name + ': ' + self.notes + '>'
 
-    # @property
-    # def creator_name(self):
-    #     return self.creator.auth_info[0].main_character.character_name
-
 
 # A cache table and wrapper for the GSF blacklist
 class BlacklistGSF(TimeMixin, Model):

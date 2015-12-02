@@ -1,5 +1,5 @@
 from models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo
-from models import User, Role, roles_users, AuthInfo
+from models import User, Role, roles_users
 from flask_security import current_user
 from recruit_app.admin import AuthenticatedModelView
 from wtforms import PasswordField
@@ -13,22 +13,8 @@ def register_admin_views(admin, db):
     admin.add_view(EveApiKeyPairAdmin(EveApiKeyPair, db.session, category='EvE'))
     admin.add_view(UserAdmin(User, db.session, endpoint="users", category='Users'))
     admin.add_view(RoleAdmin(Role, db.session, category='Users'))
-    admin.add_view(AuthInfoAdmin(AuthInfo, db.session, category='Users'))
 
 # Useful things: column_list, column_labels, column_searchable_list, column_filters, form_columns, form_ajax_refs
-
-class AuthInfoAdmin(AuthenticatedModelView):
-    column_list = (
-        'user.email',
-        'main_character.character_name', )
-    column_labels = {
-        'user.email':                    'User',
-        'main_character.character_name': 'Main Character', }
-    column_searchable_list = column_list
-    column_filters = column_list
-    form_ajax_refs = {
-        'user':           { 'fields': (User.email,) },
-        'main_character': { 'fields': (EveCharacter.character_name,) }, }
 
 class EveCharacterAdmin(AuthenticatedModelView):
     column_list = (
@@ -103,10 +89,13 @@ class UserAdmin(AuthenticatedModelView):
     column_searchable_list = (
         'email',
         'last_login_ip',
-        'current_login_ip', )
-    # TODO Main would be nice here, but it's setup with a many-to-many sub table...
+        'current_login_ip',
+        'main_character.character_name', )
+    column_labels = {
+        'main_character.character_name': 'Main', }
     column_list = (
         'email',
+        'main_character.character_name',
         'created_at',
         'last_login_at',
         'confirmed_at',
@@ -148,11 +137,14 @@ class EveApiKeyPairAdmin(AuthenticatedModelView):
     column_searchable_list = (
         'api_id',
         'api_key',
-        'user.email', )
+        'user.email',
+        'user.main_character.character_name', )
     column_list = column_searchable_list + (
         'last_update_time',
         'valid')
-    column_labels = { 'user.email': 'User', }
+    column_labels = {
+        'user.email': 'User',
+        'user.main_character.character_name': 'Main', }
     column_filters = column_list
     form_columns = (
         'api_id',

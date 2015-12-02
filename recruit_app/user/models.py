@@ -38,6 +38,9 @@ class User(SurrogatePK, Model, UserMixin):
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
 
+    main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
+    main_character = relationship('EveCharacter', backref='user_main_character', foreign_keys=[main_character_id])
+
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password)
 
@@ -55,36 +58,22 @@ class User(SurrogatePK, Model, UserMixin):
         return self.email
 
 
-
-class AuthInfo(SurrogatePK, Model):
-    __tablename__ = 'auth_info'
-
-    user_id = ReferenceCol('users', nullable=True)
-    user = relationship('User', backref='auth_info')
-
-    main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
-    main_character = relationship('EveCharacter', backref='auth_info')
-
-    def __repr__(self):
-        return '<AuthInfo({name})>'.format(name=self.user)
-
-
 class EveCharacter(Model):
     __tablename__ = 'characters'
 
     character_id = Column(db.String(254), unique=True, primary_key=True)
     character_name = Column(db.String(254))
     corporation_id = ReferenceCol('corporations', pk_name='corporation_id', nullable=True)
-    corporation = relationship('EveCorporationInfo', backref='characters')
+    corporation = relationship('EveCorporationInfo', backref='characters', foreign_keys=[corporation_id])
 
     alliance_id = ReferenceCol('alliances', pk_name='alliance_id', nullable=True)
-    alliance = relationship('EveAllianceInfo', backref='characters')
+    alliance = relationship('EveAllianceInfo', backref='characters', foreign_keys=[alliance_id])
 
     api_id = ReferenceCol('api_key_pairs', pk_name='api_id', nullable=True)
-    api = relationship('EveApiKeyPair', backref='characters')
+    api = relationship('EveApiKeyPair', backref='characters', foreign_keys=[api_id])
 
     user_id = ReferenceCol('users', nullable=True)
-    user = relationship('User', backref='characters')
+    user = relationship('User', backref='characters', foreign_keys=[user_id])
 
     skillpoints = Column(db.Integer, nullable=True)
 
@@ -100,7 +89,7 @@ class EveApiKeyPair(Model):
     last_update_time = Column(db.DateTime(), nullable=True)
 
     user_id = ReferenceCol('users', nullable=True)
-    user = relationship('User', backref='api_keys')
+    user = relationship('User', backref='api_keys', foreign_keys=[user_id])
 
     valid = Column(db.Boolean, default=True)
 
@@ -130,7 +119,7 @@ class EveCorporationInfo(Model):
     member_count = Column(db.Integer)
     is_blue = Column(db.Boolean, default=False)
     alliance_id = ReferenceCol('alliances', pk_name='alliance_id', nullable=True)
-    alliance = relationship('EveAllianceInfo', backref='corporations')
+    alliance = relationship('EveAllianceInfo', backref='corporations', foreign_keys=[alliance_id])
 
     def __str__(self):
         return self.corporation_name

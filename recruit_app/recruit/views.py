@@ -3,8 +3,6 @@ from flask_security.decorators import login_required
 from flask_security import current_user, roles_accepted
 from recruit_app.extensions import cache
 
-from recruit_app.user.managers import AuthInfoManager
-
 from recruit_app.user.models import EveCharacter
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.recruit.managers import HrManager
@@ -24,8 +22,6 @@ blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
 @blueprint.route("/applications/<int:page>", methods=['GET', 'POST'])
 @login_required
 def applications(page=1):
-    auth_info = AuthInfoManager.get_or_create(current_user)
-
     query = HrApplication.query.filter(HrApplication.hidden == False,
                                        HrApplication.user_id == current_user.get_id())
     personal_applications = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
@@ -146,8 +142,6 @@ def application_history(page=1):
 @blueprint.route("/applications/create", methods=['GET', 'POST'])
 @login_required
 def application_create():
-    auth_info = AuthInfoManager.get_or_create(current_user)
-
     form = HrApplicationForm()
 
     characters = EveCharacter.query.filter_by(user_id=current_user.get_id()).all()
@@ -159,9 +153,7 @@ def application_create():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            application = HrManager.create_application(form,
-                                                       main_character_name=current_user.auth_info[0].main_character.character_name,
-                                                       user=current_user)
+            application = HrManager.create_application(form, user=current_user)
 
             flash("Application Created, apply in game with \"" + url_for('recruit.application_view', _external=True, application_id=application.id) + "\" in the body", category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
@@ -306,9 +298,7 @@ def application_comment_action(application_id, comment_id, action):
 def application_interact(application_id, action):
     application_status = None
 
-    auth_info = AuthInfoManager.get_or_create(current_user)
-
-    if auth_info.main_character_id == None:
+    if current_user.main_character_id == None:
         return redirect(url_for('user.eve_characters'))
 
     application = HrApplication.query.filter_by(id=application_id).first()

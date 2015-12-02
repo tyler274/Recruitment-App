@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_security.decorators import login_required
 from flask_security import current_user
 
-from recruit_app.user.managers import EveManager, AuthInfoManager
+from recruit_app.user.managers import EveManager
 from recruit_app.user.eve_api_manager import EveApiManager
 from recruit_app.user.forms import UpdateKeyForm
 
@@ -63,10 +63,9 @@ def api_delete(api_id):
     characters = EveManager.get_characters_by_owner(current_user)
     if characters is not None:
         for character in characters:
-            if character.character_id == current_user.auth_info[0].main_character_id:
-                if character.api_id == api_id:
-                    # TODO disable services and such
-                    pass
+            if character.api_id == api_id and character.character_id == current_user.main_character_id:
+                # TODO disable services and such
+                pass
 
     EveManager.delete_characters_by_api_id_user(api_id, current_user)
     EveManager.delete_api_key_pair(api_id, current_user)
@@ -98,10 +97,8 @@ def eve_characters():
 @login_required
 def eve_main_character_change(character_id):
     if EveManager.check_if_character_owned_by_user(character_id, current_user.get_id()):
-
-        AuthInfoManager.update_main_character_id(character_id, current_user)
-
-        return redirect(url_for('user.eve_characters'))
+        current_user.main_character_id = character_id
+        current_user.save()
 
     return redirect(url_for('user.eve_characters'))
 

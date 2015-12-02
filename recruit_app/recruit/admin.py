@@ -1,4 +1,5 @@
 from recruit_app.recruit.models import HrApplication, HrApplicationComment, HrApplicationCommentHistory
+from recruit_app.user.models import EveCharacter
 
 from recruit_app.admin import AuthenticatedModelView
 
@@ -21,6 +22,12 @@ class HrApplicationAdmin(AuthenticatedModelView):
         'approved_denied',
         'reviewer_user',
         'last_action_user', )
+    column_labels = {
+        'main_character_name': 'Main',
+        'alt_application': 'Alt?',
+        'approved_denied': 'Status',
+        'reviewer_user': 'Reviewer',
+        'last_action_user': 'Last Action', }
     column_searchable_list = (
         'id',
         'main_character_name',

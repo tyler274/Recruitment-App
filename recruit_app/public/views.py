@@ -12,7 +12,6 @@ from recruit_app.public.forms import LoginForm
 from recruit_app.utils import flash_errors
 from recruit_app.database import db
 
-from recruit_app.user.managers import AuthInfoManager
 from recruit_app.blacklist.models import BlacklistCharacter
 
 from recruit_app.user.tasks import run_alliance_corp_update
@@ -27,15 +26,6 @@ blueprint = Blueprint('public', __name__, static_folder="../static")
 @blueprint.route("/", methods=["GET", "POST"])
 def home():
     form = LoginForm(request.form)
-
-    if current_user.is_authenticated():
-        AuthInfoManager.get_or_create(current_user)
-
-    # u = User.query.filter_by(email="tyler274port@gmail.com").first()
-    # flash(u.get_ips)
-    #flash(BlacklistCharacter.query.all())
-    # flash([x.ip_address for x in BlacklistCharacter.query.all() if x.ip_address is not None])
-
     return render_template("public/home.html", login_user_form=form)
 
 @blueprint.route("/login/", methods=["GET", "POST"])

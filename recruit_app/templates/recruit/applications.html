@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    {% if current_user.auth_info[0].main_character %}
+    {% if current_user.main_character %}
     <div class="container-fluid">
         <h1 class="page-header text-center">Personal Applications
             <div class="text-right">
@@ -24,7 +24,7 @@
                 </tr>
                 {% for application in personal_applications.items %}
                     <tr>
-                        <td class="text-center">{{ application.user.auth_info[0].main_character }}</td>
+                        <td class="text-center">{{ application.user.main_character }}</td>
                         <td class="text-center">
                             {% if application.approved_denied == "New" %}
                                 <div class="alert-warning" role="alert">New</div>
@@ -51,7 +51,7 @@
                                 <div class="alert-danger" role="alert">Closed</div>
 
                             {% elif application.approved_denied == "Needs Processing" %}
-                                    <div class="alert alert-warning" role="alert">Needs Processing</div>
+                                <div class="alert-warning" role="alert">Needs Processing</div>
 
                             {% endif %}
                         </td>

@@ -4,48 +4,44 @@
 
 {% block content %}
 <div class="container-fluid">
-        {% if current_user.auth_info %}
-            {% if current_user.auth_info[0].main_character_id %}
-                <h1 class="page-header text-center">Create Personal Application</h1>
-                <form action="{{ url_for('recruit.application_create') }}" class="form-signin" role="form" action="" method="POST">
-                    {{ form.hidden_tag() }}
-                    <div class="container-fluid">
-                        <dt>{{ form.characters.label }}
-                        <dd>{{ form.characters()|safe }}
-                          {% if form.characters.errors %}
-                            <ul class=errors>
-                            {% for error in form.characters.errors %}
-                              <li>{{ error }}</li>
-                            {% endfor %}
-                            </ul>
-                          {% endif %}
-                        </dd>
-                    </div>
-                    {{ wtf.form_field(form.alt_application) }}
-                    {{ wtf.form_field(form.thesis) }}
-                    <a target="_blank" href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
-                    {{ wtf.form_field(form.how_long) }}
-                    {{ wtf.form_field(form.notable_accomplishments) }}
-                    {{ wtf.form_field(form.corporation_history) }}
-                    {{ wtf.form_field(form.why_leaving) }}
-                    {{ wtf.form_field(form.what_know) }}
-                    {{ wtf.form_field(form.what_expect) }}
-                    {{ wtf.form_field(form.bought_characters) }}
-                    {{ wtf.form_field(form.why_interested) }}
-                    {{ wtf.form_field(form.goon_interaction) }}
-                    {{ wtf.form_field(form.friends) }}
-                    {{ wtf.form_field(form.scale) }}
-                    {{ wtf.form_field(form.favorite_role) }}
-                    {{ wtf.form_field(form.find_out) }}
-                    {{ wtf.form_field(form.recaptcha) }}
-                    {{ wtf.form_field(form.submit) }}
-                </form>
-            {% else %}
-                <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
-            {% endif %}
-        {% else %}
-            <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
-        {% endif %}
+    {% if current_user.main_character_id %}
+        <h1 class="page-header text-center">Create Personal Application</h1>
+        <form action="{{ url_for('recruit.application_create') }}" class="form-signin" role="form" action="" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="container-fluid">
+                <dt>{{ form.characters.label }}
+                <dd>{{ form.characters()|safe }}
+                  {% if form.characters.errors %}
+                    <ul class=errors>
+                    {% for error in form.characters.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+                </dd>
+            </div>
+            {{ wtf.form_field(form.alt_application) }}
+            {{ wtf.form_field(form.thesis) }}
+            <a target="_blank" href="http://cdn2.cad-comic.com/comics/cad-20120625-8bb4c.png">Joining a corp in EvE</a>
+            {{ wtf.form_field(form.how_long) }}
+            {{ wtf.form_field(form.notable_accomplishments) }}
+            {{ wtf.form_field(form.corporation_history) }}
+            {{ wtf.form_field(form.why_leaving) }}
+            {{ wtf.form_field(form.what_know) }}
+            {{ wtf.form_field(form.what_expect) }}
+            {{ wtf.form_field(form.bought_characters) }}
+            {{ wtf.form_field(form.why_interested) }}
+            {{ wtf.form_field(form.goon_interaction) }}
+            {{ wtf.form_field(form.friends) }}
+            {{ wtf.form_field(form.scale) }}
+            {{ wtf.form_field(form.favorite_role) }}
+            {{ wtf.form_field(form.find_out) }}
+            {{ wtf.form_field(form.recaptcha) }}
+            {{ wtf.form_field(form.submit) }}
+        </form>
+    {% else %}
+        <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
+    {% endif %}
 </div>
 
 {% endblock %}

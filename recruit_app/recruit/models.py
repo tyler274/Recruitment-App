@@ -68,7 +68,6 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
 
     scale = Column(db.Text, nullable=True)
 
-    #reason_for_joining = Column(db.Text, nullable=True)
     find_out = Column(db.Text, nullable=True)
 
     favorite_role = Column(db.Text, nullable=True)
@@ -87,8 +86,6 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
     reviewer_user = relationship('User', foreign_keys=[reviewer_user_id], backref='hr_applications_reviewed')
     last_action_user = relationship('User', foreign_keys=[last_user_id], backref='hr_applications_touched')
 
-    # def __str__(self):
-    #     return self.user.auth_info + " - Application"
     def __str__(self):
         return '<Application %r>' % str(self.main_character_name)
 
@@ -103,7 +100,7 @@ class HrApplicationComment(SurrogatePK, TimeMixin, Model):
 
     application = relationship('HrApplication', foreign_keys=[application_id], backref=db.backref('hr_comments', cascade="delete"), single_parent=True)
 
-    user = relationship('User', backref=db.backref('hr_comments', lazy='dynamic'))
+    user = relationship('User', backref=db.backref('hr_comments', lazy='dynamic'), foreign_keys=[user_id])
 
     def __repr__(self):
         return str(self.user) + " - Comment"
@@ -115,7 +112,7 @@ class HrApplicationCommentHistory(SurrogatePK, TimeMixin, Model):
     comment_id = ReferenceCol('hr_comments', nullable=False)
     comment = relationship('HrApplicationComment', foreign_keys=[comment_id], backref=db.backref('hr_comment_history', cascade="delete"), single_parent=True)
     editor = ReferenceCol('users', nullable=False)
-    user = relationship('User', backref=db.backref('hr_comment_history', cascade="delete"))
+    user = relationship('User', backref=db.backref('hr_comment_history', cascade="delete"), foreign_keys=[editor])
     
     def __repr__(self):
         return str(self.editor) + " - Edited comment"
