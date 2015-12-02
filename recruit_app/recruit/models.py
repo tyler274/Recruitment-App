@@ -29,10 +29,6 @@ character_apps = db.Table('app_characters',
         db.Column('character_id', db.String(), db.ForeignKey('characters.character_id')))
 
 
-class HrApplicationQuery(BaseQuery):
-    pass
-
-
 class HrApplication(SurrogatePK, TimeMixin, Model):
     # query_class = HrApplicationQuery
     __tablename__ = 'hr_applications'
@@ -94,7 +90,7 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
     # def __str__(self):
     #     return self.user.auth_info + " - Application"
     def __str__(self):
-        return '<Application %r>' % self.user.auth_info
+        return '<Application %r>' % str(self.main_character_name)
 
 
 class HrApplicationComment(SurrogatePK, TimeMixin, Model):
@@ -119,6 +115,7 @@ class HrApplicationCommentHistory(SurrogatePK, TimeMixin, Model):
     comment_id = ReferenceCol('hr_comments', nullable=False)
     comment = relationship('HrApplicationComment', foreign_keys=[comment_id], backref=db.backref('hr_comment_history', cascade="delete"), single_parent=True)
     editor = ReferenceCol('users', nullable=False)
+    user = relationship('User', backref=db.backref('hr_comment_history', cascade="delete"))
     
     def __repr__(self):
         return str(self.editor) + " - Edited comment"
