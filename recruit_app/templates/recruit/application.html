@@ -78,7 +78,7 @@
                                     {% for related_app in related %}
                                             <a target="_blank" class="btn btn-default btn-xs" href="{{ url_for('recruit.application_view', application_id=related_app.id) }}">
                                                 {% for rel_char in related_app.characters %}{% if loop.index0 > 0 %}, {% endif %}{{ rel_char.character_name }}{% endfor %}
-                                            </a>
+                                            </a> - {{ related_app.approved_denied }}
                                             <br>
                                     {% endfor %}
                                 </div>

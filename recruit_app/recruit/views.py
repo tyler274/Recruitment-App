@@ -22,7 +22,7 @@ blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
 @blueprint.route("/applications/<int:page>", methods=['GET', 'POST'])
 @login_required
 def applications(page=1):
-    query = HrApplication.query.filter(HrApplication.hidden == False, HrApplication.user_id == current_user.get_id())
+    query = HrApplication.query.filter(HrApplication.hidden == False, HrApplication.user_id == current_user.get_id()).order_by(desc(HrApplication.id))
     personal_applications = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/applications.html', personal_applications=personal_applications)
@@ -57,7 +57,10 @@ def application_queue(page=1, all=0):
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(1, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id)\
+                .filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))\
+                .order_by(HrApplication.id)\
+                .paginate(1, current_app.config['MAX_NUMBER_PER_PAGE'], False)
     
     return render_template('recruit/application_queue.html', recruiter_queue=recruiter_queue, search_form=search_form)
 
@@ -105,7 +108,7 @@ def application_view(application_id):
                 evewho[character.character_name] = character.character_name.replace(' ','+')
             
             # Get related applications
-            related = HrApplication.query.filter(HrApplication.user_id == application.user_id, HrApplication.id != application.id).all()
+            related = HrApplication.query.filter(HrApplication.user_id == application.user_id, HrApplication.id != application.id).order_by(HrApplication.id).all()
             
             comments = HrApplicationComment.query.filter_by(
                 application_id=application_id)\
