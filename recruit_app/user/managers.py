@@ -251,8 +251,8 @@ class EveManager:
 
             for character in characters:
                 if unicode(character.user.id) == unicode(user.id) and unicode(character.character_id) == unicode(user.main_character_id):
-                    main.main_character_id = None
-                    main.save()
+                    user.main_character_id = None
+                    user.save()
 
                     character.user_id = None
                     character.save()
