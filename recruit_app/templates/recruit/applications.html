@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% from "bootstrap/pagination.html" import render_pagination %}
@@ -6,7 +5,6 @@
 {% block content %}
 <div class="container-fluid">
     {% if current_user.main_character %}
-    <div class="container-fluid">
         <h1 class="page-header text-center">Personal Applications
             <div class="text-right">
                 <a class="btn btn-success" href="{{ url_for('recruit.application_create')}}">
@@ -14,63 +12,63 @@
                 </a>
             </div>
         </h1>
-        <div class="container-fluid">
+        {% if personal_applications.pages > 1 %}
             {{ render_pagination(personal_applications) }}
-            <table class="table table-bordered">
+        {% endif %}
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center">Character(s)</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Actions</th>
+            </tr>
+            {% for application in personal_applications.items %}
                 <tr>
-                    <th class="text-center">Character</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-                {% for application in personal_applications.items %}
-                    <tr>
-                        <td class="text-center">{{ application.user.main_character }}</td>
-                        <td class="text-center">
-                            {% if application.approved_denied == "New" %}
-                                <div class="alert-warning" role="alert">New</div>
+                    <td class="text-center">
+                        {% for character in application.characters %}{% if loop.index0 > 0 %}, {% endif %}{{ character.character_name }}{% endfor %}</td>
+                    <td class="text-center">
+                        {% if application.approved_denied == "New" %}
+                            <div class="alert-warning" role="alert">New</div>
 
-                            {% elif application.approved_denied == "Approved" %}
-                                <div class="alert-success" role="alert">Approved</div>
+                        {% elif application.approved_denied == "Approved" %}
+                            <div class="alert-success" role="alert">Approved</div>
 
-                            {% elif application.approved_denied == "Rejected" %}
-                                <div class="alert-danger" role="alert">Rejected</div>
+                        {% elif application.approved_denied == "Rejected" %}
+                            <div class="alert-danger" role="alert">Rejected</div>
 
-                            {% elif application.approved_denied == "Undecided" %}
-                                <div class="alert-info" role="alert">In Progress</div>
+                        {% elif application.approved_denied == "Undecided" %}
+                            <div class="alert-info" role="alert">In Progress</div>
 
-                            {% elif application.approved_denied == "Awaiting Response" %}
-                                <div class="alert-info" role="alert">Awaiting Response</div>
+                        {% elif application.approved_denied == "Awaiting Response" %}
+                            <div class="alert-info" role="alert">Awaiting Response</div>
 
-                            {% elif application.approved_denied == "Needs Director Review" %}
-                                <div class="alert-info" role="alert">Needs Director Review</div>
+                        {% elif application.approved_denied == "Needs Director Review" %}
+                            <div class="alert-info" role="alert">Needs Director Review</div>
 
-                            {% elif application.approved_denied == "Role Stasis" %}
-                                <div class="alert-info" role="alert">Role Stasis</div>
+                        {% elif application.approved_denied == "Role Stasis" %}
+                            <div class="alert-info" role="alert">Role Stasis</div>
 
-                            {% elif application.approved_denied == "Closed" %}
-                                <div class="alert-danger" role="alert">Closed</div>
+                        {% elif application.approved_denied == "Closed" %}
+                            <div class="alert-danger" role="alert">Closed</div>
 
-                            {% elif application.approved_denied == "Needs Processing" %}
-                                <div class="alert-warning" role="alert">Needs Processing</div>
+                        {% elif application.approved_denied == "Needs Processing" %}
+                            <div class="alert-warning" role="alert">Needs Processing</div>
 
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=application.id) }}">
-                                <span class="glyphicon glyphicon-eye-open"></span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=application.id) }}">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+
+                        {% if ( application.approved_denied == "New" and (application.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
+                            <a class="btn btn-danger" href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </a>
-
-                            {% if ( application.approved_denied == "New" and (application.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                <a class="btn btn-danger" href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     {% else %}
         <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>
     {% endif %}

@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Actions (Last Update {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }})</div>
+                        <div class="panel-heading">Actions</div>
                         <div class="panel-body text-center">
                             {% if current_user.has_role("recruiter") or current_user.has_role("admin") %}
                                 <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="approve") }}">
@@ -122,12 +122,11 @@
                 {% elif application.approved_denied == "Needs Processing" %}
                     <div class="alert alert-warning" role="alert">Needs Processing</div>
 
-                {% elif application.approved_denied is not defined %}
-                    <div class="alert alert-info" role="alert">New</div>
+                {% elif application.approved_denied == "New" or application.approved_denied is not defined %}
+                    <div class="alert alert-warning" role="alert">New</div>
 
                 {% endif %}
             </div>
-
             <div class="form-group">
                 <label class="control-label">Reviewer</label>
                 {% if not application.reviewer_user or not application.reviewer_user.main_character %}
@@ -138,11 +137,18 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Last Action</label>
+                <div class="alert alert-info" role="alert">
                 {% if not application.last_action_user or not application.last_action_user.main_character %}
-                    <div class="alert alert-info" role="alert">Pending</div>
+                    Pending
                 {% else %}
-                    <div class="alert alert-info" role="alert">{{ application.last_action_user.main_character.character_name }}</div>
+                    {{ application.last_action_user.main_character.character_name }}
                 {% endif %}
+                at {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Created Time</label>
+                <input class="form-control" value="{{ application.created_time.strftime('%Y/%m/%d %H:%M:%S') }}" disabled>
             </div>
             <div class="form-group">
                 <label class="control-label">Is this an application for an alt?</label>

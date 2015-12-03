@@ -6,7 +6,7 @@
 <div class="container-fluid">
     {% if current_user.main_character_id %}
         <h1 class="page-header text-center">Create Personal Application</h1>
-        <form action="{{ url_for('recruit.application_create') }}" class="form-signin" role="form" action="" method="POST">
+        <form action="{{ url_for('recruit.application_create') }}" role="form" action="" method="POST">
             {{ form.hidden_tag() }}
             <div class="container-fluid">
                 <dt>{{ form.characters.label }}

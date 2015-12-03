@@ -78,7 +78,7 @@ class HrApplicationForm(Form):
 
 
 class HrApplicationCommentForm(Form):
-    comment = TextAreaField(label="Comment", validators=[DataRequired()])
+    comment = TextAreaField(label="New Comment", validators=[DataRequired()])
     submit = SubmitField(label='Add Comment')
     
 class HrApplicationCommentEdit(Form):
@@ -88,5 +88,3 @@ class HrApplicationCommentEdit(Form):
 class SearchForm(Form):
     search = StringField('Search')
     submit = SubmitField(label='Submit')
-
-

@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% from "bootstrap/pagination.html" import render_pagination %}
@@ -7,94 +6,95 @@
 
 <div class="container-fluid">
     {% if current_user.main_character and (current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer")) %}
-        <div class="container-fluid">
-            <h1 class="page-header text-center">Application Queue
-            </h1>
+        <h1 class="page-header text-center">Application Queue</h1>
+        <div class="row">
             <div class="col-sm-6">
                 {{ search_form.hidden_tag() }}
                 {{ wtf.quick_form(search_form) }}
+                <br>
             </div>
-            <div class="container-fluid">
-                <div class="container-fluid">
-                    <div class="col-sm-5">
-                    <a class="btn btn-danger" href="{{ url_for('recruit.application_all') }}">
-                            List All In Queue
-                    </a>
-                    <a class="btn btn-danger" href="{{ url_for('recruit.application_history') }}">
-                            All apps ever
-                    </a>
-                    </div>
-                    <div class="col-sm-5">
+            <div class="col-sm-6">
+                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, all=0) }}">
+                    Current Queue
+                </a>
+                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, all=1) }}">
+                    All Apps
+                </a>
+                <br>
+                {% if recruiter_queue.pages > 1 %}
                     {{ render_pagination(recruiter_queue) }}
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th class="text-center">ID</th>
-                                <th class="text-center">Character</th>
-                                <th class="text-center">Last Update Time</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center"># Comments</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for queue in recruiter_queue.items %}
-                            <tr>
-                                <td data-title="ID" class="text-center">{{ queue.id }}</td>
-                                <td data-title="Character" class="text-center">{{ queue.user.main_character }}</td>
-                                <td data-title="Last Update Time" class="text-center">{{ queue.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
-                                <td data-title="Status" class="text-center">
-                                    {% if queue.approved_denied == "New" %}
-                                        <div class="alert-warning" role="alert">New</div>
-
-                                    {% elif queue.approved_denied == "Approved" %}
-                                        <div class="alert-success" role="alert">Approved</div>
-
-                                    {% elif queue.approved_denied == "Rejected" %}
-                                        <div class="alert-danger" role="alert">Rejected</div>
-
-                                    {% elif queue.approved_denied == "Undecided" %}
-                                        <div class="alert-info" role="alert">In Progress</div>
-
-                                    {% elif queue.approved_denied == "Awaiting Response" %}
-                                        <div class="alert-info" role="alert">Awaiting Response</div>
-
-                                    {% elif queue.approved_denied == "Needs Director Review" %}
-                                        <div class="alert-danger" role="alert">Needs Director Review</div>
-
-                                    {% elif queue.approved_denied == "Role Stasis" %}
-                                        <div class="alert-info" role="alert">Role Stasis</div>
-
-                                    {% elif queue.approved_denied == "Closed" %}
-                                        <div class="alert-danger" role="alert">Closed</div>
-
-                                    {% elif queue.approved_denied == "Needs Processing" %}
-                                        <div class="alert-warning" role="alert">Needs Processing</div>
-
-                                    {% endif %}
-                                </td>
-                                <td data-title="# Comments" class="text-center">{{ queue.hr_comments|length }}</td>
-                                <td data-title="Actions" class="text-center">
-                                    <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
-                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                    </a>
-
-                                    {% if ( queue.approved_denied == "New" and (queue.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                        <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action="hide") }}">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </a>
-
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {% endif %}
             </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">Main</th>
+                        {#<th class="text-center">Characters</th>#}
+                        <th class="text-center">Created</th>
+                        <th class="text-center">Last Update Time</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Comments</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for queue in recruiter_queue.items %}
+                    <tr>
+                        <td data-title="ID" class="text-center">{{ queue.id }}</td>
+                        <td data-title="Main" class="text-center">{{ queue.user.main_character }}</td>
+                        {#<td data-title="Character" class="text-center">{{ queue.characters[0].character_name}}{% if queue.characters|length > 1 %}, ...{% endif %}</td>  Could be useful but table is getting cramped #}
+                        <td data-title="Created" class="text-center">{{ queue.created_time.strftime('%Y/%m/%d') }}</td>
+                        <td data-title="Last Update Time" class="text-center">{{ queue.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
+                        <td data-title="Status" class="text-center">
+                            {% if queue.approved_denied == "New" %}
+                                <div class="alert-warning" role="alert">New</div>
+
+                            {% elif queue.approved_denied == "Approved" %}
+                                <div class="alert-success" role="alert">Approved</div>
+
+                            {% elif queue.approved_denied == "Rejected" %}
+                                <div class="alert-danger" role="alert">Rejected</div>
+
+                            {% elif queue.approved_denied == "Undecided" %}
+                                <div class="alert-info" role="alert">In Progress</div>
+
+                            {% elif queue.approved_denied == "Awaiting Response" %}
+                                <div class="alert-info" role="alert">Awaiting Response</div>
+
+                            {% elif queue.approved_denied == "Needs Director Review" %}
+                                <div class="alert-danger" role="alert">Needs Director Review</div>
+
+                            {% elif queue.approved_denied == "Role Stasis" %}
+                                <div class="alert-info" role="alert">Role Stasis</div>
+
+                            {% elif queue.approved_denied == "Closed" %}
+                                <div class="alert-danger" role="alert">Closed</div>
+
+                            {% elif queue.approved_denied == "Needs Processing" %}
+                                <div class="alert-warning" role="alert">Needs Processing</div>
+
+                            {% endif %}
+                        </td>
+                        <td data-title="# Comments" class="text-center">{{ queue.hr_comments|length }}</td>
+                        <td data-title="Actions" class="text-center">
+                            <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </a>
+
+                            {% if ( queue.approved_denied == "New" and (queue.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
+                                <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action="hide") }}">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     {% else %}
         <div class="alert alert-danger" role="alert">No primary character set, Please set a primary character</div>

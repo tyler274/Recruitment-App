@@ -29,10 +29,10 @@
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="{{ url_for('recruit.applications') }}">Applications</a></li>
                     {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') %}
-                      <li><a href="{{ url_for('recruit.application_queue', page=1) }}">Application Queue</a></li>
+                      <li><a href="{{ url_for('recruit.application_queue') }}">Application Queue</a></li>
                     {% endif %}
                     {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') %}
-                      <li><a href="{{ url_for('blacklist.blacklist_view', page=1) }}">Blacklist</a></li>
+                      <li><a href="{{ url_for('blacklist.blacklist_view') }}">Blacklist</a></li>
                     {% endif %}
                     {% if current_user.has_role('admin') or current_user.has_role('compliance') %}
                       <li><a href="{{ url_for('recruit.compliance') }}">Compliance</a></li>

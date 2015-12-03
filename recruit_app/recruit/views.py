@@ -22,12 +22,11 @@ blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
 @blueprint.route("/applications/<int:page>", methods=['GET', 'POST'])
 @login_required
 def applications(page=1):
-    query = HrApplication.query.filter(HrApplication.hidden == False,
-                                       HrApplication.user_id == current_user.get_id())
+    query = HrApplication.query.filter(HrApplication.hidden == False, HrApplication.user_id == current_user.get_id())
     personal_applications = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
-    return render_template('recruit/applications.html',
-                           personal_applications=personal_applications)
+    return render_template('recruit/applications.html', personal_applications=personal_applications)
+
 
 @blueprint.route("/compliance/", methods=['GET'])
 @login_required
@@ -37,106 +36,30 @@ def compliance():
 
 
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
-@blueprint.route("/application_queue/<int:page>/", methods=['GET', 'POST'])
+@blueprint.route("/application_queue/<int:page>/<int:all>", methods=['GET', 'POST'])
 @login_required
 @roles_accepted('admin', 'recruiter', 'reviewer')
-def application_queue(page=1):
-    search_results = []
-    # from recruit_app.database import Model
-    # from recruit_app.extensions import db
-    # #current_app.config['SQLALCHEMY_ECHO'] = True
-    # db.configure_mappers()
-    #
-    # HrApplication.metadata.create_all(db.session.connection())
-    #
-    # db.session.commit()
+def application_queue(page=1, all=0):
 
     search_form = SearchForm()
-
-    query = HrApplication.query\
-        .filter(HrApplication.hidden == False,
-                (HrApplication.approved_denied == "New")
-                | (HrApplication.approved_denied == "Undecided")
-                | (HrApplication.approved_denied == "Role Stasis")
-                | (HrApplication.approved_denied == "Awaiting Response")
-                | (HrApplication.approved_denied == "Needs Processing")
-                | (HrApplication.approved_denied == "Needs Director Review"))\
-        .order_by(HrApplication.id)
+    
+    if all:
+        query = HrApplication.query.filter(HrApplication.hidden == False).order_by(HrApplication.id)
+    else:
+        query = HrApplication.query.filter(
+            HrApplication.hidden == False,
+            HrApplication.approved_denied != "Closed",  
+            HrApplication.approved_denied != "Rejected", 
+            HrApplication.approved_denied != "Approved")\
+            .order_by(HrApplication.id)
 
     recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     if request.method == 'POST':
         if search_form.validate_on_submit():
-
-            #search_results = HrApplication.query.search(unicode(search_form.search.data))
-            #print search_results
-            #recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-            # print recruiter_queue.items
-            # recruiter_queue = HrApplication\
-            #     .query\
-            #     .whoosh_search('*' + str(search_form.search.data) + '*')\
-            #     .paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-    return render_template('recruit/application_queue.html',
-                           recruiter_queue=recruiter_queue,
-                           search_form=search_form)
-
-
-@blueprint.route("/application_queue/all/", methods=['GET', 'POST'])
-@login_required
-@roles_accepted('admin', 'recruiter', 'reviewer')
-def application_all(page=1):
-    search_results = []
-
-    search_form = SearchForm()
-
-    query = HrApplication.query\
-        .filter(HrApplication.hidden == False,
-                (HrApplication.approved_denied == "New")
-                | (HrApplication.approved_denied == "Undecided")
-                | (HrApplication.approved_denied == "Role Stasis")
-                | (HrApplication.approved_denied == "Awaiting Response")
-                | (HrApplication.approved_denied == "Needs Director Review"))\
-        .order_by(HrApplication.id)
-
-    recruiter_queue = query.paginate(page, len(query.all()), False)
-
-    if request.method == 'POST':
-        if search_form.validate_on_submit():
-            # search_results = query.whoosh_search(search_form.search.data + "*")
-            search_results = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
-            recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-
-    return render_template('recruit/application_queue.html',
-                           recruiter_queue=recruiter_queue,
-                           search_form=search_form,
-                           search_results=search_results)
-
-
-
-@blueprint.route("/application_queue/history/", methods=['GET', 'POST'])
-@blueprint.route("/application_queue/history/<int:page>/", methods=['GET', 'POST'])
-@login_required
-@roles_accepted('admin', 'recruiter', 'reviewer')
-def application_history(page=1):
-    search_results = []
-
-    search_form = SearchForm()
-
-    query = HrApplication.query.filter(HrApplication.hidden == False).order_by(HrApplication.id)
-
-    recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-
-    if request.method == 'POST':
-        if search_form.validate_on_submit():
-            # search_results = HrApplication.query.whoosh_search(search_form.search.data + "*")
-            # recruiter_queue = search_results.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-
-    return render_template('recruit/application_queue.html',
-                           recruiter_queue=recruiter_queue,
-                           search_form=search_form,
-                           search_results=search_results)
+            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")).paginate(1, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+    
+    return render_template('recruit/application_queue.html', recruiter_queue=recruiter_queue, search_form=search_form)
 
 
 @blueprint.route("/applications/create", methods=['GET', 'POST'])
