@@ -135,9 +135,9 @@ class EveApiKeyPairAdmin(AuthenticatedModelView):
     column_searchable_list = (
         'api_id',
         'api_key',
-        'user.email',
-        'user.main_character.character_name', )
+        'user.email', )
     column_list = column_searchable_list + (
+        'user.main_character.character_name',
         'last_update_time',
         'valid')
     column_labels = {
