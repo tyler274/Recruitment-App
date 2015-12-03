@@ -131,13 +131,13 @@ class EveManager:
             if EveManager.check_if_character_exist(characters.result[character]['id']):
                 eve_char = EveManager.get_character_by_character_name(characters.result[character]['name'])
 
-                if str(characters.result[character]['alliance']['id']) != eve_char.alliance_id:
+                if str(characters.result[character]['alliance']['id']) != eve_char.corporation.alliance_id:
 
                     if characters.result[character]['alliance']['id'] != 0:
-                        eve_char.alliance_id = str(characters.result[character]['alliance']['id'])
+                        eve_char.corporation.alliance_id = str(characters.result[character]['alliance']['id'])
 
                     elif characters.result[character]['alliance']['id'] == 0:
-                        eve_char.alliance_id = None
+                        eve_char.corporation.alliance_id = None
 
                 if str(characters.result[character]['corp']['id']) != eve_char.corporation_id:
                     eve_char.corporation_id = str(characters.result[character]['corp']['id'])
@@ -299,7 +299,7 @@ class EveManager:
     @staticmethod
     def get_character_alliance_id_by_character_id(char_id):
         if EveCharacter.query.filter_by(character_id=char_id).all():
-            return EveCharacter.query.filter_by(character_id=char_id).first().alliance_id
+            return EveCharacter.query.filter_by(character_id=char_id).first().corporation.alliance_id
 
     @staticmethod
     def check_if_character_owned_by_user(character_id, user_id):
