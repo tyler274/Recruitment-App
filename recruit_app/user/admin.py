@@ -55,6 +55,7 @@ class EveCorporationInfoAdmin(AuthenticatedModelView):
         'corporation_ticker': 'Ticker',
         'alliance.alliance_name' : 'Alliance', }
     column_searchable_list = (
+        'corporation_id',
         'corporation_name',
         'corporation_ticker',
         'alliance.alliance_name', )

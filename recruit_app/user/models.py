@@ -35,8 +35,7 @@ class User(SurrogatePK, Model, UserMixin):
     current_login_ip = Column(db.String(100))
     login_count = Column(db.Integer)
 
-    roles = db.relationship('Role', secondary=roles_users,
-                            backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_users, backref='users', lazy='dynamic')
 
     main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
     main_character = relationship('EveCharacter', backref='user_main_character', foreign_keys=[main_character_id])

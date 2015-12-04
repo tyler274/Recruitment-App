@@ -18,7 +18,7 @@ class HrApplicationAdmin(AuthenticatedModelView):
         'user',
         'alt_application',
         'created_time',
-        'characters',
+        #'characters',
         'approved_denied',
         'reviewer_user',
         'last_action_user', )
@@ -29,8 +29,9 @@ class HrApplicationAdmin(AuthenticatedModelView):
         'reviewer_user': 'Reviewer',
         'last_action_user': 'Last Action', }
     column_searchable_list = (
-        'id',
         'main_character_name',
+        'user.email',
+        'characters.character_name',
         'thesis',
         'how_long',
         'notable_accomplishments',
@@ -80,7 +81,9 @@ class HrApplicationCommentAdmin(AuthenticatedModelView):
         'application.id',
         'application.main_character_name',
         'user',
-        'comment', )
+        'comment',
+        'created_time',
+        'last_update_time', )
     column_labels = {
         'application.main_character_name' : 'Application',
         'application.id' : 'App ID', }
@@ -88,8 +91,13 @@ class HrApplicationCommentAdmin(AuthenticatedModelView):
         'id',
         'application.id',
         'application.main_character_name',
-        'user.email', )
-    column_searchable_list = column_filters + ( 'comment', )
+        'user.email',
+        'created_time',
+        'last_update_time')
+    column_searchable_list = (
+        'user.email',
+        'application.main_character_name',
+        'comment', )
     form_columns = (
         'id',
         'created_time',
@@ -106,15 +114,21 @@ class HrApplicationCommentHistoryAdmin(AuthenticatedModelView):
     column_list = (
         'id',
         'comment.id',
+        'comment.application_id',
         'old_comment',
         'user',
         'created_time' )
+    column_labels = {
+        'comment.id' : 'Current Comment ID',
+        'comment.application_id' : 'App ID', }
     column_searchable_list = (
-        'id',
-        'comment.id',
         'old_comment',
         'user.email', )
-    column_filters = column_searchable_list
+    column_filters = (
+        'id',
+        'comment.id',
+        'user.email',
+        'created_time', )
     form_columns = (
         'id',
         'user',
