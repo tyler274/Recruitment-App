@@ -76,6 +76,9 @@
                             {% elif queue.approved_denied == "Needs Processing" %}
                                 <div class="alert-warning" role="alert">Needs Processing</div>
 
+                            {% elif queue.approved_denied == "Missing In-Game" %}
+                                <div class="alert-info" role="alert">In-Game App</div>
+
                             {% endif %}
                         </td>
                         <td data-title="# Comments" class="text-center">{{ queue.hr_comments|length }}</td>

@@ -37,6 +37,9 @@
                                 <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
                                     <button type="button" class="btn btn-info">Needs Director Review</button>
                                 </a>
+                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="missing_ingame") }}">
+                                    <button type="button" class="btn btn-info">Need In-Game App</button>
+                                </a>
                                 <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
                                     <button type="button" class="btn btn-warning">Mark In Progress</button>
                                 </a>
@@ -121,6 +124,9 @@
 
                 {% elif application.approved_denied == "Needs Processing" %}
                     <div class="alert alert-warning" role="alert">Needs Processing</div>
+
+                {% elif application.approved_denied == "Missing In-Game" %}
+                    <div class="alert alert-warning" role="alert">Needs In-Game App</div>
 
                 {% elif application.approved_denied == "New" or application.approved_denied is not defined %}
                     <div class="alert alert-warning" role="alert">New</div>

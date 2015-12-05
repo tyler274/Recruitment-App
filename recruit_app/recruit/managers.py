@@ -68,7 +68,6 @@ class HrManager:
         comment.application_id = application.id
         comment.comment = comment_data
         comment.user_id = user.id
-        # comment.last_update_time = dt.datetime.utcnow()
         comment.save()
         HrManager.comment_notify(comment)
 
@@ -133,17 +132,15 @@ class HrManager:
             application.approved_denied = "Approved"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
-            # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            retval = "approved"
+            retval = "Approved"
 
         elif action == "reject":
             application.approved_denied = "Rejected"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
-            # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            retval = "rejected"
+            retval = "Rejected"
 
         elif action == 'new':
             application.approved_denied = 'New'
@@ -154,28 +151,24 @@ class HrManager:
         elif action == "undecided":
             application.approved_denied = "Undecided"
             application.last_user_id = user.id
-            # application.last_update_time = dt.datetime.utcnow()
             application.save()
-            retval = "undecided"
+            retval = "Undecided"
 
         elif action == "stasis":
             application.approved_denied = "Role Stasis"
             application.last_user_id = user.id
-            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             retval = "Role Stasis"
 
         elif action == "director_review":
             application.approved_denied = "Needs Director Review"
             application.last_user_id = user.id
-            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             retval = "Needs Director Review"
 
         elif action == "waiting":
             application.approved_denied = "Awaiting Response"
             application.last_user_id = user.id
-            # application.last_update_time = dt.datetime.utcnow()
             application.save()
             retval = "Awaiting Response"
 
@@ -202,6 +195,11 @@ class HrManager:
             application.approved_denied = 'Needs Processing'
             application.save()
             retval = 'Needs Processing'
+
+        elif action == 'missing_ingame':
+            application.approved_denied = 'Missing In-Game'
+            application.save()
+            retval = 'Missing In-Game'
             
         HrManager.application_action_notify(application, action)
         return retval
