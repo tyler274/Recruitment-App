@@ -43,24 +43,22 @@ def application_queue(page=1, all=0):
 
     search_form = SearchForm()
     
-    if all:
-        query = HrApplication.query.filter(HrApplication.hidden == False).order_by(HrApplication.id)
+    if request.method == 'POST' and search_form.validate_on_submit() and search_form.search.data:
+        query = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id)\
+            .filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
+        page = 1 # Reset the page to 1 on search
+        
+    elif all:
+        query = HrApplication.query.filter(HrApplication.hidden == False)
     else:
         query = HrApplication.query.filter(
             HrApplication.hidden == False,
             HrApplication.approved_denied != "Closed",  
             HrApplication.approved_denied != "Rejected", 
-            HrApplication.approved_denied != "Approved")\
-            .order_by(HrApplication.id)
+            HrApplication.approved_denied != "Approved")
 
-    recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
-
-    if request.method == 'POST':
-        if search_form.validate_on_submit():
-            recruiter_queue = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id)\
-                .filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))\
-                .order_by(HrApplication.id)\
-                .paginate(1, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+    # Add sort and pagination options to the query
+    recruiter_queue = query.order_by(HrApplication.id).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
     
     return render_template('recruit/application_queue.html', recruiter_queue=recruiter_queue, search_form=search_form)
 
