@@ -3,14 +3,21 @@
 {% from "bootstrap/pagination.html" import render_pagination %}
 
 {% block content %}
-    <div class="container-fluid">
-        <h1 class="page-header text-center">Blacklist</h1>
+    <h1 class="page-header text-center">Blacklist</h1>
+    <div class="row">
         <div class="col-sm-6">
             {{ search_form.hidden_tag() }}
             {{ wtf.quick_form(search_form) }}
+            <br>
         </div>
-        <div class="container-fluid">
-            {{ render_pagination(blacklist) }}
+        {% if blacklist.pages > 1 %}
+            <div class="col-sm-6">
+                {{ render_pagination(blacklist) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
             <table class="table table-bordered">
                 <tr>
                     <th class="text-center">Name</th>
@@ -36,12 +43,12 @@
                 {% endfor %}
             </table>
         </div>
-        {% if current_user.has_role('admin') or current_user.has_role('recruiter') %}
-            <div class="container-fluid">
+    </div>
+    {% if current_user.has_role('admin') or current_user.has_role('recruiter') %}
+        <div class="row">
+            <div class="col-sm-12">
                 {{ wtf.quick_form(blacklist_form) }}
             </div>
-        {% endif %}
-
-    </div>
-
+        </div>
+    {% endif %}
 {% endblock %}
