@@ -31,7 +31,7 @@
                     {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') %}
                       <li><a href="{{ url_for('recruit.application_queue') }}">Application Queue</a></li>
                     {% endif %}
-                    {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') %}
+                    {% if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer') or current_user.has_role('compliance') %}
                       <li><a href="{{ url_for('blacklist.blacklist_view') }}">Blacklist</a></li>
                     {% endif %}
                     {% if current_user.has_role('admin') or current_user.has_role('compliance') %}
