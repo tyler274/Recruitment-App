@@ -15,7 +15,8 @@ class RequiredIfNot(object):
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
         if not bool(other_field.data):
-            raise ValidationError('Field is required') 
+            if not field.data:
+                raise ValidationError('Field is required') 
 
 
 class HrApplicationForm(Form):
