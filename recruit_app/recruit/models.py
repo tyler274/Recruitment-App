@@ -76,6 +76,8 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
     user = relationship('User', foreign_keys=[user_id], backref='hr_applications')
     reviewer_user = relationship('User', foreign_keys=[reviewer_user_id], backref='hr_applications_reviewed')
     last_action_user = relationship('User', foreign_keys=[last_user_id], backref='hr_applications_touched')
+    
+    training = Column(db.Boolean, default=False)
 
     def __str__(self):
         return '<Application %r>' % str(self.main_character_name)

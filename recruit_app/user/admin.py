@@ -128,7 +128,7 @@ class UserAdmin(AuthenticatedModelView):
 class RoleAdmin(AuthenticatedModelView):
     column_searchable_list = ('name', 'description')
     column_filters = column_searchable_list
-    form_columns = ('id', ) + column_searchable_list + ('users', )
+    form_columns = column_searchable_list + ('users', )
     form_ajax_refs = { 'users': { 'fields': ( User.email, ) } }
 
 class EveApiKeyPairAdmin(AuthenticatedModelView):

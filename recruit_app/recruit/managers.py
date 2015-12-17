@@ -201,6 +201,14 @@ class HrManager:
             application.save()
             retval = 'Missing In-Game'
             
+        elif action == 'training':
+            application.training = not application.training;
+            application.save()
+            if application.training:
+                retval = 'can now be viewed by recruiters in training'
+            else:
+                retval = 'is no longer a training app'
+            
         HrManager.application_action_notify(application, action)
         return retval
 

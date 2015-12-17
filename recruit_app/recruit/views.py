@@ -57,6 +57,9 @@ def application_queue(page=1, all=0):
             HrApplication.approved_denied != "Rejected", 
             HrApplication.approved_denied != "Approved")
 
+    if current_user.has_role('training'):
+        query = query.filter_by(training=True)
+    
     # Add sort and pagination options to the query
     recruiter_queue = query.order_by(HrApplication.id).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
     
@@ -97,7 +100,10 @@ def application_view(application_id):
     form_comment = HrApplicationCommentForm()
     form_edit = HrApplicationCommentEdit()
 
-    application = HrApplication.query.filter_by(id=application_id).first()
+    query = HrApplication.query.filter_by(id=application_id)
+    if current_user.has_role('training'):
+        query = query.filter_by(training=True)
+    application = query.first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
@@ -229,12 +235,9 @@ def application_interact(application_id, action):
     if application:
         if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
             if current_user.has_role("admin") or (action not in ['delete', 'hide', 'unhide']):
-                if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close']):
+                if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close', 'training']):
                     application_status = HrManager.alter_application(application, action, current_user)
-
-                    flash("%s's application %s" % (application.main_character_name,
-                                                   application_status),
-                          category='message')
+                    flash("%s's application %s" % (application.main_character_name, application_status), category='message')
 
         elif application.user_id == current_user.get_id():
             if action == "delete" and application.approve_deny == "New":
