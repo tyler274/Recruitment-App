@@ -239,16 +239,16 @@ def application_interact(application_id, action):
                     application_status = HrManager.alter_application(application, action, current_user)
                     flash("%s's application %s" % (application.main_character_name, application_status), category='message')
 
-        elif application.user_id == current_user.get_id():
-            if action == "delete" and application.approve_deny == "New":
+        elif application.user_id == int(current_user.get_id()):
+            if action == 'hide' and application.approved_denied == 'New':
                 application_status = HrManager.alter_application(application, action, current_user)
-                flash("%s's application %s" % (application.main_character,
-                                               application_status),
-                      category='message')
+                flash("Application deleted.", category='message')
 
-        if application_status and application_status != "deleted":
-            return redirect(url_for('recruit.application_view',
-                                    application_id=application.id))
+        if action == 'training' or action == 'hide':
+            return redirect(request.referrer)
+
+        elif application_status and application_status != "deleted":
+            return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return redirect(url_for('recruit.applications'))
 

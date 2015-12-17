@@ -22,6 +22,7 @@ class HrApplicationAdmin(AuthenticatedModelView):
         'approved_denied',
         'reviewer_user',
         'last_action_user',
+        'hidden',
         'training', )
     column_labels = {
         'main_character_name': 'Main',
@@ -53,6 +54,7 @@ class HrApplicationAdmin(AuthenticatedModelView):
         'approved_denied',
         'reviewer_user.email',
         'last_action_user.email',
+        'hidden',
         'training', )
     form_columns = column_list + (
         'created_time',

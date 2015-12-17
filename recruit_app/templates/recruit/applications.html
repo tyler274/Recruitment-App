@@ -66,9 +66,9 @@
                             <span class="glyphicon glyphicon-eye-open"></span>
                         </a>
 
-                        {% if ( application.approved_denied == "New" and (application.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
+                        {% if ( application.approved_denied == "New" and application.user_id == current_user.get_id()|int ) or current_user.has_role("admin") %}
                             <a class="btn btn-danger" href="{{ url_for('recruit.application_interact', application_id=application.id, action="hide") }}">
-                                <span class="glyphicon glyphicon-remove"></span>
+                                <span class="glyphicon glyphicon-remove"></span> 
                             </a>
                         {% endif %}
                     </td>

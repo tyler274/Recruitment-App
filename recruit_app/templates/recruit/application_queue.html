@@ -87,19 +87,19 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
-                            {% if ( queue.approved_denied == "New" and (queue.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action="hide") }}">
+                            {% if ( queue.approved_denied == "New" and (queue.user_id == current_user.get_id()|int ) ) or current_user.has_role("admin") %}
+                                <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='hide') }}">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
                             {% endif %}
                             {% if current_user.has_role("admin") or current_user.has_role("recruiter") %}
                                 {% if queue.training %}
-                                    <a class="btn btn-info btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
-                                        <span class="glyphicon glyphicon-minus"></span>
+                                    <a class="btn btn-success btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
+                                        <span class="glyphicon glyphicon-education"></span>
                                     </a>
                                 {% else %}
-                                    <a class="btn btn-info btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
-                                        <span class="glyphicon glyphicon-plus"></span>
+                                    <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
+                                        <span class="glyphicon glyphicon-education"></span>
                                     </a>
                                 {% endif %}
                             {% endif %}

@@ -132,6 +132,7 @@ class HrManager:
             application.approved_denied = "Approved"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
+            application.training = False
             application.save()
             retval = "Approved"
 
@@ -139,6 +140,7 @@ class HrManager:
             application.approved_denied = "Rejected"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
+            application.training = False
             application.save()
             retval = "Rejected"
 
@@ -188,6 +190,7 @@ class HrManager:
 
         elif action == 'close':
             application.approved_denied = 'Closed'
+            application.training = False
             application.save()
             retval = 'Closed'
 
