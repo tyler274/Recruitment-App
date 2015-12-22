@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <h1 class="page-header text-center">Personal Application</h1>
     {% if current_user.main_character_id %}
-        {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+        {% if current_user.has_role("admin") or ((current_user.has_role("recruiter") or current_user.has_role("reviewer")) and current_user.get_id()|int != application.user_id|int) %}
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-default">
@@ -24,26 +24,24 @@
                                 </a>
                             {% endif %}
 
-                            {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="needs_processing") }}">
-                                    <button type="button" class="btn btn-warning">Needs Processing</button>
-                                </a>
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">
-                                    <button type="button" class="btn btn-info">Role Stasis</button>
-                                </a>
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="waiting") }}">
-                                    <button type="button" class="btn btn-info">Awaiting Response</button>
-                                </a>
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
-                                    <button type="button" class="btn btn-info">Needs Director Review</button>
-                                </a>
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="missing_ingame") }}">
-                                    <button type="button" class="btn btn-info">Need In-Game App</button>
-                                </a>
-                                <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
-                                    <button type="button" class="btn btn-warning">Mark In Progress</button>
-                                </a>
-                            {% endif %}
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="needs_processing") }}">
+                                <button type="button" class="btn btn-warning">Needs Processing</button>
+                            </a>
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="stasis") }}">
+                                <button type="button" class="btn btn-info">Role Stasis</button>
+                            </a>
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="waiting") }}">
+                                <button type="button" class="btn btn-info">Awaiting Response</button>
+                            </a>
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
+                                <button type="button" class="btn btn-info">Needs Director Review</button>
+                            </a>
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="missing_ingame") }}">
+                                <button type="button" class="btn btn-info">Need In-Game App</button>
+                            </a>
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
+                                <button type="button" class="btn btn-warning">Mark In Progress</button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -92,7 +90,7 @@
             </div>
         {% endif %}
         <div class="row">
-    {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+    {% if current_user.has_role("admin") or ((current_user.has_role("recruiter") or current_user.has_role("reviewer")) and current_user.get_id()|int != application.user_id|int) %}
         <div class="col-sm-4"> {# indent to match row #}
     {% endif %}
             <div class="form-group">
@@ -231,7 +229,7 @@
                 <label class="control-label">How did you find out about KarmaFleet?</label>
                 <textarea class=" form-control" rows="3" rows="10" disabled>{{ application.find_out }}</textarea>
             </div>
-        {% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+        {% if current_user.has_role("admin") or ((current_user.has_role("recruiter") or current_user.has_role("reviewer")) and current_user.get_id()|int != application.user_id|int) %}
         </div> {# ends column that only exists in recruiter mode #}
         <div class="col-sm-4">
             <label class="control-label">Characters ({{ characters|length }})</label>
@@ -335,7 +333,7 @@
 {% endblock %}
 {% block scripts %}
 {{super()}}
-{% if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role("reviewer") %}
+{% if current_user.has_role("admin") or ((current_user.has_role("recruiter") or current_user.has_role("reviewer")) and current_user.get_id()|int != application.user_id|int) %}
     <script>
     $('#editComment').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
