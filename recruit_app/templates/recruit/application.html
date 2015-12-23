@@ -291,10 +291,8 @@
                                 data-comment_id="{{ comment.id }}" data-application_id="{{ application.id }}">Edit</button>
                         {% endif %}
                     </div>
-                    <div class="panel-body">
-                        <p style="word-wrap: break-word;">
-                            {{ comment.comment|markdown }}
-                        </p>
+                    <div class="panel-body" style="word-wrap: break-word;">
+                        {{ comment.comment|markdown }}
                     </div>
                 </div>
             {% endfor %}
