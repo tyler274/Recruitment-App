@@ -51,7 +51,12 @@ class BlacklistGSF(TimeMixin, Model):
             except: # Will except on NONE for URL or connection issues.  Just keep status as UNKNOWN
                 pass
             
-            entry.save()
+            try:
+                entry.save()
+            except:
+                # It's possible that multiple people are viewing the same new app at the same time, causing multiple threads to make the same cache object,
+                # which throws an IntegrityError.  In that case just ignore the error, this is just a cache anyway.
+                pass
 
         return entry.status
 
