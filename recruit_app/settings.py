@@ -35,7 +35,6 @@ class Config(object):
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
     JACK_KNIFE_URL = 'http://ridetheclown.com/eveapi/audit.php'
-    JACK_KNIFE_ALT_URL = 'http://whinis.com/jackKnife/index.php'
 
     SENTRY_DSN = os.getenv('SENTRY_DSN')
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app, flash, redirect
+from flask import Blueprint, request, current_app, flash, redirect, url_for
 from flask_security.decorators import login_required
 from flask_security import roles_accepted
 
@@ -9,17 +9,22 @@ from flask import stream_with_context
 import re
 import requests
 
-blueprint = Blueprint("eveapi", __name__, url_prefix='/eveapi')#, static_folder=".")
+blueprint = Blueprint("eveapi", __name__, url_prefix='/eveapi')
 
 @blueprint.route("/audit.php", methods=['GET'])
 @login_required
 @roles_accepted('admin', 'recruiter', 'reviewer', 'compliance')
 def jackknife_proxy():
+    # Remove any passed in apik and redirect back without it
+    if 'apik' in request.args:
+        cleanargs = request.args.copy()
+        cleanargs.pop('apik')
+        return redirect(url_for('eveapi.jackknife_proxy', **cleanargs))
+    
     try:
         api_key = EveApiKeyPair.query.filter_by(api_id=request.args['usid']).first().api_key
     except:
-        flash('API key not in database.', 'error')
-        return redirect(request.referrer)
+        return 'API key not in database.'
     
     url = current_app.config['JACK_KNIFE_URL'] + '?' + request.query_string + '&apik=' + api_key
     headers = { 'User-Agent': 'KarmaFleet API Check', 'From': 'karmafleet_tools@ggrog.com' } # Be nice to Jackknife and send some info about us

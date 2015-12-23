@@ -58,11 +58,8 @@
                             <div class="panel-body">
                                 {% for api_key in application.user.api_keys %}
                                     Key ID: {{ api_key.api_id }} Key Date: {{ api_key.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
-                                    <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
+                                    <a target="_blank" class="btn btn-default btn-xs" href="{{ url_for('eveapi.jackknife_proxy',usid=api_key.api_id) }}">
                                         Jack Knife
-                                    </a>
-                                    <a target="_blank" class="btn btn-default btn-xs" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ api_key.api_id }}&apik={{ api_key.api_key }}">
-                                        Alt Jack Knife
                                     </a>
                                     <br>
                                 {% endfor %}
@@ -241,11 +238,8 @@
                         </div>
                         GSF BL Status: {{ gsf_blacklist[character.character_name] }}
                         <br>
-                        <a target="_blank" href="{{ config.JACK_KNIFE_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
+                        <a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id) }}">
                             <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
-                        </a>
-                        <a target="_blank" href="{{ config.JACK_KNIFE_ALT_URL }}?usid={{ character.api.api_id }}&apik={{ character.api.api_key }}">
-                            <button type="button" class="btn btn-default btn-xs">Alt Jack Knife</button>
                         </a>
                         <br>
                         <a target="_blank" href="https://forums.eveonline.com/default.aspx?g=search&postedby={{ character.character_name }}">
