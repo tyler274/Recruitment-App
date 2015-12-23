@@ -21,14 +21,11 @@ from recruit_app.extensions import (
     rq,
     misaka,
 )
-from recruit_app import public, user, recruit, blacklist
+from recruit_app import public, user, recruit, blacklist, jkproxy
 from recruit_app.user import admin as user_admin_view
 from recruit_app.recruit import admin as recruit_admin_view
 
 from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
-
-from recruit_app import recruit
-from recruit_app import blacklist
 
 
 def create_app(config_object=ProdConfig):
@@ -74,6 +71,7 @@ def register_blueprints(app):
     app.register_blueprint(user.views.blueprint)
     app.register_blueprint(recruit.views.blueprint)
     app.register_blueprint(blacklist.views.blueprint)
+    app.register_blueprint(jkproxy.blueprint)
 
     return None
 
