@@ -27,8 +27,10 @@ class EveManager:
             if unicode(api_key_pair.user_id) == unicode(user.id):
                 if (dt.datetime.utcnow() - api_key_pair.last_update_time).total_seconds() >= 30:
                     # TODO: Switch from 30 second time out to the cache expiry time
-                    EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key)
-                    return "Success"
+                    if EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key):
+                        return "Success"
+                    else:
+                        return "Failed"
                 else:
                     return "Wait"
         else:
@@ -167,6 +169,8 @@ class EveManager:
         if api_pair:
 
             characters = EveApiManager.get_characters_from_api(api_id=api_id, api_key=api_key)
+            if not characters:
+                return False
 
             EveManager.update_characters_from_list(characters=characters,
                                                    user=api_pair.user,

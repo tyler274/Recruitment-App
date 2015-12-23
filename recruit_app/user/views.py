@@ -82,6 +82,8 @@ def api_update(api_id):
         flash(u'Please wait before refreshing your api', category='message')
     elif update == "Success":
         flash(u'API key Refreshed', category='message')
+    elif update == "Failed":
+        flash(u'Error updating API key!  Either your key is invalid or the CCP servers are temporarily down.', category='error')
 
     return redirect(url_for('user.api_manage'))
 
