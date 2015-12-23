@@ -33,8 +33,9 @@ def jackknife_proxy():
     # Some python generator magic to intercept each line and sanitize API keys, and redirect links back to audit.php with ours
     def streamJackknife():
         for line in req.iter_lines():
-            rem_jk = re.sub(current_app.config['JACK_KNIFE_URL'], 'audit.php', line)
-            rem_apikey = re.sub('apik=[^&#"]*&?', '', rem_jk)
-            yield rem_apikey + '\n'
+            line = re.sub(current_app.config['JACK_KNIFE_URL'], 'audit.php', line)
+            line = re.sub('apik=[^&#"]*&?', '', line)
+            line = re.sub('http://ajax\.googleapis\.com', 'https://ajax.googleapis.com', line) # need to switch to secure js
+            yield line + '\n'
         
     return Response(stream_with_context(streamJackknife()))
