@@ -30,7 +30,7 @@ class BlacklistGSF(TimeMixin, Model):
     
     status = Column(db.Unicode)
     character_id = ReferenceCol('characters', pk_name='character_id', primary_key=True)
-    character = relationship('EveCharacter', foreign_keys=[character_id], backref='blacklist_gsf')
+    character = relationship('EveCharacter', foreign_keys=[character_id], backref='blacklist_gsf', cascade="delete")
     
     @staticmethod
     def getStatus(character):
