@@ -28,8 +28,8 @@ class Config(object):
     SECURITY_CHANGE_PASSWORD_TEMPLATE = 'public/change.html'
     SECURITY_RESET_PASSWORD_TEMPLATE = 'public/reset.html'
 
-    MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_PORT = 465
+    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = os.getenv('MAIL_PORT', 465)
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
