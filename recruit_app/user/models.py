@@ -60,7 +60,7 @@ class User(SurrogatePK, Model, UserMixin):
 class EveCharacter(Model):
     __tablename__ = 'characters'
 
-    character_id = Column(db.String(254), unique=True, primary_key=True)
+    character_id = Column(db.String(254), primary_key=True)
     character_name = Column(db.String(254))
     corporation_id = ReferenceCol('corporations', pk_name='corporation_id', nullable=True)
     corporation = relationship('EveCorporationInfo', backref='characters', foreign_keys=[corporation_id])
@@ -80,7 +80,7 @@ class EveCharacter(Model):
 class EveApiKeyPair(Model):
     __tablename__ = 'api_key_pairs'
 
-    api_id = Column(db.String(254), unique=True, primary_key=True)
+    api_id = Column(db.String(254), primary_key=True)
     api_key = Column(db.String(254))
     last_update_time = Column(db.DateTime(), nullable=True)
 
@@ -95,7 +95,7 @@ class EveApiKeyPair(Model):
 class EveAllianceInfo(Model):
     __tablename__ = 'alliances'
 
-    alliance_id = Column(db.String(254), unique=True, primary_key=True)
+    alliance_id = Column(db.String(254), primary_key=True)
     alliance_name = Column(db.String(254))
     alliance_ticker = Column(db.String(254))
     executor_corp_id = Column(db.String(254))
@@ -109,7 +109,7 @@ class EveAllianceInfo(Model):
 class EveCorporationInfo(Model):
     __tablename__ = 'corporations'
 
-    corporation_id = Column(db.String(254), unique=True, primary_key=True)
+    corporation_id = Column(db.String(254), primary_key=True)
     corporation_name = Column(db.String(254))
     corporation_ticker = Column(db.String(254))
     member_count = Column(db.Integer)

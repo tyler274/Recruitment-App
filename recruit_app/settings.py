@@ -54,6 +54,8 @@ class Config(object):
 
     API_MASK = 1073741823
     SLACK_WEBHOOK = os.getenv('SLACK_WEBHOOK')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 class ProdConfig(Config):
     """Production configuration."""

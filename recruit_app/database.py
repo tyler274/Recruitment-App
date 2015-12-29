@@ -9,7 +9,6 @@ from .compat import basestring
 
 # Alias common SQLAlchemy names
 Column = db.Column
-relationship = relationship
 
 class CRUDMixin(object):
     """Mixin that adds convenience methods for CRUD (create, read, update, delete)
@@ -76,7 +75,7 @@ class TimeMixin(object):
     last_update_time = Column(db.DateTime(), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
 
-def ReferenceCol(tablename, nullable=False, pk_name='id', **kwargs):
+def ReferenceCol(tablename, nullable=True, pk_name='id', **kwargs):
     """Column that adds primary key foreign key reference.
 
     Usage: ::

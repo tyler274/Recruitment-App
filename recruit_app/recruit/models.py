@@ -2,6 +2,7 @@
 
 from recruit_app.extensions import bcrypt
 from recruit_app.database import Column, db, Model, ReferenceCol, relationship, SurrogatePK, TimeMixin
+from sqlalchemy.orm import backref
 
 # import flask_whooshalchemy as whooshalchemy
 # from sqlalchemy_searchable import make_searchable
@@ -86,12 +87,10 @@ class HrApplicationComment(SurrogatePK, TimeMixin, Model):
 
     comment = Column(db.Text, nullable=True)
 
-    application_id = ReferenceCol('hr_applications', nullable=False)
-    user_id = ReferenceCol('users', nullable=False)
-    application = relationship('HrApplication', foreign_keys=[application_id], backref='hr_comments', cascade="delete")
+    application_id = ReferenceCol('hr_applications')
+    user_id = ReferenceCol('users')
+    application = relationship('HrApplication', foreign_keys=[application_id], backref=backref('hr_comments', cascade="delete"))
     user = relationship('User', backref='hr_comments', foreign_keys=[user_id])
-
-
 
     def __repr__(self):
         return str(self.user) + " - Comment"
@@ -100,10 +99,10 @@ class HrApplicationCommentHistory(SurrogatePK, TimeMixin, Model):
     __tablename__ = 'hr_comment_history'
     
     old_comment = Column(db.Text, nullable=True)
-    comment_id = ReferenceCol('hr_comments', nullable=False)
-    editor = ReferenceCol('users', nullable=False)
-    comment = relationship('HrApplicationComment', foreign_keys=[comment_id], backref='hr_comment_history', cascade="delete")
-    user = relationship('User', backref='hr_comment_history', cascade="delete", foreign_keys=[editor])
+    comment_id = ReferenceCol('hr_comments')
+    editor = ReferenceCol('users')
+    comment = relationship('HrApplicationComment', foreign_keys=[comment_id], backref=backref('hr_comment_history', cascade="delete"))
+    user = relationship('User', backref='hr_comment_history', foreign_keys=[editor])
     
     def __repr__(self):
         return str(self.editor) + " - Edited comment"
