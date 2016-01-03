@@ -39,28 +39,49 @@ class HrManager:
         token = soup.find('input', {'name':'auth_key'})['value']
         
         payload = {
-        'ips_username' : current_app.config['GSF_USERNAME'],
-        'ips_password' : current_app.config['GSF_PASSWORD'],
-        'auth_key' : token,
-        'referer' : 'https://goonfleet.com/',
-        'rememberMe' : 1,
+            'ips_username' : current_app.config['GSF_USERNAME'],
+            'ips_password' : current_app.config['GSF_PASSWORD'],
+            'auth_key' : token,
+            'referer' : 'https://goonfleet.com/',
+            'rememberMe' : 1,
         }
 
         url = 'https://goonfleet.com/index.php?app=core&module=global&section=login&do=process'
         r = s.post(url, data=payload, verify=True)
         
-        soup = BeautifulSoup(r.text, 'html.parser')
-        
         url = 'https://goonfleet.com/corps/checkMembers.php'
         r = s.get(url, verify=True)
         
         payload = {
-        'corpID' : '98370861'
+            'corpID' : '98370861'
         }
         r = s.post(url, data=payload, verify=True)
         
-        d = r.text.split('<div class="row-fluid">')[2].split('</div>')[2]
-        return d
+        soup = BeautifulSoup(r.text, 'html.parser')
+        
+        output = "<table class='table'><thead><th>Character Name</th><th>Forum Name/Main</th><th>Primary Group</th></thead>\n"
+        
+        for row in soup.findAll('tr'):
+            alert = None
+            if row.get('class'):
+                alert = row.get('class')[1]
+            cols = row.findAll('td')
+            charname = cols[1].get_text()
+            forumname = cols[2].get_text()
+            group = cols[3].get_text()
+            
+            # Look for an API for character
+            if not alert and not EveCharacter.query.filter_by(character_name=charname).first():
+                alert = 'alert-warning'
+            
+            if alert:
+                output = output + '<tr class="alert {0}"><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'.format(alert, charname, forumname, group)
+            else:
+                output = output + '<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n'.format(charname, forumname, group)
+        
+        output = output + '</table>'
+        return output
+
 
     @staticmethod
     def create_comment(application, comment_data, user):
