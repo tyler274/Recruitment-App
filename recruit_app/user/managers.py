@@ -294,12 +294,12 @@ class EveManager:
 
     @staticmethod
     def get_character_by_id(character_id):
-        return EveCharacter.query.filter_by(character_id=character_id).first()
+        return EveCharacter.query.filter_by(character_id=str(character_id)).first()
 
     @staticmethod
     def get_character_alliance_id_by_character_id(char_id):
-        if EveCharacter.query.filter_by(character_id=char_id).all():
-            return EveCharacter.query.filter_by(character_id=char_id).first().corporation.alliance_id
+        if EveCharacter.query.filter_by(character_id=str(char_id)).all():
+            return EveCharacter.query.filter_by(character_id=str(char_id)).first().corporation.alliance_id
 
     @staticmethod
     def check_if_character_owned_by_user(character_id, user_id):
