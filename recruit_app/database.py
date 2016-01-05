@@ -31,13 +31,24 @@ class CRUDMixin(object):
         """Save the record."""
         db.session.add(self)
         if commit:
-            db.session.commit()
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
         return self
 
     def delete(self, commit=True):
         """Remove the record from the database."""
         db.session.delete(self)
-        return commit and db.session.commit()
+        if commit:
+            try:
+                return db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+                
+        return False
 
 
 class Model(CRUDMixin, db.Model):
