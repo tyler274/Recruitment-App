@@ -131,7 +131,7 @@ class EveManager:
 
         for character in characters.result:
             if EveManager.check_if_character_exist(characters.result[character]['id']):
-                eve_char = EveManager.get_character_by_character_name(characters.result[character]['name'])
+                eve_char = EveManager.get_character_by_id(characters.result[character]['id'])
 
                 if str(characters.result[character]['alliance']['id']) != eve_char.corporation.alliance_id:
 
@@ -143,6 +143,10 @@ class EveManager:
 
                 if str(characters.result[character]['corp']['id']) != eve_char.corporation_id:
                     eve_char.corporation_id = str(characters.result[character]['corp']['id'])
+                    
+                # Handle name changes (rare, but :CCP:)
+                if characters.result[character]['name'] != eve_char.character_name:
+                    eve_char.character_name = characters.result[character]['name']
 
                 eve_char.save()
 
@@ -289,16 +293,8 @@ class EveManager:
         return EveCharacter.query.filter_by(user_id=user.id).all()
 
     @staticmethod
-    def get_character_by_character_name(character_name):
-        if EveCharacter.query.filter_by(character_name=character_name).first():
-            return EveCharacter.query.filter_by(character_name=character_name).first()
-        return None
-
-    @staticmethod
     def get_character_by_id(character_id):
-        if EveCharacter.query.filter_by(character_id=character_id).first():
-            return EveCharacter.query.filter_by(character_id=character_id).first()
-        return None
+        return EveCharacter.query.filter_by(character_id=character_id).first()
 
     @staticmethod
     def get_character_alliance_id_by_character_id(char_id):
