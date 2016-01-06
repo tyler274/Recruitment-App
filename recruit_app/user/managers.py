@@ -24,7 +24,7 @@ class EveManager:
     def update_user_api(api_id, user):
         api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
         if api_key_pair:
-            if unicode(api_key_pair.user_id) == unicode(user.id):
+            if unicode(api_key_pair.user_id) == unicode(user.id) or user.has_role('admin'):
                 if (dt.datetime.utcnow() - api_key_pair.last_update_time).total_seconds() >= 30:
                     # TODO: Switch from 30 second time out to the cache expiry time
                     if EveManager.update_api_keypair(api_id=api_key_pair.api_id, api_key=api_key_pair.api_key):
@@ -78,10 +78,12 @@ class EveManager:
                     pass
 
                 else:
-                    errors.append("Character Creation on " + chars.result[char]['name'] + " failed")
+                    errors.append("Character {0} creation failed".format(chars.result[char]['name']))
 
             else:
-                if EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first().user_id is None:
+                eveChar = EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first()
+                if eveChar.user_id is None or not eveChar.api_id:
+                    # Character exists, but isn't associated with a user or an api_key
                     if EveManager.update_character(chars.result[char]['id'],
                                                 chars.result[char]['name'],
                                                 chars.result[char]['corp']['id'],
@@ -89,9 +91,9 @@ class EveManager:
                         pass
 
                     else:
-                        errors.append("Character Creation/Update on " + chars.result[char]['name'] + " failed")
+                        errors.append("Character {0} update failed".format(chars.result[char]['name']))
                 else:
-                        errors.append("Character " + chars.result[char]['name'] + " in use")
+                        errors.append("Character {0} in use by API {1}".format(chars.result[char]['name'], eveChar.api_id))
         return errors
 
 
