@@ -59,7 +59,7 @@ class HrManager:
         
         soup = BeautifulSoup(r.text, 'html.parser')
         
-        output = "<table class='table'><thead><th>Character Name</th><th>Forum Name/Main</th><th>Primary Group</th></thead>\n"
+        output = "<table id='compliance' class='table tablesorter'><thead><th>Character Name</th><th>Forum Name/Main</th><th>Primary Group</th><th>Status</th></thead><tbody>\n"
         
         for row in soup.findAll('tr'):
             alert = None
@@ -73,13 +73,23 @@ class HrManager:
             # Look for an API for character
             if not alert and not EveCharacter.query.filter_by(character_name=charname).first():
                 alert = 'alert-warning'
-            
-            if alert:
-                output = output + '<tr class="alert {0}"><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'.format(alert, charname, forumname, group)
+                
+            # Set status
+            if alert == 'alert-warning':
+                status = 'No KF API'
+            elif alert == 'alert-success':
+                status = 'Director'
+            elif alert == 'alert-error':
+                status = 'No Goon Auth'
             else:
-                output = output + '<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n'.format(charname, forumname, group)
+                status = 'OK'
+                
+            if alert:
+                output = output + '<tr class="alert {0}"><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td></tr>\n'.format(alert, charname, forumname, group, status)
+            else:
+                output = output + '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'.format(charname, forumname, group, status)
         
-        output = output + '</table>'
+        output = output + '</tbody></table>'
         return output
 
 
