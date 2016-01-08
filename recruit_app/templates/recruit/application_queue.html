@@ -86,13 +86,6 @@
                             <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
-
-                            {% if ( queue.approved_denied == "New" and (queue.user_id == current_user.get_id() ) ) or current_user.has_role("admin") %}
-                                <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action="hide") }}">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                </a>
-
-                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
