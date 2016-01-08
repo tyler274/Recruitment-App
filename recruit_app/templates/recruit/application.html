@@ -288,7 +288,7 @@
                         {% endif %}
                     </div>
                     <div class="panel-body" style="word-wrap: break-word;">
-                        {{ comment.comment|markdown }}
+                        {{ comment.comment|markdown(wrap=True, autolink=True) }}
                     </div>
                 </div>
             {% endfor %}
