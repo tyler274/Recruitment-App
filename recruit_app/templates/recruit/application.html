@@ -261,7 +261,7 @@
                         <div class="col-lg-7">
                             <p><strong>Alliance: </strong> {{ character.corporation.alliance.alliance_name }} </p>
                             <p><strong>Corporation: </strong>{{ character.corporation.corporation_name }}</p>
-                            <p><strong>Corporation Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
+                            <p><strong>Ticker: </strong> {{ character.corporation.corporation_ticker }} </p>
                         </div>
                     </div>
                 </div>
@@ -293,7 +293,7 @@
                 </div>
             {% endfor %}
             {# Modal edit dialog definition #}
-            <div id="editComment" class="modal fade" role="dialog">
+            <div id="editComment" class="modal fade" role="dialog" data-backdrop="static">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
