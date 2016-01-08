@@ -44,8 +44,13 @@ def application_queue(page=1, all=0):
     search_form = SearchForm()
     
     if request.method == 'POST' and search_form.validate_on_submit() and search_form.search.data:
-        query = HrApplication.query.join(EveCharacter, EveCharacter.user_id == HrApplication.user_id)\
-            .filter(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%"))
+        query = HrApplication.query.outerjoin(EveCharacter, EveCharacter.user_id == HrApplication.user_id).filter(
+            EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")|
+            HrApplication.main_character_name.ilike("%" + str(search_form.search.data)  + "%"))
+            
+        query2 = HrApplication.query.filter(HrApplication.characters.any(EveCharacter.character_name.ilike("%" + str(search_form.search.data)  + "%")))
+        query = query.union(query2)
+            
         page = 1 # Reset the page to 1 on search
         
     elif all:
