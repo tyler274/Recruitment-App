@@ -186,6 +186,23 @@ class EveManager:
             EveManager.update_characters_from_list(characters=characters,
                                                    user=api_pair.user,
                                                    api_id=api_pair.api_id)
+                                                   
+            # Now, archive any characters that don't exist anymore
+            for old_api_char in api_pair.characters:
+                found = False
+                for char in characters.result:
+                    if str(characters.result[char]['id']) == str(old_api_char.character_id):
+                        found = True
+                        break
+                if not found:
+                    old_api_char.previous_users.append(old_api_char.user)
+                    if str(old_api_char.user.main_character_id) == str(old_api_char.character_id):
+                        old_api_char.user.main_character_id = None
+                        old_api_char.user.save()
+                    old_api_char.user_id = None
+                    old_api_char.api_id = None
+                    old_api_char.save()                
+            
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
             return True
