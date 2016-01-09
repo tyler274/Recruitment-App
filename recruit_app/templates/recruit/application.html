@@ -232,16 +232,22 @@
             <label class="control-label">Characters ({{ characters|length }})</label>
             {% for character in characters %}
                 <div class="panel panel-default">
+				{% if character.user_id|int != application.user_id|int %}
+                    <div class="panel-heading" id="removed">
+				{% else %}
                     <div class="panel-heading">
-                        <div class="panel-title">
-                            {{ character.character_name }}
-                        </div>
+				{% endif %}
+						<div class="panel-title">
+							{{ character.character_name }}{% if character.user_id|int != application.user_id|int %} - REMOVED{% endif %}
+						</div>
                         GSF BL Status: {{ gsf_blacklist[character.character_name] }}
                         <br>
-                        <a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id) }}">
-                            <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
-                        </a>
-                        <br>
+						{% if character.api_id %}
+							<a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id) }}">
+								<button type="button" class="btn btn-default btn-xs">Jack Knife</button>
+							</a>
+							<br>
+						{% endif %}
                         <a target="_blank" href="https://forums.eveonline.com/default.aspx?g=search&postedby={{ character.character_name }}">
                             <button type="button" class="btn btn-default btn-xs">Forum Search</button>
                         </a>

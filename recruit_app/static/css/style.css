@@ -95,3 +95,8 @@ a[id] {
 .form-control#comment {
   height: 400px;
 }
+
+.panel-heading#removed {
+  color: #A94442;
+  background-color: #F2DEDE;
+}

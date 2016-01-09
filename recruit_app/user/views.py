@@ -67,7 +67,6 @@ def api_delete(api_id):
                 # TODO disable services and such
                 pass
 
-    EveManager.delete_characters_by_api_id_user(api_id, current_user)
     EveManager.delete_api_key_pair(api_id, current_user)
 
     return redirect(url_for('user.api_manage'))

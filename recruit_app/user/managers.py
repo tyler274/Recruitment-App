@@ -52,13 +52,18 @@ class EveManager:
 
     @staticmethod
     def update_character(character_id, character_name, corporation_id, user_id, api_id):
-        if EveCharacter.query.filter_by(character_id=str(character_id)).first():
-            eve_char = EveCharacter.query.filter_by(character_id=str(character_id)).first()
+        eve_char = EveCharacter.query.filter_by(character_id=str(character_id)).first()
+        if eve_char:
             eve_char.character_id = str(character_id)
             eve_char.character_name = character_name
             eve_char.corporation_id = str(corporation_id)
             eve_char.user_id = user_id
             eve_char.api_id = api_id
+            
+            for user in eve_char.previous_users:
+                if user.id == int(user_id):
+                    eve_char.previous_users.remove(user)
+           
             if eve_char.save():
                 return True
         return False
@@ -249,38 +254,27 @@ class EveManager:
     def delete_api_key_pair(api_id, user):
         api_key_pair = EveApiKeyPair.query.filter_by(api_id=api_id).first()
         if api_key_pair:
+            # Lookup user if needed
+            if not user:
+                user = User.query.filter_by(id=api_key_pair.user_id).first()
+                
             # Check that its owned by our user_id
-            if unicode(api_key_pair.user_id) == unicode(user.id):
+            if user and unicode(api_key_pair.user_id) == unicode(user.id):
+                # Unassociate any characters, but keep a history
+                for char in api_key_pair.characters:
+                    char.user_id = None
+                    
+                    # Don't add a duplicate entry to the history table.  Should never happen, but if someone has some messed up APIs or there's an odd char sell situation, it could be possible.
+                    if not EveCharacter.query.filter_by(character_id=char.character_id).filter(EveCharacter.previous_users.any(id=user.id)).first():
+                        char.previous_users.append(user)
+                    
+                    if str(char.character_id) == str(user.main_character_id):
+                        user.main_character_id = None
+                        user.save()
+                    
+                    char.save()
+                
                 api_key_pair.delete()
-
-    @staticmethod
-    def delete_characters_by_api_id_user(api_id, user):
-        characters = EveCharacter.query.filter_by(api_id=api_id).all()
-        if characters:
-            # Check that its owned by our user_id
-
-            for character in characters:
-                if unicode(character.user.id) == unicode(user.id) and unicode(character.character_id) == unicode(user.main_character_id):
-                    user.main_character_id = None
-                    user.save()
-
-                    character.user_id = None
-                    character.save()
-
-
-    @staticmethod
-    def delete_characters_by_api_id(api_id):
-        characters = EveCharacter.query.filter_by(api_id=api_id).all()
-        if characters:
-            # Check that its owned by our user_id
-            for character in characters:
-                main = User.query.filter_by(main_character_id=character.character_id).first()
-                if main:
-                    main.main_character_id = None
-                    main.save()
-
-                character.user_id = None
-                character.save()
 
 
     @staticmethod
@@ -288,7 +282,6 @@ class EveManager:
         if EveCharacter.query.filter_by(character_id=str(character_id)).first():
             return True
         return False
-
 
     @staticmethod
     def get_characters_by_owner(user):

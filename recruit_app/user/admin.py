@@ -35,11 +35,15 @@ class EveCharacterAdmin(AuthenticatedModelView):
         'character_name',
         'corporation',
         'user',
-        'api' )
+        'api',
+        'created_time',
+        'last_update_time',
+        'previous_users', )
     form_ajax_refs = {
-        'corporation': { 'fields': ('corporation_name',) },
-        'user':        { 'fields': (User.email,) },
-        'api':         { 'fields': (EveApiKeyPair.api_id,) } }
+        'corporation':    { 'fields': ('corporation_name',) },
+        'user':           { 'fields': (User.email,) },
+        'api':            { 'fields': (EveApiKeyPair.api_id,) },
+        'previous_users': { 'fields': (User.email,) }, }
 
 class EveCorporationInfoAdmin(AuthenticatedModelView):
     column_list = (
@@ -116,12 +120,14 @@ class UserAdmin(AuthenticatedModelView):
         'login_count',
         'roles',
         'characters',
+        'previous_chars',
         'api_keys',
         'blacklist_character_entries', )
     form_ajax_refs = {
         'characters':                  { 'fields': (EveCharacter.character_name, ) },
         'api_keys':                    { 'fields': (EveApiKeyPair.api_id, ) },
-        'blacklist_character_entries': { 'fields': (BlacklistCharacter.name, BlacklistCharacter.notes, ) }, }
+        'blacklist_character_entries': { 'fields': (BlacklistCharacter.name, BlacklistCharacter.notes, ) },
+        'previous_chars':              { 'fields': (EveCharacter.character_name, ) }, }
         
     # TODO password field doesn't write the correct password hash to the DB for some reason.  Just ignore it for now.
     # def scaffold_form(self):

@@ -105,7 +105,8 @@ def application_view(application_id):
     application = HrApplication.query.filter_by(id=application_id).first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
-            characters = EveCharacter.query.filter_by(user_id=application.user_id).all()
+            characters = EveCharacter.query.filter_by(user_id=application.user_id).union(EveCharacter.query.filter(EveCharacter.previous_users.any(id=application.user_id))).order_by(EveCharacter.api_id.desc()).all()
+            
             evewho = {}
             for character in characters:
                 evewho[character.character_name] = character.character_name.replace(' ','+')

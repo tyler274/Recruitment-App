@@ -43,7 +43,7 @@ class HrApplication(SurrogatePK, TimeMixin, Model):
 
     alt_application = Column(db.Boolean, default=False)
 
-    characters = relationship('EveCharacter', secondary=character_apps, backref='hr_applications', lazy='dynamic')
+    characters = relationship('EveCharacter', secondary=character_apps, backref=db.backref('hr_applications', lazy='dynamic'), lazy='dynamic')
 
     thesis = Column(db.UnicodeText, nullable=True)
     how_long = Column(db.Text, nullable=True)

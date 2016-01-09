@@ -3,7 +3,7 @@ import datetime as dt
 
 from flask_security import UserMixin, RoleMixin
 from recruit_app.extensions import bcrypt
-from recruit_app.database import Column, db, Model, ReferenceCol, relationship, SurrogatePK
+from recruit_app.database import Column, db, Model, ReferenceCol, relationship, SurrogatePK, TimeMixin
 
 roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
@@ -35,7 +35,7 @@ class User(SurrogatePK, Model, UserMixin):
     current_login_ip = Column(db.String(100))
     login_count = Column(db.Integer)
 
-    roles = db.relationship('Role', secondary=roles_users, backref='users', lazy='dynamic')
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'), lazy='dynamic')
 
     main_character_id = ReferenceCol('characters', pk_name='character_id', nullable=True)
     main_character = relationship('EveCharacter', backref='user_main_character', foreign_keys=[main_character_id])
@@ -56,8 +56,11 @@ class User(SurrogatePK, Model, UserMixin):
     def __str__(self):
         return self.email
 
-
-class EveCharacter(Model):
+previous_chars = db.Table('previous_chars',
+    db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
+    db.Column('character_id', db.String(254), db.ForeignKey('characters.character_id')))
+        
+class EveCharacter(Model, TimeMixin):
     __tablename__ = 'characters'
 
     character_id = Column(db.String(254), primary_key=True)
@@ -72,6 +75,7 @@ class EveCharacter(Model):
     user = relationship('User', backref='characters', foreign_keys=[user_id])
 
     skillpoints = Column(db.Integer, nullable=True)
+    previous_users = db.relationship('User', secondary=previous_chars, backref=db.backref('previous_chars', lazy='dynamic'), lazy='dynamic')
 
     def __str__(self):
         return self.character_name
