@@ -35,29 +35,20 @@
                         {% elif application.approved_denied == "Rejected" %}
                             <div class="alert-danger" role="alert">Rejected</div>
 
-                        {% elif application.approved_denied == "Undecided" %}
-                            <div class="alert-info" role="alert">In Progress</div>
-
-                        {% elif application.approved_denied == "Awaiting Response" %}
-                            <div class="alert-info" role="alert">Awaiting Response</div>
-
-                        {% elif application.approved_denied == "Needs Director Review" %}
-                            <div class="alert-info" role="alert">Needs Director Review</div>
-
                         {% elif application.approved_denied == "Role Stasis" %}
                             <div class="alert-info" role="alert">Role Stasis</div>
 
                         {% elif application.approved_denied == "Closed" %}
                             <div class="alert-danger" role="alert">Closed</div>
 
-                        {% elif application.approved_denied == "Needs Processing" %}
-                            <div class="alert-warning" role="alert">Needs Processing</div>
-
                         {% elif application.approved_denied == "Missing In-Game" %}
                             <div class="alert-info" role="alert">Missing In-Game App</div>
 
+                        {% elif application.approved_denied == "Awaiting Response" %}
+                            <div class="alert-info" role="alert">Awaiting Response</div>
+
                         {% else %}
-                            <div class="alert-danger" role="alert">Unknown</div>
+                            <div class="alert-info" role="alert">In Progress</div>
 
                         {% endif %}
                     </td>
