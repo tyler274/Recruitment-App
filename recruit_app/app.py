@@ -21,7 +21,7 @@ from recruit_app.extensions import (
     rq,
     misaka,
 )
-from recruit_app import public, user, recruit, blacklist, jkproxy
+from recruit_app import public, user, recruit, blacklist, jkproxy, hr
 from recruit_app.user import admin as user_admin_view
 from recruit_app.recruit import admin as recruit_admin_view
 
@@ -72,6 +72,7 @@ def register_blueprints(app):
     app.register_blueprint(recruit.views.blueprint)
     app.register_blueprint(blacklist.views.blueprint)
     app.register_blueprint(jkproxy.blueprint)
+    app.register_blueprint(hr.views.blueprint)
 
     return None
 

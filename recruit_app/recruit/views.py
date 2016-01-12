@@ -5,14 +5,12 @@ from recruit_app.extensions import cache
 
 from recruit_app.user.models import EveCharacter
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
-from recruit_app.recruit.managers import HrManager
+from recruit_app.recruit.managers import RecruitManager
 from recruit_app.recruit.forms import HrApplicationForm, HrApplicationCommentForm, HrApplicationCommentEdit, SearchForm
 from recruit_app.blacklist.models import BlacklistCharacter, BlacklistGSF
 
 from sqlalchemy import desc, asc
 
-import requests
-from bs4 import BeautifulSoup
 
 blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
                         static_folder="../static")
@@ -26,13 +24,6 @@ def applications(page=1):
     personal_applications = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/applications.html', personal_applications=personal_applications)
-
-
-@blueprint.route("/compliance/", methods=['GET'])
-@login_required
-@roles_accepted('admin', 'compliance')
-def compliance():
-    return render_template('recruit/compliance.html', data=HrManager.get_compliance())
 
 
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
@@ -82,7 +73,7 @@ def application_create():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            application = HrManager.create_application(form, user=current_user)
+            application = RecruitManager.create_application(form, user=current_user)
 
             flash("Application Created, apply in game with \"" + url_for('recruit.application_view', _external=True, application_id=application.id) + "\" in the body", category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
@@ -191,7 +182,7 @@ def application_comment_create(application_id):
     if application:
         if request.method == 'POST':
             if form_comment.validate_on_submit():
-                HrManager.create_comment(application, form_comment.comment.data, current_user)
+                RecruitManager.create_comment(application, form_comment.comment.data, current_user)
 
         return redirect(url_for('recruit.application_view', application_id=application_id))
 
@@ -212,7 +203,7 @@ def application_comment_action(application_id, comment_id, action):
                     if request.method == 'POST':
                         if action == "edit":
                             if form_edit.validate_on_submit():
-                                HrManager.edit_comment(comment, form_edit.comment.data, current_user.get_id())
+                                RecruitManager.edit_comment(comment, form_edit.comment.data, current_user.get_id())
 
                         elif action == "delete":
                             comment.delete()
@@ -237,7 +228,7 @@ def application_interact(application_id, action):
         if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
             if current_user.has_role("admin") or (action not in ['delete', 'hide', 'unhide']):
                 if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close']):
-                    application_status = HrManager.alter_application(application, action, current_user)
+                    application_status = RecruitManager.alter_application(application, action, current_user)
 
                     flash("%s's application %s" % (application.main_character_name,
                                                    application_status),
@@ -245,7 +236,7 @@ def application_interact(application_id, action):
 
         elif application.user_id == current_user.get_id():
             if action == "delete" and application.approve_deny == "New":
-                application_status = HrManager.alter_application(application, action, current_user)
+                application_status = RecruitManager.alter_application(application, action, current_user)
                 flash("%s's application %s" % (application.main_character,
                                                application_status),
                       category='message')
