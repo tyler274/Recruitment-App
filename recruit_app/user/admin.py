@@ -5,8 +5,11 @@ from recruit_app.admin import AuthenticatedModelView
 #from wtforms import PasswordField
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.blacklist.models import BlacklistCharacter
+from flask import url_for
+from flask.ext.admin.menu import MenuLink
 
 def register_admin_views(admin, db):
+    admin.add_link(MenuLink(name='Go Back', url='/', category=''))
     admin.add_view(EveCharacterAdmin(EveCharacter, db.session, category='EvE'))
     admin.add_view(EveCorporationInfoAdmin(EveCorporationInfo, db.session, category='EvE'))
     admin.add_view(EveAllianceInfoAdmin(EveAllianceInfo, db.session, category='EvE'))
