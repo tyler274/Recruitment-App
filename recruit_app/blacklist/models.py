@@ -47,7 +47,7 @@ class BlacklistGSF(TimeMixin, Model):
             try:
                 url = current_app.config['GSF_BLACKLIST_URL'] + character.character_name
                 r   = requests.post(url)
-                entry.status = str(r.json()[0]['output'])
+                entry.status = unicode(r.json()[0]['output'])
                 entry.last_update_time = dt.datetime.utcnow()
             except: # Will except on NONE for URL or connection issues.  Just keep status as UNKNOWN
                 pass
@@ -59,7 +59,7 @@ class BlacklistGSF(TimeMixin, Model):
                 # which throws an IntegrityError.  In that case just ignore the error, this is just a cache anyway.
                 pass
 
-        return entry.status
+        return str(entry.status)
 
     def __repr__(self):
         return '<BlacklistCacheEntry' + ': ' + self.character_id + '>'

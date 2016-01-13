@@ -73,9 +73,9 @@ def run_api_key_update():
                     good = False
                     print "Removing expired api_key {0} {1}".format(api_key.api_id, api_key.api_key)
                     
-                if good
+                if good:
                     EveManager.update_api_keypair(api_key.api_id, api_key.api_key)
-                else
+                else:
                     EveManager.delete_api_key_pair(api_key.api_id, None)
                 # Max API check is 30req/s
                 sleep(1.0/30.0)
