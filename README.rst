@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/tyler274/Recruitment-App.svg?branch=master)](https://travis-ci.org/tyler274/Recruitment-App)
 ===============================
 recruit
 ===============================
