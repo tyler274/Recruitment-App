@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template
 from flask_security.decorators import login_required
 from flask_security import current_user, roles_accepted
-from recruit_app.extensions import cache
 
 from recruit_app.hr.managers import HrManager
 
