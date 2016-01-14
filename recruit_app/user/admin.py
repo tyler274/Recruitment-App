@@ -1,5 +1,4 @@
-from models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo
-from models import User, Role, roles_users
+from .models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo, User, Role, roles_users
 from flask_security import current_user
 from recruit_app.admin import AuthenticatedModelView
 #from wtforms import PasswordField
@@ -131,7 +130,7 @@ class UserAdmin(AuthenticatedModelView):
         'api_keys':                    { 'fields': (EveApiKeyPair.api_id, ) },
         'blacklist_character_entries': { 'fields': (BlacklistCharacter.name, BlacklistCharacter.notes, ) },
         'previous_chars':              { 'fields': (EveCharacter.character_name, ) }, }
-        
+
     # TODO password field doesn't write the correct password hash to the DB for some reason.  Just ignore it for now.
     # def scaffold_form(self):
         # # Start with the standard form as provided by Flask-Admin.
@@ -139,12 +138,12 @@ class UserAdmin(AuthenticatedModelView):
         # # Add a password field, naming it "password2" and labeling it "New Password".
         # form_class.password2 = PasswordField('New Password')
         # return form_class
-        
+
     # def on_model_change(self, form, model, is_created):
         # # If the password field isn't blank...
         # if len(model.password2):
             # model.set_password(model.password2)
- 
+
 class RoleAdmin(AuthenticatedModelView):
     column_searchable_list = ('name', 'description')
     column_filters = column_searchable_list

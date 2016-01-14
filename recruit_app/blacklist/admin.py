@@ -1,5 +1,5 @@
 from recruit_app.admin import AuthenticatedModelView
-from models import BlacklistCharacter, BlacklistGSF
+from .models import BlacklistCharacter, BlacklistGSF
 
 def register_admin_views(admin, db):
     admin.add_view(BlacklistCharacterAdmin(BlacklistCharacter, db.session, category='BlackList'))
