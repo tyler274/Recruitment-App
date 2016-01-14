@@ -2,12 +2,14 @@
 import datetime as dt
 
 from flask_security import UserMixin, RoleMixin
+from flask_security.utils import verify_and_update_password, encrypt_password
 from recruit_app.extensions import bcrypt
 from recruit_app.database import Column, db, Model, ReferenceCol, relationship, SurrogatePK, TimeMixin
 
 roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('roles.id')))
+
 
 class Role(SurrogatePK, Model, RoleMixin):
     __tablename__ = 'roles'
@@ -16,6 +18,7 @@ class Role(SurrogatePK, Model, RoleMixin):
 
     def __repr__(self):
         return '<Role({name})>'.format(name=self.name)
+
 
 class User(SurrogatePK, Model, UserMixin):
     __tablename__ = 'users'
@@ -41,25 +44,34 @@ class User(SurrogatePK, Model, UserMixin):
     main_character = relationship('EveCharacter', backref='user_main_character', foreign_keys=[main_character_id])
 
     def set_password(self, password):
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = encrypt_password(password)
+        self.save()
 
     def check_password(self, value):
-        return bcrypt.check_password_hash(self.password, value)
-        
+        return verify_and_update_password(value, self)
+
+    @classmethod
+    def create(self, **kwargs):
+        """Create a new record and save it the database."""
+        instance = self(**kwargs)
+        if kwargs['password']:
+            instance.password = encrypt_password(kwargs['password'])
+        return instance.save()
+
     @property
     def get_ips(self):
         return self.last_login_ip.split(', ') + self.current_login_ip.split(', ')
 
     def __repr__(self):
         return '<User({name})>'.format(name=self.email)
-        
+
     def __str__(self):
         return self.email
 
 previous_chars = db.Table('previous_chars',
     db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
     db.Column('character_id', db.String(254), db.ForeignKey('characters.character_id')))
-        
+
 class EveCharacter(Model, TimeMixin):
     __tablename__ = 'characters'
 

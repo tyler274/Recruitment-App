@@ -3,14 +3,16 @@ import evelink.char
 import evelink.eve
 from flask import current_app
 
+
 class EveApiManager():
+
     def __init__(self):
         pass
 
     @staticmethod
     def evelink_api(**kwargs):
         return evelink.api.API(base_url=current_app.config['EVEAPI_URL'], **kwargs)
-    
+
     @staticmethod
     def get_characters_from_api(api_id, api_key):
         chars = []
@@ -20,7 +22,7 @@ class EveApiManager():
             account = evelink.account.Account(api=api)
             chars = account.characters()
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return chars
 
@@ -33,7 +35,7 @@ class EveApiManager():
             response = corp.corporation_sheet(corp_id)
             ticker = response[0]['ticker']
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return ticker
 
@@ -46,7 +48,7 @@ class EveApiManager():
             alliance = eve.alliances()
             results = alliance[0][int(alliance_id)]
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return results
 
@@ -59,7 +61,7 @@ class EveApiManager():
             corpinfo = corp.corporation_sheet(corp_id=int(corp_id))
             results = corpinfo[0]
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return results
 
@@ -72,7 +74,7 @@ class EveApiManager():
             return info[0]['type'] == "account"
 
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return False
 
@@ -85,7 +87,7 @@ class EveApiManager():
             return info[0]['access_mask'] == current_app.config['API_MASK']
 
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return False
 
@@ -98,7 +100,7 @@ class EveApiManager():
             return info[0]['expire_ts'] is None
 
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return False
 
@@ -111,7 +113,7 @@ class EveApiManager():
             return info
 
         except evelink.api.APIError as error:
-            print error
+            current_app.logger.error(error)
 
         return False
 
@@ -123,6 +125,7 @@ class EveApiManager():
             info = account.key_info()
             return True
         except evelink.api.APIError as error:
+            current_app.logger.error(error)
             return False
 
         return False
@@ -135,6 +138,7 @@ class EveApiManager():
             info = server.server_status()
             return True
         except evelink.api.APIError as error:
+            current_app.logger.error(error)
             return False
 
         return False
@@ -148,10 +152,10 @@ class EveApiManager():
             results = corpinfo[0]
             return True
         except evelink.api.APIError as error:
+            current_app.logger.error(error)
             return False
 
         return False
-
 
     @staticmethod
     def check_if_id_is_alliance(alliance_id):
@@ -163,10 +167,10 @@ class EveApiManager():
             if results:
                 return True
         except evelink.api.APIError as error:
+            current_app.logger.error(error)
             return False
 
         return False
-
 
     @staticmethod
     def check_if_id_is_character(character_id):
@@ -177,6 +181,7 @@ class EveApiManager():
             if results:
                 return True
         except evelink.api.APIError as error:
+            current_app.logger.error(error)
             return False
 
         return False

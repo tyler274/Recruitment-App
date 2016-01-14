@@ -59,7 +59,7 @@ Flask-Script
 psycopg2
 
 # Search library
-Flask-Whooshalchemy
+# Flask-Whooshalchemy
 
 # Forces SSL, nginx is configured to do this atm
 # Flask-SSLify
@@ -68,7 +68,8 @@ Flask-Whooshalchemy
 Flask-rq
 
 # Flask-misaka is currently broken with latest misaka
-misaka<2.0
+# Flask-misaka was updated, removing version restriction.
+misaka
 flask-misaka
 
 raven

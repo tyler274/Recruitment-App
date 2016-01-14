@@ -10,6 +10,7 @@ from .compat import basestring
 # Alias common SQLAlchemy names
 Column = db.Column
 
+
 class CRUDMixin(object):
     """Mixin that adds convenience methods for CRUD (create, read, update, delete)
     operations.
@@ -47,7 +48,7 @@ class CRUDMixin(object):
             except:
                 db.session.rollback()
                 raise
-                
+
         return False
 
 
@@ -83,7 +84,8 @@ class TimeMixin(object):
     __table_args__ = {'extend_existing': True}
 
     created_time = Column(db.DateTime(), default=datetime.datetime.utcnow)
-    last_update_time = Column(db.DateTime(), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    last_update_time = Column(
+        db.DateTime(), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
 
 def ReferenceCol(tablename, nullable=True, pk_name='id', **kwargs):

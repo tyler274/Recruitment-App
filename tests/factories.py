@@ -5,19 +5,25 @@ from factory.alchemy import SQLAlchemyModelFactory
 from recruit_app.user.models import User
 from recruit_app.database import db
 
+
 class BaseFactory(SQLAlchemyModelFactory):
+    """Base factory."""
 
     class Meta:
+        """Factory configuration."""
+
         abstract = True
         sqlalchemy_session = db.session
 
 
 class UserFactory(BaseFactory):
-    username = Sequence(lambda n: "user{0}".format(n))
-    email = Sequence(lambda n: "user{0}@example.com".format(n))
+    """User factory."""
+
+    email = Sequence(lambda n: 'user{0}@example.com'.format(n))
     password = PostGenerationMethodCall('set_password', 'example')
     active = True
 
     class Meta:
-        model = User
+        """Factory configuration."""
 
+        model = User

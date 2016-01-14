@@ -15,7 +15,7 @@ from recruit_app.extensions import (
     sentry,
     debug_toolbar,
     bootstrap,
-    rqDashboard,
+    # rqDashboard,
     admin,
     mail,
     rq,
@@ -40,7 +40,7 @@ def create_app(config_object=ProdConfig):
     register_blueprints(app)
     register_errorhandlers(app)
     register_admin(admin, db)
-    register_search(app)
+    # register_search(app)
     register_tasks()
 
     return app
@@ -55,9 +55,9 @@ def register_extensions(app):
     security.init_app(app, user_datastore, register_blueprint=True, confirm_register_form=ConfirmRegisterFormRecaptcha)
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)
-    rqDashboard.init_app(app)
+    # rqDashboard.init_app(app)
     sentry.init_app(app, logging=True)
-    admin.init_app(app)
+    # admin.init_app(app)
     mail.init_app(app)
     rq.init_app(app)
     migrate.init_app(app, db)
@@ -106,7 +106,3 @@ def register_errorhandlers(app):
     for errcode in [401, 404, 500]:
         app.errorhandler(errcode)(render_error)
     return None
-
-
-
-

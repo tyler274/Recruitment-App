@@ -36,9 +36,10 @@ debug_toolbar = DebugToolbarExtension()
 from flask_bootstrap import Bootstrap
 bootstrap = Bootstrap()
 
-from rq_dashboard import RQDashboard
-from recruit_app.user.admin import check_if_admin
-rqDashboard = RQDashboard(auth_handler=check_if_admin)
+#TODO Fix rqdashboard intergration with latest version
+# from rq_dashboard import RQDashboard
+# from recruit_app.user.admin import check_if_admin
+# rqDashboard = RQDashboard(auth_handler=check_if_admin)
 
 from flask_admin import Admin
 admin = Admin()
