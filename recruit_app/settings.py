@@ -90,5 +90,4 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False  # Allows form testing
     ASSETS_DEBUG = True
     CACHE_TYPE = 'redis'
-    SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
-    
+    SQLALCHEMY_DATABASE_URI = os_env.get('TEST_DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
