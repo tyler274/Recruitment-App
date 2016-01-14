@@ -8,7 +8,7 @@ from recruit_app.extensions import (
     bcrypt,
     cache,
     db,
-    #login_manager,
+    # login_manager,
     security,
     user_datastore,
     migrate,
@@ -22,8 +22,6 @@ from recruit_app.extensions import (
     misaka,
 )
 from recruit_app import public, user, recruit, blacklist, jkproxy, hr
-from recruit_app.user import admin as user_admin_view
-from recruit_app.recruit import admin as recruit_admin_view
 
 from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
 
@@ -51,13 +49,14 @@ def register_extensions(app):
     bcrypt.init_app(app)
     cache.init_app(app)
     db.init_app(app)
-    #login_manager.init_app(app)
-    security.init_app(app, user_datastore, register_blueprint=True, confirm_register_form=ConfirmRegisterFormRecaptcha)
+    # login_manager.init_app(app)
+    security.init_app(app, user_datastore, register_blueprint=True,
+                      confirm_register_form=ConfirmRegisterFormRecaptcha)
     debug_toolbar.init_app(app)
     bootstrap.init_app(app)
     # rqDashboard.init_app(app)
     sentry.init_app(app, logging=True)
-    # admin.init_app(app)
+    admin.init_app(app)
     mail.init_app(app)
     rq.init_app(app)
     migrate.init_app(app, db)
@@ -78,9 +77,9 @@ def register_blueprints(app):
 
 
 def register_admin(admin, db):
-    user_admin_view.register_admin_views(admin, db)
+    user.admin.register_admin_views(admin, db)
     blacklist.admin.register_admin_views(admin, db)
-    recruit_admin_view.register_admin_views(admin, db)
+    recruit.admin.register_admin_views(admin, db)
 
     return None
 
