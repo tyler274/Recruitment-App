@@ -57,7 +57,7 @@ def register_extensions(app):
     bootstrap.init_app(app)
     # rqDashboard.init_app(app)
     sentry.init_app(app, logging=True)
-    # admin.init_app(app)
+    admin.init_app(app)
     mail.init_app(app)
     rq.init_app(app)
     migrate.init_app(app, db)
