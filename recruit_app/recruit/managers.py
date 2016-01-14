@@ -5,11 +5,7 @@ from recruit_app.recruit.models import HrApplication, HrApplicationComment, HrAp
 
 import datetime as dt
 
-from recruit_app.user.eve_api_manager import EveApiManager
-
-from recruit_app.extensions import bcrypt, cache
-
-from flask import flash, current_app, url_for
+from flask import current_app, url_for
 import requests
 import re
 
@@ -43,7 +39,7 @@ class RecruitManager:
         comment_history.comment_id = comment.id
         comment_history.editor = user
         comment_history.save()
-        
+
         # Save the edit
         comment.comment = comment_data
         comment.last_update_time = dt.datetime.utcnow()
@@ -82,10 +78,10 @@ class RecruitManager:
 
         application.main_character_name = user.main_character.character_name
         # application.last_update_time = dt.datetime.utcnow()
-        
+
         application.save()
         RecruitManager.application_action_notify(application, 'new')
-       
+
         return application
 
 
@@ -164,7 +160,7 @@ class RecruitManager:
             application.approved_denied = 'Missing In-Game'
             application.save()
             retval = 'Missing In-Game'
-            
+
         RecruitManager.application_action_notify(application, action)
         return retval
 
@@ -177,7 +173,7 @@ class RecruitManager:
             message_text = "Application from {0} needs processing: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
         elif action == 'director_review':
             message_text = "Application from {0} needs director review: {1}".format(application.main_character_name, url_for('recruit.application_view', _external=True, application_id=application.id))
-            
+
         # Send the message
         try:
             RecruitManager.send_slack_notification(message_text)

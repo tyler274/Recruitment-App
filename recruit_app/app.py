@@ -7,7 +7,7 @@ from recruit_app.settings import ProdConfig
 from recruit_app.assets import assets
 from recruit_app.extensions import (
     bcrypt,
-    cache,
+    cache_extension,
     db,
     # login_manager,
     security,
@@ -51,7 +51,7 @@ def create_app(config_object=ProdConfig):
 def register_extensions(app):
     assets.init_app(app)
     bcrypt.init_app(app)
-    cache.init_app(app)
+    cache_extension.init_app(app)
     db.init_app(app)
     # login_manager.init_app(app)
     security.init_app(app, user_datastore, register_blueprint=True,

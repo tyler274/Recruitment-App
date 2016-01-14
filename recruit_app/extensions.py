@@ -28,7 +28,7 @@ from raven.contrib.flask import Sentry
 sentry = Sentry()
 
 from flask_cache import Cache
-cache = Cache()
+cache_extension = Cache()
 
 from flask_debugtoolbar import DebugToolbarExtension
 debug_toolbar = DebugToolbarExtension()
