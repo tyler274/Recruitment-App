@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/tyler274/Recruitment-App.svg?branch=master)](https://travis-ci.org/tyler274/Recruitment-App)
-[![Coverage Status](https://coveralls.io/repos/tyler274/Recruitment-App/badge.svg?branch=master&service=github)](https://coveralls.io/github/tyler274/Recruitment-App?branch=master)
+[![Build Status](https://travis-ci.org/tyler274/Recruitment-App.svg?branch=master)](https://travis-ci.org/tyler274/Recruitment-App) [![Coverage Status](https://coveralls.io/repos/tyler274/Recruitment-App/badge.svg?branch=master&service=github)](https://coveralls.io/github/tyler274/Recruitment-App?branch=master)
 ===============================
 recruit
 ===============================
