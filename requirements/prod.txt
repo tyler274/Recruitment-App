@@ -73,5 +73,5 @@ misaka
 flask-misaka
 
 raven
-
+beautifulsoup4
 requests[security]
