@@ -78,24 +78,10 @@ def run_api_key_update():
         if EveApiManager.check_if_api_server_online():
             api_keys = EveApiKeyPair.query.order_by(EveApiKeyPair.api_id).all()
             for api_key in api_keys:
-                good = True
-
-                if not EveApiManager.check_api_is_type_account(api_key.api_id, api_key.api_key):
-                    good = False
-                    current_app.logger.debug("Removing invalid account API key {0} {1}\n".format(
-                        api_key.api_id, api_key.api_key))
-                if not EveApiManager.check_api_is_full(api_key.api_id, api_key.api_key):
-                    current_app.logger.debug("Warning API {0} {1} for user {2} is not full\n".format(
-                        api_key.api_id, api_key.api_key, api_key.user.email))
-                if not EveApiManager.check_api_is_not_expire(api_key.api_id, api_key.api_key):
-                    good = False
-                    current_app.logger.debug("Removing expired api_key {0} {1}".format(
-                        api_key.api_id, api_key.api_key))
-
-                if good:
+                if EveApiManager.check_api_is_not_expire(api_key.api_id, api_key.api_key):
                     EveManager.update_api_keypair(
                         api_key.api_id, api_key.api_key)
+                    current_app.logger.debug("Updating {0}".format(api_key.api_id))
                 else:
+                    current_app.logger.debug("Removing expired api_key {0} {1}".format(api_key.api_id, api_key.api_key))
                     EveManager.delete_api_key_pair(api_key.api_id, None)
-                # Max API check is 30req/s
-                sleep(1.0 / 30.0)

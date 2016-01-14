@@ -195,13 +195,18 @@ class EveManager:
                         found = True
                         break
                 if not found:
-                    old_api_char.previous_users.append(old_api_char.user)
-                    if str(old_api_char.user.main_character_id) == str(old_api_char.character_id):
-                        old_api_char.user.main_character_id = None
-                        old_api_char.user.save()
+                    for char in api_pair.user.previous_chars:
+                        if str(old_api_char.character_id) == str(char.character_id):
+                            found = True
+                            break
+                    if not found:
+                        api_pair.user.previous_chars.append(old_api_char)
+                    if str(api_pair.user.main_character_id) == str(old_api_char.character_id):
+                        api_pair.user.main_character_id = None
+                    api_pair.user.save(commit=False)
                     old_api_char.user_id = None
                     old_api_char.api_id = None
-                    old_api_char.save()                
+                    old_api_char.save(commit=False)                
             
             api_pair.last_update_time = dt.datetime.utcnow()
             api_pair.save()
@@ -282,7 +287,12 @@ class EveManager:
                     char.user_id = None
                     
                     # Don't add a duplicate entry to the history table.  Should never happen, but if someone has some messed up APIs or there's an odd char sell situation, it could be possible.
-                    if not EveCharacter.query.filter_by(character_id=char.character_id).filter(EveCharacter.previous_users.any(id=user.id)).first():
+                    found = False
+                    for prev_user in char.previous_users:
+                        if prev_user.id == user.id:
+                            found = True
+                            break
+                    if not found:
                         char.previous_users.append(user)
                     
                     if str(char.character_id) == str(user.main_character_id):
