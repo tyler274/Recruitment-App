@@ -77,3 +77,8 @@ venv/
 recruit_app/static/.webassets-cache
 recruit_app/static/css/common.css
 recruit_app/static/js/common.js
+
+# PTVS project ignore (for now)
+*.sln
+*.pyproj
+*.suo
