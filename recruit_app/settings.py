@@ -83,8 +83,12 @@ class DevConfig(Config):
 
 
 class TestConfig(Config):
+    ENV = 'test'
     TESTING = True
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite://'
     BCRYPT_LOG_ROUNDS = 1  # For faster tests
     WTF_CSRF_ENABLED = False  # Allows form testing
+    ASSETS_DEBUG = True
+    CACHE_TYPE = 'redis'
+    SQLALCHEMY_DATABASE_URI = os_env.get('DATABASE_URL', 'postgresql://recruit@localhost:5432/recruit')
+    
