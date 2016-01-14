@@ -3,7 +3,6 @@
 language: python
 
 python:
-  - "3.3"
   - "3.4"
   - "3.5"
   - "2.7"
@@ -23,6 +22,7 @@ install:
 
 script:
   - py.test tests
+  - coverage run manage.py test
 
 after_success:
   - coveralls
