@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 '''The app module, containing the app factory function.'''
 from flask import Flask, render_template
+from flask_admin import Admin
 
 from recruit_app.settings import ProdConfig
 from recruit_app.assets import assets
@@ -16,7 +17,7 @@ from recruit_app.extensions import (
     debug_toolbar,
     bootstrap,
     # rqDashboard,
-    admin,
+    # admin,
     mail,
     rq,
     misaka,
@@ -37,8 +38,11 @@ def create_app(config_object=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
+    admin = Admin()
     register_admin(admin, db)
     # register_search(app)
+    admin.init_app(app)
+    # admin needs to be initialized oddly for tests to work.
     register_tasks()
 
     return app
@@ -56,7 +60,7 @@ def register_extensions(app):
     bootstrap.init_app(app)
     # rqDashboard.init_app(app)
     sentry.init_app(app, logging=True)
-    admin.init_app(app)
+    # admin.init_app(app)
     mail.init_app(app)
     rq.init_app(app)
     migrate.init_app(app, db)

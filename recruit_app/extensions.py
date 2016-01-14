@@ -41,8 +41,8 @@ bootstrap = Bootstrap()
 # from recruit_app.user.admin import check_if_admin
 # rqDashboard = RQDashboard(auth_handler=check_if_admin)
 
-from flask_admin import Admin
-admin = Admin()
+# from flask_admin import Admin
+# admin = Admin()
 
 from flask_mail import Mail
 mail = Mail()
