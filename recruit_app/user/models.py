@@ -87,7 +87,7 @@ class EveApiKeyPair(Model):
     api_id = Column(db.String(254), primary_key=True)
     api_key = Column(db.String(254))
     last_update_time = Column(db.DateTime(), nullable=True)
-    last_scraped_time = Column(db.DateTime(), nullable=True)
+    last_scraped_time = Column(db.DateTime(), nullable=True, default=dt.date(day=1, month=1, year=1980))
 
     user_id = ReferenceCol('users', nullable=True)
     user = relationship('User', backref='api_keys', foreign_keys=[user_id])
