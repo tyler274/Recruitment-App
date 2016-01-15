@@ -10,7 +10,7 @@ class HrManager:
         pass
 
     @staticmethod
-    @cache_extension.cached(timeout=3600, key_prefix='get_compliance')
+    @cache_extension.memoize(timeout=3600)
     def get_compliance(corp_id):
         url = 'https://goonfleet.com'
 
