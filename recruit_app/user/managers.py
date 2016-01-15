@@ -105,7 +105,7 @@ class EveManager:
     @staticmethod
     def create_corporations_from_character_list(characters):
         for character in characters.result:
-            if not EveManager.check_if_corporation_exists_by_id(characters.result[character]['corp']['id']):
+            if not EveManager.get_corporation_info_by_id(characters.result[character]['corp']['id']):
                 corp_info = EveApiManager.get_corporation_information(characters.result[character]['corp']['id'])
                 if corp_info:
                     EveManager.create_corporation_info(corporation_id=corp_info['id'],
@@ -119,7 +119,7 @@ class EveManager:
     def create_alliances_from_list(characters):
         for character in characters.result:
             if characters.result[character]['alliance']['id'] != 0:
-                if not EveManager.check_if_alliance_exists_by_id(characters.result[character]['alliance']['id']):
+                if not EveManager.get_alliance_info_by_id(characters.result[character]['alliance']['id']):
                     alliance_info = EveApiManager.get_alliance_information(characters.result[character]['alliance']['id'])
                     # print alliance_info
                     if alliance_info:
@@ -218,7 +218,7 @@ class EveManager:
     @staticmethod
     def create_alliance_info(alliance_id, alliance_name, alliance_ticker, alliance_executor_corp_id,
                              alliance_member_count, is_blue=None):
-        if not EveManager.check_if_alliance_exists_by_id(str(alliance_id)):
+        if not EveManager.get_alliance_info_by_id(str(alliance_id)):
             alliance_info = EveAllianceInfo()
             alliance_info.alliance_id = str(alliance_id)
             alliance_info.alliance_name = alliance_name
@@ -230,35 +230,31 @@ class EveManager:
 
     @staticmethod
     def update_alliance_info(alliance_id, alliance_executor_corp_id, alliance_member_count, is_blue=None):
-        if EveManager.check_if_alliance_exists_by_id(alliance_id):
-            alliance_info = EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).all()
-            alliance_info.executor_corp_id = str(alliance_executor_corp_id)
-            alliance_info.member_count = alliance_member_count
-            alliance_info.is_blue = is_blue
-            alliance_info.save()
+        alliance = EveManager.get_alliance_info_by_id(str(alliance_id))
+        if alliance:
+            alliance.executor_corp_id = str(alliance_executor_corp_id)
+            alliance.member_count = alliance_member_count
+            alliance.is_blue = is_blue
+            alliance.save()
 
     @staticmethod
     def create_corporation_info(corporation_id, corp_name, corp_ticker, corp_member_count, alliance_id, is_blue=None):
-        if not EveManager.check_if_corporation_exists_by_id(corporation_id):
+        if not EveManager.get_corporation_info_by_id(corporation_id):
             corp_info = EveCorporationInfo()
             corp_info.corporation_id = str(corporation_id)
             corp_info.corporation_name = corp_name
             corp_info.corporation_ticker = corp_ticker
             corp_info.member_count = corp_member_count
             corp_info.is_blue = is_blue
-            if alliance_id:
-                if alliance_id != 0:
-                    corp_info.alliance_id = str(alliance_id)
+            corp_info.alliance_id = alliance_id
             corp_info.save()
 
     @staticmethod
     def update_corporation_info(corporation_id, corp_member_count, alliance_id):
-        corp_info = EveCorporationInfo.query.filter_by(corporation_id=str(corporation_id)).first()
+        corp_info = EveManager.get_corporation_info_by_id(str(corporation_id))
         if corp_info:
             corp_info.member_count = corp_member_count
-            if alliance_id:
-                if alliance_id != 0:
-                    corp_info.alliance_id = str(alliance_id)
+            corp_info.alliance_id = alliance_id
             corp_info.save()
 
     @staticmethod
@@ -334,28 +330,12 @@ class EveManager:
         return False
 
     @staticmethod
-    def check_if_alliance_exists_by_id(alliance_id):
-        return EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).all()
-
-    @staticmethod
-    def check_if_corporation_exists_by_id(corporation_id):
-        if EveCorporationInfo.query.filter_by(corporation_id=str(corporation_id)).first():
-            return True
-        return False
-
-    @staticmethod
     def get_alliance_info_by_id(alliance_id):
-        if EveManager.check_if_alliance_exists_by_id(alliance_id):
-            return EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).first()
-        else:
-            return None
+        return EveAllianceInfo.query.filter_by(alliance_id=str(alliance_id)).first()
 
     @staticmethod
     def get_corporation_info_by_id(corp_id):
-        if EveManager.check_if_corporation_exists_by_id(corp_id):
-            return EveCorporationInfo.query.filter_by(corporation_id=corp_id).all()
-        else:
-            return None
+        return EveCorporationInfo.query.filter_by(corporation_id=str(corp_id)).first()
 
     @staticmethod
     def get_all_corporation_info():
