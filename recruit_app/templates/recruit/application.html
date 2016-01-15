@@ -24,6 +24,9 @@
                                 </a>
                             {% endif %}
 
+                            <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="new") }}">
+                                <button type="button" class="btn btn-warning">New</button>
+                            </a>
                             <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="needs_processing") }}">
                                 <button type="button" class="btn btn-warning">Needs Processing</button>
                             </a>
@@ -34,13 +37,13 @@
                                 <button type="button" class="btn btn-info">Awaiting Response</button>
                             </a>
                             <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="director_review") }}">
-                                <button type="button" class="btn btn-info">Needs Director Review</button>
+                                <button type="button" class="btn btn-info">Director Review</button>
                             </a>
                             <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="missing_ingame") }}">
                                 <button type="button" class="btn btn-info">Need In-Game App</button>
                             </a>
                             <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="undecided") }}">
-                                <button type="button" class="btn btn-warning">Mark In Progress</button>
+                                <button type="button" class="btn btn-warning">In Progress</button>
                             </a>
                         </div>
                     </div>
