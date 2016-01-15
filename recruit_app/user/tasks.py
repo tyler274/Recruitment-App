@@ -21,22 +21,23 @@ def run_alliance_corp_update():
             for corp in corporations:
                 corp_info = EveApiManager.get_corporation_information(corp.corporation_id)
                 if corp_info:
+                    # Set alliance info first to set foreign key
+                    if corp_info['alliance']['id']:
+                        alliance_info = EveApiManager.get_alliance_information(corp_info['alliance']['id'])
+                        if alliance_info:
+                            if not EveAllianceInfo.query.filter_by(alliance_id=alliance_info['id']).first():
+                                EveManager.create_alliance_info(alliance_id=alliance_info['id'],
+                                    alliance_name=alliance_info['name'],
+                                    alliance_ticker=alliance_info['ticker'],
+                                    alliance_executor_corp_id=alliance_info['executor_id'],
+                                    alliance_member_count=alliance_info['member_count'])
+                            else:
+                                EveManager.update_alliance_info(alliance_id=alliance_info['id'],
+                                    alliance_executor_corp_id=alliance_info['executor_id'],
+                                    alliance_member_count=alliance_info['member_count'])
                     EveManager.update_corporation_info(corporation_id=corp_info['id'],
                         corp_member_count=corp_info['members']['current'],
                         alliance_id=corp_info['alliance']['id'])
-                if corp.alliance_id:
-                    alliance_info = EveApiManager.get_alliance_information(corp.alliance_id)
-                    if alliance_info:
-                        if not EveAllianceInfo.query.filter_by(alliance_id=corp.alliance_id).first():
-                            EveManager.create_alliance_info(alliance_id=alliance_info['id'],
-                                alliance_name=alliance_info['name'],
-                                alliance_ticker=alliance_info['ticker'],
-                                alliance_executor_corp_id=alliance_info['executor_id'],
-                                alliance_member_count=alliance_info['member_count'])
-                        else:
-                            EveManager.update_alliance_info(alliance_id=alliance_info['id'],
-                                alliance_executor_corp_id=alliance_info['executor_id'],
-                                alliance_member_count=alliance_info['member_count'])
 
 
 @job('low')
