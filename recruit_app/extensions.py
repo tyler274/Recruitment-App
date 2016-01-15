@@ -9,6 +9,9 @@ bcrypt = Bcrypt()
 # from flask_login import LoginManager
 # login_manager = LoginManager()
 
+from flask_cache import Cache
+cache_extension = Cache()
+
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
@@ -26,9 +29,6 @@ migrate = Migrate()
 # import logging
 from raven.contrib.flask import Sentry
 sentry = Sentry()
-
-from flask_cache import Cache
-cache_extension = Cache()
 
 from flask_debugtoolbar import DebugToolbarExtension
 debug_toolbar = DebugToolbarExtension()

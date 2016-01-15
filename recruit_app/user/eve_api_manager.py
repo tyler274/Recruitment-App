@@ -2,7 +2,7 @@ import evelink.api
 import evelink.char
 import evelink.eve
 from flask import current_app
-
+from recruit_app.extensions import cache_extension
 
 class EveApiManager():
 
@@ -43,14 +43,26 @@ class EveApiManager():
     def get_alliance_information(alliance_id):
         results = {}
         try:
-            api = EveApiManager.evelink_api()
-            eve = evelink.eve.EVE(api=api)
-            alliance = eve.alliances()
-            results = alliance[0][int(alliance_id)]
+            alliances = EveApiManager.get_alliance_info()
+            results = alliances[0][int(alliance_id)]
         except evelink.api.APIError as error:
             current_app.logger.error(error)
 
         return results
+
+    @staticmethod
+    @cache_extension.cached(timeout=3600, key_prefix='get_alliance_info')
+    def get_alliance_info():
+        alliances = {}
+        try:
+            api = EveApiManager.evelink_api()
+            eve = evelink.eve.EVE(api=api)
+            alliances = eve.alliances()
+        except evelink.api.APIError as error:
+            current_app.logger.error(error)
+
+        return alliances
+
 
     @staticmethod
     def get_corporation_information(corp_id):
