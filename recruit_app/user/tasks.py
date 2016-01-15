@@ -25,7 +25,7 @@ def run_alliance_corp_update():
                     if corp_info['alliance']['id']:
                         alliance_info = EveApiManager.get_alliance_information(corp_info['alliance']['id'])
                         if alliance_info:
-                            if not EveAllianceInfo.query.filter_by(alliance_id=alliance_info['id']).first():
+                            if not EveAllianceInfo.query.filter_by(alliance_id=str(alliance_info['id'])).first():
                                 EveManager.create_alliance_info(alliance_id=alliance_info['id'],
                                     alliance_name=alliance_info['name'],
                                     alliance_ticker=alliance_info['ticker'],
