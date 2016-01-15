@@ -15,8 +15,8 @@ blueprint = Blueprint("recruit", __name__, url_prefix='/recruits',
                         static_folder="../static")
 
 
-@blueprint.route("/applications/", methods=['GET', 'POST'])
-@blueprint.route("/applications/<int:page>", methods=['GET', 'POST'])
+@blueprint.route("/my_applications/", methods=['GET'])
+@blueprint.route("/my_applications/<int:page>", methods=['GET'])
 @login_required
 def applications(page=1):
     query = HrApplication.query.filter(HrApplication.hidden == False, HrApplication.user_id == current_user.get_id()).order_by(desc(HrApplication.id))
