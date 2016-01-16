@@ -74,8 +74,8 @@ class EveManager:
         errors = []
 
         for char in chars.result:
-
-            if not EveManager.check_if_character_exist(chars.result[char]['id']):
+            eveChar = EveManager.get_character_by_id(chars.result[char]['id'])
+            if not eveChar:
                 if EveManager.create_character(chars.result[char]['id'],
                                             chars.result[char]['name'],
                                             chars.result[char]['corp']['id'],
@@ -86,7 +86,6 @@ class EveManager:
                     errors.append("Character {0} creation failed".format(chars.result[char]['name']))
 
             else:
-                eveChar = EveCharacter.query.filter_by(character_id=str(chars.result[char]['id'])).first()
                 if eveChar.user_id is None or not eveChar.api_id:
                     # Character exists, but isn't associated with a user or an api_key
                     if EveManager.update_character(chars.result[char]['id'],
@@ -137,26 +136,23 @@ class EveManager:
         EveManager.create_characters_from_list(characters, user, api_id)
 
         for character in characters.result:
-            if EveManager.check_if_character_exist(characters.result[character]['id']):
-                eve_char = EveManager.get_character_by_id(characters.result[character]['id'])
-
-                if str(characters.result[character]['alliance']['id']) != eve_char.corporation.alliance_id:
-
-                    if characters.result[character]['alliance']['id'] != 0:
-                        eve_char.corporation.alliance_id = str(characters.result[character]['alliance']['id'])
-
-                    elif characters.result[character]['alliance']['id'] == 0:
-                        eve_char.corporation.alliance_id = None
-
+            eve_char = EveManager.get_character_by_id(characters.result[character]['id'])
+        
+            if eve_char:
                 if str(characters.result[character]['corp']['id']) != eve_char.corporation_id:
                     eve_char.corporation_id = str(characters.result[character]['corp']['id'])
+
+                if str(characters.result[character]['alliance']['id']) != eve_char.corporation.alliance_id:
+                    if characters.result[character]['alliance']['id'] != 0:
+                        eve_char.corporation.alliance_id = str(characters.result[character]['alliance']['id'])
+                    else:
+                        eve_char.corporation.alliance_id = None
                     
                 # Handle name changes (rare, but :CCP:)
                 if characters.result[character]['name'] != eve_char.character_name:
                     eve_char.character_name = characters.result[character]['name']
 
                 eve_char.save()
-
 
 
     @staticmethod
@@ -299,12 +295,6 @@ class EveManager:
                 
                 api_key_pair.delete()
 
-
-    @staticmethod
-    def check_if_character_exist(character_id):
-        if EveCharacter.query.filter_by(character_id=str(character_id)).first():
-            return True
-        return False
 
     @staticmethod
     def get_characters_by_owner(user):
