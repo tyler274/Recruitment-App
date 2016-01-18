@@ -134,11 +134,13 @@ class RecruitManager:
 
         elif action == "hide":
             application.hidden = True
+            application.last_user_id = user.id
             application.save()
             retval = "hidden"
 
         elif action == "unhide":
             application.hidden = False
+            application.last_user_id = user.id
             application.save()
             retval = "unhidden"
 
@@ -148,16 +150,19 @@ class RecruitManager:
 
         elif action == 'close':
             application.approved_denied = 'Closed'
+            application.last_user_id = user.id
             application.save()
             retval = 'Closed'
 
         elif action == 'needs_processing':
             application.approved_denied = 'Needs Processing'
+            application.last_user_id = user.id
             application.save()
             retval = 'Needs Processing'
 
         elif action == 'missing_ingame':
             application.approved_denied = 'Missing In-Game'
+            application.last_user_id = user.id
             application.save()
             retval = 'Missing In-Game'
 
