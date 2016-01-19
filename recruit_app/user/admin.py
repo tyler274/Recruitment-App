@@ -1,7 +1,7 @@
 from .models import EveCharacter, EveAllianceInfo, EveApiKeyPair, EveCorporationInfo, User, Role, roles_users
 from flask_security import current_user
 from recruit_app.admin import AuthenticatedModelView
-#from wtforms import PasswordField
+from wtforms import PasswordField
 from recruit_app.recruit.models import HrApplication, HrApplicationComment
 from recruit_app.blacklist.models import BlacklistCharacter
 from flask import url_for
@@ -92,6 +92,7 @@ class EveAllianceInfoAdmin(AuthenticatedModelView):
 
 class UserAdmin(AuthenticatedModelView):
     column_searchable_list = (
+        'id',
         'email',
         'last_login_ip',
         'current_login_ip',
@@ -99,6 +100,7 @@ class UserAdmin(AuthenticatedModelView):
     column_labels = {
         'main_character.character_name': 'Main', }
     column_list = (
+        'id',
         'email',
         'main_character.character_name',
         'created_at',
@@ -110,6 +112,7 @@ class UserAdmin(AuthenticatedModelView):
         'current_login_ip', )
     column_filters = column_list
     form_columns = (
+        'id',
         'email',
         'active',
         'is_admin',
@@ -131,18 +134,17 @@ class UserAdmin(AuthenticatedModelView):
         'blacklist_character_entries': { 'fields': (BlacklistCharacter.name, BlacklistCharacter.notes, ) },
         'previous_chars':              { 'fields': (EveCharacter.character_name, ) }, }
 
-    # TODO password field doesn't write the correct password hash to the DB for some reason.  Just ignore it for now.
-    # def scaffold_form(self):
-        # # Start with the standard form as provided by Flask-Admin.
-        # form_class = super(UserAdmin, self).scaffold_form()
-        # # Add a password field, naming it "password2" and labeling it "New Password".
-        # form_class.password2 = PasswordField('New Password')
-        # return form_class
+    def scaffold_form(self):
+        # Start with the standard form as provided by Flask-Admin.
+        form_class = super(UserAdmin, self).scaffold_form()
+        # Add a password field, naming it "password2" and labeling it "New Password".
+        form_class.password2 = PasswordField('New Password')
+        return form_class
 
-    # def on_model_change(self, form, model, is_created):
-        # # If the password field isn't blank...
-        # if len(model.password2):
-            # model.set_password(model.password2)
+    def on_model_change(self, form, model, is_created):
+        # If the password field isn't blank...
+        if len(model.password2):
+            model.set_password(model.password2)
 
 class RoleAdmin(AuthenticatedModelView):
     column_searchable_list = ('name', 'description')
