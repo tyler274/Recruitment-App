@@ -131,125 +131,85 @@
 
                 {% endif %}
             </div>
-            <div class="form-group">
-                <label class="control-label">Reviewer</label>
-                {% if not application.reviewer_user or not application.reviewer_user.main_character %}
-                    <div class="alert alert-info" role="alert">Pending</div>
-                {% else %}
-                    <div class="alert alert-info" role="alert">{{ application.reviewer_user.main_character }}</div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label class="control-label">Last Action</label>
-                <div class="alert alert-info" role="alert">
+            <label class="control-label">Reviewer</label>
+            {% if not application.reviewer_user or not application.reviewer_user.main_character %}
+                <div class="well well-sm">Pending</div>
+            {% else %}
+                <div class="well well-sm">{{ application.reviewer_user.main_character }}</div>
+            {% endif %}
+            <label class="control-label">Last Action</label>
+            <div class="well well-sm">
                 {% if not application.last_action_user or not application.last_action_user.main_character %}
                     Pending
                 {% else %}
                     {{ application.last_action_user.main_character.character_name }}
                 {% endif %}
                 at {{ application.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}
-                </div>
             </div>
-            <div class="form-group">
-                <label class="control-label">Created Time</label>
-                <input class="form-control" value="{{ application.created_time.strftime('%Y/%m/%d %H:%M:%S') }}" disabled>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Is this an application for an alt?</label>
-                <input class="form-control" value="{{ application.alt_application }}" disabled>
-            </div>
-            <div class="form-group">
-                <label class="control-label">User Account</label>
-                <input class=" form-control" value="{{ application.user.email }}" disabled>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Characters Applying</label>
+            <label class="control-label">Created Time</label>
+            <div class="well well-sm">{{ application.created_time.strftime('%Y/%m/%d %H:%M:%S') }}</div>
+            <label class="control-label">Is this an application for an alt?</label>
+            <div class="well well-sm">{{ application.alt_application }}</div>
+            <label class="control-label">User Account</label>
+            <div class="well well-sm">{{ application.user.email }}</div>
+            <label class="control-label">Characters Applying</label>
+            <div class="well well-sm">
                 {% for character in application.characters %}
-                    <input class="form-control" value="{{ character.character_name }}" disabled>
+                    {{ character.character_name }}<br>
                 {% endfor %}
             </div>
-            <div class="form-group">
-                <label class="control-label">Main Character Name</label>
-                <input class="form-control" value="{{ application.main_character_name }}" disabled>
-            </div>
-            <div class="form-group">
-                <label class="control-label">KarmaFleet is a new player corporation. If you started playing EVE more than 6 months ago, why are you looking to join a new player corporation? If you are new, what made you want to play EVE in the first place?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.thesis }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">How long have you been playing EVE?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.how_long }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Any notable accomplishments in that time?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.notable_accomplishments }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Walk us through your Corporation history:</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.corporation_history }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Why are you leaving your current Corporation?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.why_leaving }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">What do you know about KarmaFleet?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.what_know }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">How do you expect daily life in KarmaFleet to be?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.what_expect }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Do you have any alts or other characters? Are any of your characters bought, and if so, which ones?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.bought_characters }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Why are you interested in joining KarmaFleet?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.why_interested }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Have you ever interacted with another member of Goonswarm Federation?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.goon_interaction }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Do you have any friends in KarmaFleet? If so, who?</label>
-                <textarea class=" form-control" rows="10" disabled>{{ application.friends }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
-                <input class="form-control" value="{{ application.scale }}" disabled>
-            </div>
-            <div class="form-group">
-                <label class="control-label">What's your favorite role to play, why?</label>
-                <textarea class=" form-control" rows="3" rows="10" disabled>{{ application.favorite_role }}</textarea>
-            </div>
-            <div class="form-group">
-                <label class="control-label">How did you find out about KarmaFleet?</label>
-                <textarea class=" form-control" rows="3" rows="10" disabled>{{ application.find_out }}</textarea>
-            </div>
+            <label class="control-label">Main Character Name</label>
+            <div class="well well-sm">{{ application.main_character_name }}</div>
+            <label class="control-label">KarmaFleet is a new player corporation. If you started playing EVE more than 6 months ago, why are you looking to join a new player corporation? If you are new, what made you want to play EVE in the first place?</label>
+            <div class="well well-sm">{{ application.thesis }}</div>
+            <label class="control-label">How long have you been playing EVE?</label>
+            <div class="well well-sm">{{ application.how_long }}</div>
+            <label class="control-label">Any notable accomplishments in that time?</label>
+            <div class="well well-sm">{{ application.notable_accomplishments }}</div>
+            <label class="control-label">Walk us through your Corporation history:</label>
+            <div class="well well-sm">{{ application.corporation_history }}</div>
+            <label class="control-label">Why are you leaving your current Corporation?</label>
+            <div class="well well-sm">{{ application.why_leaving }}</div>
+            <label class="control-label">What do you know about KarmaFleet?</label>
+            <div class="well well-sm">{{ application.what_know }}</div>
+            <label class="control-label">How do you expect daily life in KarmaFleet to be?</label>
+            <div class="well well-sm">{{ application.what_expect }}</div>
+            <label class="control-label">Do you have any alts or other characters? Are any of your characters bought, and if so, which ones?</label>
+            <div class="well well-sm">{{ application.bought_characters }}</div>
+            <label class="control-label">Why are you interested in joining KarmaFleet?</label>
+            <div class="well well-sm">{{ application.why_interested }}</div>
+            <label class="control-label">Have you ever interacted with another member of Goonswarm Federation?</label>
+            <div class="well well-sm">{{ application.goon_interaction }}</div>
+            <label class="control-label">Do you have any friends in KarmaFleet? If so, who?</label>
+            <div class="well well-sm">{{ application.friends }}</div>
+            <label class="control-label">On a scale from 1 to 10, where 1 is pure PvE and 10 is pure PvP, where do you see yourself?</label>
+            <div class="well well-sm">{{ application.scale }}</div>
+            <label class="control-label">What's your favorite role to play, why?</label>
+            <div class="well well-sm">{{ application.favorite_role }}</div>
+            <label class="control-label">How did you find out about KarmaFleet?</label>
+            <div class="well well-sm">{{ application.find_out }}</div>
         {% if current_user.has_role("admin") or ((current_user.has_role("recruiter") or current_user.has_role("reviewer")) and current_user.get_id()|int != application.user_id|int) %}
         </div> {# ends column that only exists in recruiter mode #}
         <div class="col-sm-4">
             <label class="control-label">Characters ({{ characters|length }})</label>
             {% for character in characters %}
                 <div class="panel panel-default">
-				{% if character.user_id|int != application.user_id|int %}
+                {% if character.user_id|int != application.user_id|int %}
                     <div class="panel-heading" id="removed">
-				{% else %}
+                {% else %}
                     <div class="panel-heading">
-				{% endif %}
-						<div class="panel-title">
-							{{ character.character_name }}{% if character.user_id|int != application.user_id|int %} - REMOVED{% endif %}
-						</div>
+                {% endif %}
+                        <div class="panel-title">
+                            {{ character.character_name }}{% if character.user_id|int != application.user_id|int %} - REMOVED{% endif %}
+                        </div>
                         GSF BL Status: {{ gsf_blacklist[character.character_name] }}
                         <br>
-						{% if character.api_id %}
-							<a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id) }}">
-								<button type="button" class="btn btn-default btn-xs">Jack Knife</button>
-							</a>
-							<br>
-						{% endif %}
+                        {% if character.api_id %}
+                            <a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id) }}">
+                                <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
+                            </a>
+                            <br>
+                        {% endif %}
                         <a target="_blank" href="https://forums.eveonline.com/default.aspx?g=search&postedby={{ character.character_name }}">
                             <button type="button" class="btn btn-default btn-xs">Forum Search</button>
                         </a>
