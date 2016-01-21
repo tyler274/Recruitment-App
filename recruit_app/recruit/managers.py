@@ -44,6 +44,8 @@ class RecruitManager:
         # Save the edit
         comment.comment = comment_data
         comment.last_update_time = dt.datetime.utcnow()
+        if not comment.user_id:
+            comment.user = user
         comment.save()
         RecruitManager.comment_notify(comment)
 
