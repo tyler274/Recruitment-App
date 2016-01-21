@@ -27,7 +27,8 @@ class RecruitManager:
         comment = HrApplicationComment()
         comment.application_id = application.id
         comment.comment = comment_data
-        comment.user_id = user.id
+        if user:
+            comment.user_id = user.id
         comment.save()
         RecruitManager.comment_notify(comment)
 
@@ -81,6 +82,15 @@ class RecruitManager:
 
         application.save()
         RecruitManager.application_action_notify(application, 'new')
+        
+        # Create a starter comment
+        comment_text = "#### Accounts as of " + application.created_time.strftime('%Y/%m/%d %H:%M') + ":\n"
+        for api_key in application.user.api_keys:
+            comment_text += api_key.api_id + "\n\n"
+            for character in api_key.characters:
+                comment_text += "- " + character.character_name + "\n"
+            comment_text += "\n"
+        RecruitManager.create_comment(application, comment_text, 0)
 
         return application
 

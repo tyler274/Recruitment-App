@@ -245,7 +245,7 @@
                             <a id="comment{{comment.id}}"></a>
                         </div>
                         {% if (comment.last_update_time - comment.created_time).total_seconds() > 1 %} (edited {{ comment.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }})<br>{% endif %}
-                        {% if comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
+                        {% if not comment.user_id or comment.user_id|int == current_user.get_id()|int or current_user.has_role("admin") %}
                             <button type="button" class="btn-xs btn-danger" data-toggle="modal" data-target="#editComment" data-comment_text="{{ comment.comment }}"
                                 data-comment_id="{{ comment.id }}" data-application_id="{{ application.id }}">Edit</button>
                         {% endif %}

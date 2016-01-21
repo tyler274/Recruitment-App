@@ -198,7 +198,7 @@ def application_comment_action(application_id, comment_id, action):
 
                 comment = HrApplicationComment.query.filter_by(id=comment_id).first()
 
-                if int(comment.user_id) == int(current_user.get_id()) or current_user.has_role("admin"):
+                if comment.user_id == int(current_user.get_id()) or current_user.has_role("admin"):
                     if request.method == 'POST':
                         if action == "edit":
                             if form_edit.validate_on_submit():
