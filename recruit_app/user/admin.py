@@ -92,7 +92,6 @@ class EveAllianceInfoAdmin(AuthenticatedModelView):
 
 class UserAdmin(AuthenticatedModelView):
     column_searchable_list = (
-        'id',
         'email',
         'last_login_ip',
         'current_login_ip',
