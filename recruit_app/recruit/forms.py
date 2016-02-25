@@ -40,7 +40,7 @@ class HrApplicationForm(Form):
                                 validators=[RequiredIfNot('alt_application'), Length(min=-1, max=2000, message='Max length %(max)d')])
     what_expect             = TextAreaField("How do you expect daily life in KarmaFleet to be?",
                                 validators=[RequiredIfNot('alt_application'), Length(min=-1, max=2000, message='Max length %(max)d')])
-    bought_characters       = TextAreaField("Do you have any alts or other characters? Are any of your characters bought, and if so, which ones?",
+    bought_characters       = TextAreaField("Do you have any other accounts or characters? Are any of your characters bought, and if so, which ones?",
                                 validators=[RequiredIfNot('alt_application'), Length(min=-1, max=2000, message='Max length %(max)d')])
     why_interested          = TextAreaField("Why are you interested in joining KarmaFleet?",
                                 validators=[RequiredIfNot('alt_application'), Length(min=-1, max=2000, message='Max length %(max)d')])
