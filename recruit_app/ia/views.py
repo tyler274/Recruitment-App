@@ -23,7 +23,7 @@ def submit_issue():
     if request.method == 'POST':
         if form.validate_on_submit():
         # Do the submission
-            if IaManager.submit_issue(current_user, form.subject.data, form.body.data, form.logs):
+            if IaManager.submit_issue(current_user, form.subject.data, form.body.data, form.logs.data):
                 flash('Issue submitted successfully.', 'info')
             else:
                 flash('Error submitting issue.  Please try again later.', 'error')
