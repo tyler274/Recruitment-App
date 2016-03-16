@@ -189,9 +189,23 @@ class EveApiManager():
         try:
             api = EveApiManager.evelink_api()
             eve = evelink.eve.EVE(api=api)
-            results = eve.character_info_from_id(character_id)
+            results = eve.character_name_from_id(character_id)
             if results:
                 return True
+        except evelink.api.APIError as error:
+            current_app.logger.error(error)
+            return False
+
+        return False
+
+    @staticmethod
+    def check_if_character_is_in_corp(character_id, corp_id):
+        try:
+            api = EveApiManager.evelink_api()
+            eve = evelink.eve.EVE(api=api)
+            results = eve.affiliations_for_character(character_id)
+            actual_corp = results[0]['corp']['id']
+            return corp_id == actual_corp
         except evelink.api.APIError as error:
             current_app.logger.error(error)
             return False

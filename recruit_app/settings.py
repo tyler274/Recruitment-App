@@ -57,6 +57,9 @@ class Config(object):
     SLACK_WEBHOOK = os.getenv('SLACK_WEBHOOK')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     EVEAPI_URL = os.getenv('EVEAPI_URL', 'api.eveonline.com')
+    
+    TAIGA_USER = os.getenv('TAIGA_USER')
+    TAIGA_PASSWORD = os.getenv('TAIGA_PASSWORD')
 
 
 class ProdConfig(Config):

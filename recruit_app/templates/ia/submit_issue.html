@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+<h1 class="page-header text-center">Submit Issue to IA Department</h1>
+<div class='row-fluid'>
+<p>Please provide information about your issue in the fields below.  This will be sent to the KarmaFleet Internal Affairs team for investigation.  Include as much detail as possible including chat logs if applicable.  The text fields are resizable if you need more room.</p>
+{{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

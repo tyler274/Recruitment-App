@@ -40,6 +40,7 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">HR<span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
+            <li><a href="{{ url_for('ia.submit_issue') }}">Submit Issue</a></li>
             <li><a href="{{ url_for('hr.compliance', corp_id=98370861) }}">KarmaFleet Compliance</a></li>
             <li><a href="{{ url_for('hr.compliance', corp_id=98436248) }}">Honeycomb Compliance</a></li>
         </ul>

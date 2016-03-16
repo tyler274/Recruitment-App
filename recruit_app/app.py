@@ -22,7 +22,7 @@ from recruit_app.extensions import (
     rq,
     misaka,
 )
-from recruit_app import public, user, recruit, blacklist, jkproxy, hr
+from recruit_app import public, user, recruit, blacklist, jkproxy, hr, ia
 
 from recruit_app.public.forms import ConfirmRegisterFormRecaptcha
 
@@ -76,6 +76,7 @@ def register_blueprints(app):
     app.register_blueprint(blacklist.views.blueprint)
     app.register_blueprint(jkproxy.blueprint)
     app.register_blueprint(hr.views.blueprint)
+    app.register_blueprint(ia.views.blueprint)
 
     return None
 
