@@ -104,6 +104,7 @@ class RecruitManager:
             application.approved_denied = "Approved"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
+            application.training = False
             application.save()
             retval = "Approved"
 
@@ -111,6 +112,7 @@ class RecruitManager:
             application.approved_denied = "Rejected"
             application.reviewer_user_id = user.id
             application.last_user_id = user.id
+            application.training = False
             application.save()
             retval = "Rejected"
 
@@ -163,6 +165,7 @@ class RecruitManager:
         elif action == 'close':
             application.approved_denied = 'Closed'
             application.last_user_id = user.id
+            application.training = False
             application.save()
             retval = 'Closed'
 
@@ -177,6 +180,14 @@ class RecruitManager:
             application.last_user_id = user.id
             application.save()
             retval = 'Missing In-Game'
+            
+        elif action == 'training':
+            application.training = not application.training;
+            application.save()
+            if application.training:
+                retval = 'can now be viewed by recruiters in training'
+            else:
+                retval = 'is no longer a training app'
 
         RecruitManager.application_action_notify(application, action)
         return retval

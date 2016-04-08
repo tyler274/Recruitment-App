@@ -52,6 +52,9 @@ def application_queue(page=1, all=0):
             HrApplication.approved_denied != "Rejected",
             HrApplication.approved_denied != "Approved")
 
+    if current_user.has_role('training'):
+        query = query.filter_by(training=True)
+    
     # Add sort and pagination options to the query
     recruiter_queue = query.order_by(HrApplication.id).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
@@ -92,7 +95,10 @@ def application_view(application_id):
     form_comment = HrApplicationCommentForm()
     form_edit = HrApplicationCommentEdit()
 
-    application = HrApplication.query.filter_by(id=application_id).first()
+    query = HrApplication.query.filter_by(id=application_id)
+    if current_user.has_role('training'):
+        query = query.filter_by(training=True)
+    application = query.first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
             characters = EveCharacter.query.filter_by(user_id=application.user_id).order_by(EveCharacter.api_id).all()
@@ -226,7 +232,7 @@ def application_interact(application_id, action):
     if application:
         if current_user.has_role('admin') or current_user.has_role('recruiter') or current_user.has_role('reviewer'):
             if current_user.has_role("admin") or (action not in ['delete', 'hide', 'unhide']):
-                if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close']):
+                if current_user.has_role('recruiter') or current_user.has_role('admin') or (action not in ['approve', 'reject', 'close', 'training']):
                     application_status = RecruitManager.alter_application(application, action, current_user)
 
                     flash("%s's application %s" % (application.main_character_name,
@@ -240,8 +246,10 @@ def application_interact(application_id, action):
                                                application_status),
                       category='message')
 
-        if application_status and application_status != "deleted":
-            return redirect(url_for('recruit.application_view',
-                                    application_id=application.id))
+        if action == 'training' or action == 'hide':
+            return redirect(request.referrer)
+
+        elif application_status and application_status != "deleted":
+            return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return redirect(url_for('recruit.applications'))
