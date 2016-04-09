@@ -1,7 +1,7 @@
 from flask import Blueprint, request, current_app, flash, redirect, url_for
 from flask_security.decorators import login_required
-from flask_security import roles_accepted
-
+from flask_security import roles_accepted, current_user
+from recruit_app.user.eve_api_manager import EveApiManager
 from recruit_app.user.models import EveApiKeyPair
 from flask import Response
 from flask import stream_with_context
@@ -25,6 +25,14 @@ def jackknife_proxy():
         api_key = EveApiKeyPair.query.filter_by(api_id=request.args['usid']).first().api_key
     except:
         return 'API key not in database.'
+        
+    if 'chid' in request.args and not (current_user.has_role("admin") or current_user.has_role("recruiter") or current_user.has_role("compliance")):
+        chid = request.values['chid']
+        
+        if EveApiManager.check_if_character_is_in_corp(int(chid), 98370861):
+            return 'Insufficient permissions to view KarmaFleet character page.'
+        
+    #import ipdb; ipdb.set_trace()
     
     url = current_app.config['JACK_KNIFE_URL'] + '?' + request.query_string + '&apik=' + api_key
     headers = { 'User-Agent': 'KarmaFleet API Check', 'From': 'karmafleet_tools@ggrog.com' } # Be nice to Jackknife and send some info about us
