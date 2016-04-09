@@ -26,7 +26,7 @@ def jackknife_proxy():
     except:
         return 'API key not in database.'
         
-    if 'chid' in request.args and current_user.has_role("restricted_api_view"):
+    if 'chid' in request.args and not current_user.has_role("restricted_api_view"):
         chid = request.values['chid']
         
         if EveApiManager.check_if_character_is_in_alliance(int(chid), 1354830081):
