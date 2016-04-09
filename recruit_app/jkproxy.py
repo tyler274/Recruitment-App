@@ -26,14 +26,12 @@ def jackknife_proxy():
     except:
         return 'API key not in database.'
         
-    if 'chid' in request.args and not (current_user.has_role("admin") or current_user.has_role("recruiter") or current_user.has_role("compliance")):
+    if 'chid' in request.args and current_user.has_role("restricted_api_view"):
         chid = request.values['chid']
         
-        if EveApiManager.check_if_character_is_in_corp(int(chid), 98370861):
+        if EveApiManager.check_if_character_is_in_alliance(int(chid), 1354830081):
             return 'Insufficient permissions to view KarmaFleet character page.'
         
-    #import ipdb; ipdb.set_trace()
-    
     url = current_app.config['JACK_KNIFE_URL'] + '?' + request.query_string + '&apik=' + api_key
     headers = { 'User-Agent': 'KarmaFleet API Check', 'From': 'karmafleet_tools@ggrog.com' } # Be nice to Jackknife and send some info about us
     req = requests.get(url, stream = True, headers=headers)

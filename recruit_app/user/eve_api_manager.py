@@ -211,3 +211,17 @@ class EveApiManager():
             return False
 
         return False
+
+    @staticmethod
+    def check_if_character_is_in_alliance(character_id, alliance_id):
+        try:
+            api = EveApiManager.evelink_api()
+            eve = evelink.eve.EVE(api=api)
+            results = eve.affiliations_for_character(character_id)
+            actual_alliance = results[0]['alliance']['id']
+            return alliance_id == actual_alliance
+        except evelink.api.APIError as error:
+            current_app.logger.error(error)
+            return False
+
+        return False        
