@@ -223,5 +223,7 @@ class EveApiManager():
         except evelink.api.APIError as error:
             current_app.logger.error(error)
             return False
+        except KeyError: # no alliance
+            return False
 
-        return False        
+        return False
