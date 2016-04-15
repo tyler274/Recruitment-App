@@ -31,7 +31,7 @@
                 <thead>
                     <tr>
                         <th class="text-center">ID</th>
-                        <th class="text-center">Main</th>
+                        <th class="text-center">Main <div class="alert-warning" role="alert">Alt App</div></th>
                         {#<th class="text-center">Characters</th>#}
                         <th class="text-center">Created</th>
                         <th class="text-center">Last Update Time</th>
@@ -44,7 +44,13 @@
                 {% for queue in recruiter_queue.items %}
                     <tr>
                         <td data-title="ID" class="text-center">{{ queue.id }}</td>
-                        <td data-title="Main" class="text-center">{{ queue.main_character_name }}</td>
+                        <td data-title="Main" class="text-center">
+                            {% if queue.alt_application %}
+                                <div class="alert-warning" role="alert">{{ queue.main_character_name }}</div>
+                            {% else %}
+                                {{ queue.main_character_name }}
+                            {% endif %}
+                        </td>
                         {#<td data-title="Character" class="text-center">{{ queue.characters[0].character_name}}{% if queue.characters|length > 1 %}, ...{% endif %}</td>  Could be useful but table is getting cramped #}
                         <td data-title="Created" class="text-center">{{ queue.created_time.strftime('%Y/%m/%d') }}</td>
                         <td data-title="Last Update Time" class="text-center">{{ queue.last_update_time.strftime('%Y/%m/%d %H:%M:%S') }}</td>
