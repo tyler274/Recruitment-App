@@ -22,8 +22,16 @@
                                 <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="close") }}">
                                     <button type="button" class="btn btn-danger">Close</button>
                                 </a>
+                                {% if application.training %}
+                                    <a class="btn btn-success btn-ok" href="{{ url_for('recruit.application_interact', application_id=application.id, action='training') }}">
+                                        <span class="glyphicon glyphicon-education"></span>
+                                    </a>
+                                {% else %}
+                                    <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=application.id, action='training') }}">
+                                        <span class="glyphicon glyphicon-education"></span>
+                                    </a>
+                                {% endif %}                                
                             {% endif %}
-
                             <a href="{{ url_for('recruit.application_interact', application_id=application.id, action="new") }}">
                                 <button type="button" class="btn btn-warning">New</button>
                             </a>
