@@ -189,7 +189,7 @@ class RecruitManager:
             application.training = not application.training;
             application.save()
             if application.training:
-                retval = 'can now be viewed by recruiters in training'
+                retval = 'is now a training application and will be shown first'
             else:
                 retval = 'is no longer a training app'
 

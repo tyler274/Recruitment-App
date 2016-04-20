@@ -53,10 +53,12 @@ def application_queue(page=1, all=0):
             HrApplication.approved_denied != "Approved")
 
     if current_user.has_role('training'):
-        query = query.filter_by(training=True)
+        query = query.order_by(HrApplication.training.desc(), HrApplication.id)
+    else:
+        query.order_by(HrApplication.id)
     
     # Add sort and pagination options to the query
-    recruiter_queue = query.order_by(HrApplication.id).paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
+    recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
 
     return render_template('recruit/application_queue.html', recruiter_queue=recruiter_queue, search_form=search_form)
 
@@ -96,8 +98,6 @@ def application_view(application_id):
     form_edit = HrApplicationCommentEdit()
 
     query = HrApplication.query.filter_by(id=application_id)
-    if current_user.has_role('training'):
-        query = query.filter_by(training=True)
     application = query.first()
     if application:
         if current_user.has_role("recruiter") or current_user.has_role("admin") or current_user.has_role('reviewer'):
