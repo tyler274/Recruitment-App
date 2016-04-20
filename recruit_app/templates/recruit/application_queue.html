@@ -92,16 +92,14 @@
                             <a class="btn btn-primary" href="{{ url_for('recruit.application_view', application_id=queue.id) }}">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
-                            {% if current_user.has_role("admin") or current_user.has_role("recruiter") %}
-                                {% if queue.training %}
-                                    <a class="btn btn-success btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
-                                        <span class="glyphicon glyphicon-education"></span>
-                                    </a>
-                                {% else %}
-                                    <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
-                                        <span class="glyphicon glyphicon-education"></span>
-                                    </a>
-                                {% endif %}
+                            {% if queue.training %}
+                                <a class="btn btn-success btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
+                                    <span class="glyphicon glyphicon-education"></span>
+                                </a>
+                            {% else %}
+                                <a class="btn btn-danger btn-ok" href="{{ url_for('recruit.application_interact', application_id=queue.id, action='training') }}">
+                                    <span class="glyphicon glyphicon-education"></span>
+                                </a>
                             {% endif %}
                         </td>
                     </tr>
