@@ -55,7 +55,7 @@ def application_queue(page=1, all=0):
     if current_user.has_role('training'):
         query = query.order_by(HrApplication.training.desc(), HrApplication.id)
     else:
-        query.order_by(HrApplication.id)
+        query = query.order_by(HrApplication.id)
     
     # Add sort and pagination options to the query
     recruiter_queue = query.paginate(page, current_app.config['MAX_NUMBER_PER_PAGE'], False)
