@@ -30,6 +30,8 @@ class RecruitManager:
         if user:
             comment.user_id = user.id
         comment.save()
+        application.last_update_time = dt.datetime.utcnow()
+        application.save()
         RecruitManager.comment_notify(comment)
 
     @staticmethod
@@ -47,6 +49,8 @@ class RecruitManager:
 #        if not comment.user_id:
 #            comment.user = user
         comment.save()
+        application.last_update_time = dt.datetime.utcnow()
+        application.save()
         RecruitManager.comment_notify(comment)
 
     @staticmethod
