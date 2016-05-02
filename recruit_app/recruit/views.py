@@ -134,11 +134,11 @@ def application_view(application_id):
             for character in characters:
                 result = BlacklistGSF.getStatus(character)
                 gsf_blacklist[character.character_name] = result
-                if (result == 'BLACKLISTED'):
-                    gsf_blacklist_str += character.character_name + ' '
+                if result != 'NOT FOUND' and result != 'CLEARED':
+                    gsf_blacklist_str += ' ' + character.character_name
 
             if len(gsf_blacklist_str) > 0:
-                flash("Character(s) " + unicode(gsf_blacklist_str) + "are on the GSF blacklist!", 'error')
+                flash("Check GSF blacklist results for character(s)" + unicode(gsf_blacklist_str), 'error')
                 blacklist_clean = False
 
             # Check for character names on the internal blacklist
