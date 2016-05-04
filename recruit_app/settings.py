@@ -53,7 +53,7 @@ class Config(object):
     GSF_PASSWORD = os.getenv('GSF_PASSWORD', '')
     GSF_BLACKLIST_URL = os.getenv('GSF_BLACKLIST_URL')
 
-    API_MASK = 1073741823
+    API_MASK = 4294967295
     SLACK_WEBHOOK = os.getenv('SLACK_WEBHOOK')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     EVEAPI_URL = os.getenv('EVEAPI_URL', 'api.eveonline.com')
