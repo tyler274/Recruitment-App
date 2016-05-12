@@ -103,41 +103,35 @@
     {% endif %}
             <div class="form-group">
                 <label class="control-label">Status</label>
-                {% if application.approved_denied == "Role Stasis" %}
-                    <div class="alert alert-warning" role="alert">Role Stasis</div>
-
+                {% if application.approved_denied == "New" or application.approved_denied is not defined %}
+                    <div class="alert alert-warning" role="alert">New</div>
                 {% elif application.approved_denied == "Approved" %}
                     <div class="alert alert-success" role="alert">Approved
                         <div class="text-left" style="word-break: break-all;">
                             Put {{ request.url }} in your in game app and apply
                         </div>
                     </div>
-
                 {% elif application.approved_denied == "Rejected" %}
                     <div class="alert alert-danger" role="alert">Rejected</div>
-
-                {% elif application.approved_denied == "Awaiting Response" %}
-                    <div class="alert alert-danger" role="alert">Awaiting Response</div>
-
-                {% elif application.approved_denied == "Needs Director Review" %}
-                    <div class="alert alert-danger" role="alert">Needs Director Review</div>
-
-                {% elif application.approved_denied == "Undecided" %}
-                    <div class="alert alert-warning" role="alert">In Progress</div>
-
+                {% elif application.approved_denied == "Role Stasis" %}
+                    <div class="alert alert-info" role="alert">Role Stasis</div>
                 {% elif application.approved_denied == "Closed" %}
                     <div class="alert alert-danger" role="alert">Closed</div>
-
-                {% elif application.approved_denied == "Needs Processing" %}
-                    <div class="alert alert-warning" role="alert">Needs Processing</div>
-
                 {% elif application.approved_denied == "Missing In-Game" %}
-                    <div class="alert alert-warning" role="alert">Needs In-Game App</div>
-
-                {% elif application.approved_denied == "New" or application.approved_denied is not defined %}
-                    <div class="alert alert-warning" role="alert">New</div>
-
-                {% endif %}
+                    <div class="alert alert-info" role="alert">Missing In-Game App</div>
+                {% elif application.approved_denied == "Awaiting Response" %}
+                    <div class="alert alert-info" role="alert">Awaiting Response</div>
+                {% elif current_user.has_role("admin") or current_user.has_role("recruiter") or current_user.has_role("reviewer") %}
+                    {% if application.approved_denied == "Needs Director Review" %}
+                        <div class="alert alert-danger" role="alert">Needs Director Review</div>
+                    {% elif application.approved_denied == "Needs Processing" %}
+                        <div class="alert alert-warning" role="alert">Needs Processing</div>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">In Progress</div>
+                    {% endif %}                
+                {% else %}
+                    <div class="alert alert-info" role="alert">In Progress</div>
+                {% endif %}                
             </div>
             <label class="control-label">Reviewer</label>
             {% if not application.reviewer_user or not application.reviewer_user.main_character %}
