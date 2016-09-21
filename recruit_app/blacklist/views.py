@@ -13,7 +13,7 @@ blueprint = Blueprint("blacklist", __name__, url_prefix='/blacklist',
 @blueprint.route("/", methods=['GET', 'POST'])
 @blueprint.route("/<int:page>/", methods=['GET', 'POST'])
 @login_required
-@roles_accepted('admin', 'recruiter', 'reviewer', 'compliance')
+@roles_accepted('admin', 'recruiter', 'reviewer', 'compliance', 'blacklist')
 def blacklist_view(page=1):
     search_form = SearchForm()
     blacklist_form = BlacklistCharacterForm()
@@ -22,12 +22,12 @@ def blacklist_view(page=1):
     
     if request.method == 'POST':
         if request.form['submit'] == 'Submit Entry':
-            if current_user.has_role('admin') or current_user.has_role('compliance'):
+            if current_user.has_role('admin') or current_user.has_role('compliance') or current_user.has_role('blacklist'):
                 if blacklist_form.validate_on_submit():
                     if BlacklistManager.create_entry(blacklist_form, current_user):
                         flash('Entry Added')
             else:
-                flash('Not an Admin or in Compliance')
+                flash("You don't have the proper permissions.")
         elif search_form.validate_on_submit() and search_form.search.data:
             blacklist = BlacklistCharacter.query.filter(
                 BlacklistCharacter.name.ilike       ("%" + search_form.search.data + "%")|

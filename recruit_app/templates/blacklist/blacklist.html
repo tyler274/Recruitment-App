@@ -44,7 +44,7 @@
             </table>
         </div>
     </div>
-    {% if current_user.has_role('admin') or current_user.has_role('compliance') %}
+    {% if current_user.has_role('admin') or current_user.has_role('compliance') or current_user.has_role('blacklist') %}
         <div class="row">
             <div class="col-sm-12">
                 {{ wtf.quick_form(blacklist_form) }}
