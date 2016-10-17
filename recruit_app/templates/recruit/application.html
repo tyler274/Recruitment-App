@@ -207,7 +207,7 @@
                         GSF BL Status: {{ gsf_blacklist[character.character_name] }}
                         <br>
                         {% if character.api_id %}
-                            <a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id) }}">
+                            <a target="_blank" href="{{ url_for('eveapi.jackknife_proxy', usid=character.api.api_id, chid=character.character_id, view='onepage') }}">
                                 <button type="button" class="btn btn-default btn-xs">Jack Knife</button>
                             </a>
                             <br>
