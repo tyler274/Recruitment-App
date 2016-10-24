@@ -26,10 +26,10 @@ def applications(page=1):
 
 
 @blueprint.route("/application_queue/", methods=['GET', 'POST'])
-@blueprint.route("/application_queue/<int:page>/<int:all>", methods=['GET', 'POST'])
+@blueprint.route("/application_queue/<int:page>/<int:filter>", methods=['GET', 'POST'])
 @login_required
 @roles_accepted('admin', 'recruiter', 'reviewer')
-def application_queue(page=1, all=0):
+def application_queue(page=1, filter=0):
 
     search_form = SearchForm()
 
@@ -43,14 +43,21 @@ def application_queue(page=1, all=0):
 
         page = 1 # Reset the page to 1 on search
 
-    elif all:
+    elif filter == 1: # All apps
         query = HrApplication.query.filter(HrApplication.hidden == False)
-    else:
+    elif filter == 0: # Current applications
         query = HrApplication.query.filter(
             HrApplication.hidden == False,
             HrApplication.approved_denied != "Closed",
             HrApplication.approved_denied != "Rejected",
             HrApplication.approved_denied != "Approved")
+    else: # filter == 2, Current user's applications         
+        query = HrApplication.query.filter(HrApplication.hidden == False)
+        query2 = query.filter(
+            (HrApplication.reviewer_user_id == current_user.get_id()) |
+            (HrApplication.last_user_id == current_user.get_id()))
+        query = query.join(HrApplicationComment, (HrApplication.id == HrApplicationComment.application_id) & (HrApplicationComment.user_id == current_user.get_id()))
+        query = query.union(query2)
 
     if current_user.has_role('training'):
         query = query.order_by(HrApplication.training.desc(), HrApplication.id)

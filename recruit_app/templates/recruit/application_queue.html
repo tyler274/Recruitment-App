@@ -14,11 +14,14 @@
                 <br>
             </div>
             <div class="col-sm-6">
-                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, all=0) }}">
+                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, filter=0) }}">
                     Current Queue
                 </a>
-                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, all=1) }}">
+                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, filter=1) }}">
                     All Apps
+                </a>
+                <a class="btn btn-danger" href="{{ url_for('recruit.application_queue', page=1, filter=2) }}">
+                    My Apps
                 </a>
                 <br>
                 {% if recruiter_queue.pages > 1 %}
