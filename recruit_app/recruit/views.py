@@ -86,7 +86,7 @@ def application_create():
         if form.validate_on_submit():
             application = RecruitManager.create_application(form, user=current_user)
 
-            flash("Application Created, apply in game with \"" + url_for('recruit.application_view', _external=True, application_id=application.id) + "\" in the body", category='message')
+            flash("Application created. We will contact you on your main character by EVE mail if we require additional information. You will receive an in-game notification when you are invited to join.", category='message')
             return redirect(url_for('recruit.application_view', application_id=application.id))
 
     return render_template('recruit/application_create.html',
