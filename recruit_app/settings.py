@@ -22,6 +22,7 @@ class Config(object):
     SECURITY_RECOVERABLE = True
     SECURITY_CHANGEABLE = True
     SECURITY_TRACKABLE = True
+    SECURITY_EMAIL_SENDER = os.getenv('MAIL_USERNAME')
 
     SECURITY_REGISTER_USER_TEMPLATE = 'public/register.html'
     SECURITY_LOGIN_USER_TEMPLATE = 'public/login.html'
